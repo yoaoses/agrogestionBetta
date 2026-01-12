@@ -1,0 +1,4875 @@
+openapi: 3.0.0
+info:
+  title: AgroGestion API
+  description: API for multi-company management of livestock farms, including inventory, production, reproduction, health and user control.
+  version: 1.0.0
+  contact:
+    name: Backend Alexander Oses
+    email: heinzosesrunge@gmail.com
+
+servers:
+  - url: http://localhost:3000/v1
+    description: Local server (v1)
+  - url: http://agrogestionbackend-development.up.railway.app/v1
+    description: Online server (v1)
+  - url: http://localhost:3000/v2
+    description: Local server (v2)
+  - url: http://agrogestionbackend-development.up.railway.app/v2
+    description: Online server (v2)
+
+tags:
+  - name: Companies
+    description: Company-related endpoints
+  - name: Farms
+    description: Management of farms associated with a company
+  - name: Groups
+    description: Management of animal groups
+  - name: Users
+    description: User and permission management
+  - name: Statistics
+    description: Statistical reports and analytics
+  - name: Statistics V2
+    description: Granular statistical endpoints (v2) - individual metrics per endpoint
+  - name: AI Analytics
+    description: Endpoints for AI-driven analytics and insights
+  - name: Import
+    description: Data import endpoints for Excel files
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "JWT token for authentication. Format Bearer {token}"
+
+  schemas:
+    BaseResponse:
+      type: object
+      description: Standard response format for all endpoints
+      properties:
+        data:
+          description: The actual response data (object, array, or primitive)
+        receivedAt:
+          type: string
+          format: date-time
+          description: ISO8601 UTC when the server received the request
+        respondedAt:
+          type: string
+          format: date-time
+          description: ISO8601 UTC when the server sent the response
+
+    ErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: object
+
+    Company:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        tax_id:
+          type: string
+        address:
+          type: string
+
+    CompanyInput:
+      type: object
+      required:
+        - name
+        - tax_id
+      properties:
+        name:
+          type: string
+        tax_id:
+          type: string
+        address:
+          type: string
+
+    Farm:
+      type: object
+      properties:
+        id:
+          type: integer
+        companyId:
+          type: integer
+        name:
+          type: string
+        location:
+          type: string
+
+    FarmInput:
+      type: object
+      required:
+        - companyId
+        - name
+      properties:
+        companyId:
+          type: integer
+        name:
+          type: string
+        location:
+          type: string
+
+    Group:
+      type: object
+      properties:
+        id:
+          type: integer
+        farmId:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+        production_type:
+          type: string
+          enum:
+            - estanque
+            - descarte
+            - improductiva
+          description: "Tipo de productividad del grupo"
+        dpGroupId:
+          type: integer
+          nullable: true
+          description: "ID del grupo de destino para producción (opcional)"
+        created_at:
+          type: string
+          format: date-time
+
+    GroupInput:
+      type: object
+      required:
+        - farmId
+        - name
+        - type
+      properties:
+        farmId:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+            - Vacas
+            - Vaquillas
+            - Terneros
+            - Terneras
+            - Toros
+        production_type:
+          type: string
+          enum:
+            - estanque
+            - descarte
+            - improductiva
+          description: "Tipo de productividad: estanque (leche para venta), descarte (leche no apta), improductiva (no produce leche)"
+        dpGroupId:
+          type: integer
+          nullable: true
+          description: "ID del grupo de destino para producción (opcional)"
+
+    GroupUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+            - Vacas
+            - Vaquillas
+            - Terneros
+            - Terneras
+            - Toros
+        production_type:
+          type: string
+          enum:
+            - estanque
+            - descarte
+            - improductiva
+          description: "Tipo de productividad: estanque (leche para venta), descarte (leche no apta), improductiva (no produce leche)"
+        dpGroupId:
+          type: integer
+          nullable: true
+          description: "ID del grupo de destino para producción (opcional)"
+
+    InventoryDailyStats:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        totalAnimals:
+          type: integer
+        births:
+          type: integer
+        deaths:
+          type: integer
+        sales:
+          type: integer
+
+    InventoryStats:
+      type: object
+      properties:
+        dailyStatistics:
+          type: array
+          items:
+            $ref: '#/components/schemas/InventoryDailyStats'
+        totalAnimals:
+          type: integer
+        totalBirths:
+          type: integer
+        totalDeaths:
+          type: integer
+        totalSales:
+          type: integer
+
+    # V2 Schemas - Individual inventory metrics
+    TotalAnimalsData:
+      type: object
+      description: Daily total animals count for a specific date
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2025-01-15"
+        totalAnimals:
+          type: integer
+          example: 150
+          description: Total number of animals on this date
+
+    BirthsData:
+      type: object
+      description: Daily births count for a specific date
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2025-01-15"
+        births:
+          type: integer
+          example: 5
+          description: Number of births on this date
+
+    DeathsData:
+      type: object
+      description: Daily deaths count for a specific date
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2025-01-15"
+        deaths:
+          type: integer
+          example: 2
+          description: Number of deaths on this date
+
+    SalesData:
+      type: object
+      description: Daily sales count for a specific date
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2025-01-15"
+        sales:
+          type: integer
+          example: 3
+          description: Number of animals sold on this date
+
+    MilkProductionData:
+      type: object
+      description: Daily milk production (liters) for a specific date
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2025-01-15"
+        milkLiters:
+          type: number
+          format: float
+          example: 145.75
+          description: Liters of milk produced on this date
+
+    ProductionDailyStats:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        milkLiters:
+          type: number
+          format: float
+        births:
+          type: integer
+
+    ProductionStats:
+      type: object
+      properties:
+        dailyStatistics:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductionDailyStats'
+        totalMilkLiters:
+          type: number
+          format: float
+        totalBirths:
+          type: integer
+
+    ReproductionDailyStats:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        cow_inseminations:
+          type: integer
+        heifer_inseminations:
+          type: integer
+        cow_pregnancy_tests:
+          type: integer
+        heifer_pregnancy_tests:
+          type: integer
+        postpartum_exams:
+          type: integer
+
+    ReproductionStats:
+      type: object
+      properties:
+        daily_statistics:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReproductionDailyStats'
+        total_cow_inseminations:
+          type: integer
+        total_heifer_inseminations:
+          type: integer
+        total_cow_pregnancy_tests:
+          type: integer
+        total_heifer_pregnancy_tests:
+          type: integer
+        total_postpartum_exams:
+          type: integer
+
+    HealthDailyStats:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        mastitis:
+          type: integer
+        lameness:
+          type: integer
+        culling:
+          type: array
+          items:
+            type: object
+            properties:
+              cause:
+                type: string
+              quantity:
+                type: integer
+
+    HealthStats:
+      type: object
+      properties:
+        daily_statistics:
+          type: array
+          items:
+            $ref: '#/components/schemas/HealthDailyStats'
+        total_mastitis:
+          type: integer
+        total_lameness:
+          type: integer
+        total_culling:
+          type: array
+          items:
+            type: object
+            properties:
+              cause:
+                type: string
+              quantity:
+                type: integer
+
+    DisposalDailyStats:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        farmId:
+          type: integer
+          example: 101
+        date:
+          type: string
+          format: date
+          example: "2025-08-01"
+        reason:
+          type: string
+          example: "Mastitis severe"
+        quantity:
+          type: integer
+          example: 2
+
+    DisposalStats:
+      type: object
+      properties:
+        daily_statistics:
+          type: array
+          items:
+            $ref: '#/components/schemas/DisposalDailyStats'
+        total_quantity:
+          type: integer
+        total_culling:
+          type: array
+          items:
+            type: object
+            properties:
+              cause:
+                type: string
+              quantity:
+                type: integer
+
+    AIAnalysisRequest:
+      type: object
+      required:
+        - farmId
+        - startDate
+        - endDate
+      properties:
+        farmId:
+          type: integer
+          description: ID de la granja a analizar
+        startDate:
+          type: string
+          format: date
+          description: Fecha de inicio del análisis
+        endDate:
+          type: string
+          format: date
+          description: Fecha de término del análisis
+
+    AIAnalysisResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: "AI analysis completed successfully"
+                analysis:
+                  $ref: '#/components/schemas/AIAnalysisResult'
+
+    AIAnalysisResult:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 11
+        farmId:
+          type: integer
+          example: 102
+        userId:
+          type: integer
+          example: 180
+        startDate:
+          type: string
+          format: date-time
+          example: "2025-01-01T00:00:00.000Z"
+        endDate:
+          type: string
+          format: date-time
+          example: "2025-01-31T00:00:00.000Z"
+        status:
+          type: string
+          enum: [pending, processing, completed, failed]
+          example: "completed"
+        insights:
+          $ref: '#/components/schemas/AIInsights'
+        rawResponse:
+          type: string
+          description: "Raw JSON response from AI analysis"
+        errorMessage:
+          type: string
+          nullable: true
+          example: null
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-09-14T17:04:36.996Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-09-14T17:04:43.540Z"
+        farm:
+          $ref: '#/components/schemas/FarmWithCompany'
+
+    AIInsights:
+      type: object
+      properties:
+        health:
+          type: object
+          description: "Health analysis results"
+        metadata:
+          $ref: '#/components/schemas/AIMetadata'
+        inventory:
+          type: object
+          description: "Inventory analysis results"
+        production:
+          type: object
+          description: "Production analysis results"
+        suggestions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AISuggestion'
+        reproduction:
+          type: object
+          description: "Reproduction analysis results"
+        operationalAreas:
+          type: object
+          description: "Operational areas analysis"
+        interAreaAnalysis:
+          type: object
+          description: "Inter-area relationship analysis"
+        overallAssessment:
+          $ref: '#/components/schemas/AIOverallAssessment'
+
+    AIMetadata:
+      type: object
+      properties:
+        analysisDate:
+          type: string
+          format: date-time
+          example: "2025-09-14T17:04:43.539Z"
+        farmId:
+          type: integer
+          example: 102
+        dateRange:
+          type: object
+          properties:
+            startDate:
+              type: string
+              format: date
+              example: "2025-01-01"
+            endDate:
+              type: string
+              format: date
+              example: "2025-01-31"
+        qualityScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+          example: 55
+        version:
+          type: string
+          example: "1.0"
+        source:
+          type: string
+          example: "OpenAI GPT Analysis"
+        dataPoints:
+          type: integer
+          example: 50
+        cattleTypes:
+          type: array
+          items:
+            type: string
+        processingTime:
+          type: number
+          example: 1
+
+    AISuggestion:
+      type: object
+      properties:
+        priority:
+          type: string
+          enum: [critical, high, medium, low]
+          example: "critical"
+        area:
+          type: string
+          example: "production"
+        action:
+          type: string
+          example: "Implement comprehensive data collection system"
+        timeline:
+          type: string
+          enum: [immediate, days, weeks, months]
+          example: "immediate"
+        expectedImpact:
+          type: string
+          example: "High"
+        affectedAreas:
+          type: array
+          items:
+            type: string
+          example: ["production", "reproduction", "health", "inventory"]
+        resources:
+          type: string
+          example: "Data management software, training for staff"
+        cost:
+          type: string
+          enum: [low, medium, high]
+          example: "medium"
+        difficulty:
+          type: string
+          enum: [low, medium, high]
+          example: "medium"
+
+    AIOverallAssessment:
+      type: object
+      properties:
+        farmHealth:
+          type: string
+          enum: [excellent, good, concerning, critical]
+          example: "critical"
+        priorityAreas:
+          type: array
+          items:
+            type: string
+          example: ["production", "reproduction", "health", "inventory"]
+        urgentActions:
+          type: integer
+          minimum: 0
+          example: 4
+        riskLevel:
+          type: string
+          enum: [low, medium, high, critical]
+          example: "critical"
+        overallScore:
+          type: number
+          nullable: true
+          example: null
+        keyFindings:
+          type: array
+          items:
+            type: string
+
+    FarmWithCompany:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 102
+        companyId:
+          type: integer
+          example: 179
+        name:
+          type: string
+          example: "Campo Norte"
+        location:
+          type: string
+          example: "Sector Los Álamos, Parcela 15-A"
+        company:
+          $ref: '#/components/schemas/Company'
+
+    AIAnalyticsHistoryResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: "Analysis history retrieved successfully"
+                data:
+                  type: object
+                  properties:
+                    analyses:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/AIAnalysisResult'
+                    pagination:
+                      type: object
+                      properties:
+                        limit:
+                          type: integer
+                          example: 20
+                        offset:
+                          type: integer
+                          example: 0
+                        total:
+                          type: integer
+                          example: 5
+
+    AIAnalysisDetailResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: "Analysis retrieved successfully"
+                data:
+                  $ref: '#/components/schemas/AIAnalysisResult'
+                  type: object
+                  properties:
+                    production:
+                      type: object
+                      properties:
+                        problems:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              title:
+                                type: string
+                              severity:
+                                type: string
+                              description:
+                                type: string
+                              affectedGroups:
+                                type: array
+                                items:
+                                  type: string
+                              dataPoints:
+                                type: array
+                                items:
+                                  type: string
+                              correlatedFactors:
+                                type: array
+                                items:
+                                  type: string
+                              confidence:
+                                type: number
+                                format: float
+                        trends:
+                          type: array
+                          items:
+                            type: object
+                        properties:
+                          metric:
+                            type: string
+                          trend:
+                            type: string
+                          changePercent:
+                            type: number
+                            format: float
+                          significance:
+                            type: string
+                          timeframe:
+                            type: string
+                reproduction:
+                  type: object
+                health:
+                  type: object
+                inventory:
+                  type: object
+                interAreaAnalysis:
+                  type: object
+                overallAssessment:
+                  type: object
+                  properties:
+                    farmHealth:
+                      type: string
+                    priorityAreas:
+                      type: array
+                      items:
+                        type: string
+                    urgentActions:
+                      type: integer
+                    riskLevel:
+                      type: string
+                suggestions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      priority:
+                        type: string
+                      area:
+                        type: string
+                      action:
+                        type: string
+                      timeline:
+                        type: string
+                      expectedImpact:
+                        type: string
+                      affectedAreas:
+                        type: array
+                        items:
+                          type: string
+                      resources:
+                        type: string
+                      cost:
+                        type: string
+
+    ImportResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+                importId:
+                  type: string
+                  description: Unique identifier for the import process
+
+    ImportLog:
+      type: object
+      properties:
+        id:
+          type: integer
+        importId:
+          type: string
+        farmId:
+          type: integer
+        module:
+          type: string
+          enum: [inventory, production, reproduction, health]
+        status:
+          type: string
+          enum: [pending, processing, completed, failed]
+        filePath:
+          type: string
+        errorMessage:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ImportLogsResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                logs:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ImportLog'
+                pagination:
+                  type: object
+                  properties:
+                    page:
+                      type: integer
+                      example: 1
+                    limit:
+                      type: integer
+                      example: 10
+                    total:
+                      type: integer
+                      example: 25
+                    totalPages:
+                      type: integer
+                      example: 3
+
+    StructureImportResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/StructureImportResult'
+
+    StructureImportResult:
+      type: object
+      properties:
+        totalRows:
+          type: integer
+          description: Total number of rows processed from Excel
+          example: 23
+        companiesProcessed:
+          type: integer
+          description: Number of unique companies involved
+          example: 1
+        farmsCreated:
+          type: array
+          description: List of farms created during import
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              companyName:
+                type: string
+        farmsFound:
+          type: array
+          description: List of existing farms found
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              companyName:
+                type: string
+        groupsCreated:
+          type: array
+          description: List of animal groups created during import
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              farmName:
+                type: string
+              companyName:
+                type: string
+              dpGroupId:
+                type: integer
+                nullable: true
+              type:
+                type: string
+              productionType:
+                type: string
+        groupsUpdated:
+          type: array
+          description: List of animal groups updated during import
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              farmName:
+                type: string
+              companyName:
+                type: string
+              dpGroupId:
+                type: integer
+                nullable: true
+              type:
+                type: string
+              productionType:
+                type: string
+        errors:
+          type: array
+          description: List of errors encountered during import
+          items:
+            type: object
+            properties:
+              row:
+                type: integer
+                description: Row number in Excel where error occurred
+              message:
+                type: string
+                description: Error message
+              data:
+                type: object
+                description: Raw data from the row
+
+security:
+  - BearerAuth: []
+
+paths:
+  /companies:
+    get:
+      tags:
+        - Companies
+      summary: Lists all companies available to a user
+      description: |
+        **Función:** Lista todas las compañías disponibles para el usuario autenticado según sus permisos.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Sin parámetros en el cuerpo
+        
+        **Respuesta:**
+        - Código 200: Array de objetos Company
+        ```json
+        [
+          {
+            "id": 1,
+            "name": "Granja San José",
+            "tax_id": "12345678-9",
+            "address": "Av. Principal 123, Santiago"
+          },
+          {
+            "id": 2,
+            "name": "Lácteos del Valle",
+            "tax_id": "98765432-1",
+            "address": "Camino Rural 456, Valparaíso"
+          }
+        ]
+        ```
+        - Código 401: Token inválido o faltante
+        - Código 403: Permisos insuficientes
+        - Código 500: Error interno del servidor
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of companies
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Company'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Companies
+      summary: Creates a new company
+      description: |
+        **Función:** Crea una nueva compañía en el sistema.
+        
+        **Solicitud HTTP:**
+        - Método: POST
+        - Headers: Authorization: Bearer {token}, Content-Type: application/json
+        - Cuerpo: JSON con name (requerido), tax_id (requerido), address (opcional)
+        
+        **Ejemplo de solicitud:**
+        ```json
+        {
+          "name": "Granja San José",
+          "tax_id": "12345678-9",
+          "address": "Av. Principal 123, Santiago"
+        }
+        ```
+        
+        **Respuesta:**
+        - Código 201: Objeto Company creado
+        ```json
+        {
+          "id": 1,
+          "name": "Granja San José",
+          "tax_id": "12345678-9",
+          "address": "Av. Principal 123, Santiago"
+        }
+        ```
+        - Código 400: Datos de entrada inválidos
+        ```json
+        {
+          "error": "Bad Request",
+          "message": "Validation failed",
+          "details": [
+            {
+              "field": "name",
+              "message": "Company name is required"
+            }
+          ]
+        }
+        ```
+        - Código 401: Token inválido o faltante
+        - Código 403: Permisos insuficientes
+        - Código 500: Error interno del servidor
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyInput'
+      responses:
+        '201':
+          description: Company created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - $ref: '#/components/schemas/Company'
+        '400':
+          description: Bad request - Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /farms:
+    get:
+      tags:
+        - Farms
+      summary: Lists all farms available to a user from a company
+      description: |
+        **Función:** Lista todas las fincas disponibles para el usuario autenticado de una compañía específica.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Query Parameters: companyId (requerido, integer)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v1/farms?companyId=1
+        ```
+        
+        **Respuesta:**
+        - Código 200: Array de objetos Farm
+        ```json
+        [
+          {
+            "id": 1,
+            "company_id": 1,
+            "name": "Campo Norte",
+            "location": "Sector Los Álamos, Parcela 15"
+          },
+          {
+            "id": 2,
+            "company_id": 1,
+            "name": "Campo Sur",
+            "location": "Camino a Melipilla Km 45"
+          }
+        ]
+        ```
+        - Código 400: Parámetro companyId inválido
+        ```json
+        {
+          "error": "Bad Request",
+          "message": "companyId parameter is required",
+          "details": []
+        }
+        ```
+        - Código 401: Token inválido o faltante
+        - Código 403: Permisos insuficientes
+        - Código 500: Error interno del servidor
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: companyId
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of farms
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Farm'
+        '400':
+          description: Bad request - Invalid companyId parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Farms
+      summary: Creates a new farm
+      description: |
+        **Función:** Crea una nueva finca asociada a una compañía.
+        
+        **Solicitud HTTP:**
+        - Método: POST
+        - Headers: Authorization: Bearer {token}, Content-Type: application/json
+        - Cuerpo: JSON con company_id (requerido), name (requerido), location (opcional)
+        
+        **Ejemplo de solicitud:**
+        ```json
+        {
+          "company_id": 1,
+          "name": "Campo Norte",
+          "location": "Sector Los Álamos, Parcela 15"
+        }
+        ```
+        
+        **Respuesta:**
+        - Código 201: Objeto Farm creado
+        ```json
+        {
+          "id": 1,
+          "company_id": 1,
+          "name": "Campo Norte",
+          "location": "Sector Los Álamos, Parcela 15"
+        }
+        ```
+        - Código 400: Datos de entrada inválidos
+        ```json
+        {
+          "error": "Bad Request",
+          "message": "Validation failed",
+          "details": [
+            {
+              "field": "companyId",
+              "message": "Valid company ID is required"
+            }
+          ]
+        }
+        ```
+        - Código 401: Token inválido o faltante
+        - Código 403: Permisos insuficientes
+        - Código 500: Error interno del servidor
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FarmInput'
+      responses:
+        '201':
+          description: Farm created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - $ref: '#/components/schemas/Farm'
+        '400':
+          description: Bad request - Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /groups:
+    get:
+      tags:
+        - Groups
+      summary: Lists all animal groups available to a user from a farm
+      description: |
+        **Función:** Lista todos los grupos de animales disponibles para el usuario autenticado de una finca específica.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Query Parameters: farmId (requerido, integer)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v1/groups?farmId=1
+        ```
+        
+        **Respuesta:**
+        - Código 200: Array de objetos Group
+        ```json
+        [
+          {
+            "id": 1,
+            "farmId": 1,
+            "name": "Vacas Lecheras Sector A",
+            "type": "Vacas",
+            "production_type": "estanque",
+            "dpGroupId": 2,
+            "created_at": "2025-08-30T10:30:00Z"
+          },
+          {
+            "id": 2,
+            "farmId": 1,
+            "name": "Vaquillas Jóvenes",
+            "type": "Vaquillas",
+            "production_type": "descarte",
+            "dpGroupId": null,
+            "created_at": "2025-08-30T10:35:00Z"
+          },
+          {
+            "id": 3,
+            "farmId": 1,
+            "name": "Terneras del Año",
+            "type": "Terneras",
+            "production_type": "improductiva",
+            "dpGroupId": null,
+            "created_at": "2025-08-30T10:40:00Z"
+          }
+        ]
+        ```
+        - Código 400: Parámetro farmId inválido
+        ```json
+        {
+          "error": "Bad Request",
+          "message": "farmId parameter is required",
+          "details": []
+        }
+        ```
+        - Código 401: Token inválido o faltante
+        - Código 403: Permisos insuficientes
+        - Código 500: Error interno del servidor
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of animal groups
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Group'
+        '400':
+          description: Bad request - Invalid farmId parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Groups
+      summary: Creates a new animal group
+      description: |
+        **Función:** Crea un nuevo grupo de animales en una finca específica.
+        
+        **Solicitud HTTP:**
+        - Método: POST
+        - Headers: Authorization: Bearer {token}, Content-Type: application/json
+        - Cuerpo: JSON con farmId (requerido), name (requerido), type (requerido)
+        
+        **Tipos de ganado válidos:** Vacas, Vaquillas, Terneros, Terneras, Toros
+        
+        **Ejemplo de solicitud:**
+        ```json
+        {
+          "farmId": 1,
+          "name": "Vacas Lecheras Sector A",
+          "type": "Vacas",
+          "production_type": "estanque",
+          "dpGroupId": 2
+        }
+        ```
+        
+        **Respuesta:**
+        - Código 201: Objeto Group creado
+        ```json
+        {
+          "id": 1,
+          "farmId": 1,
+          "name": "Vacas Lecheras Sector A",
+          "type": "Vacas",
+          "production_type": "estanque",
+          "dpGroupId": 2,
+          "created_at": "2025-08-30T10:30:00Z"
+        }
+        ```
+        - Código 400: Datos de entrada inválidos o tipo de ganado no válido
+        ```json
+        {
+          "error": "Bad Request",
+          "message": "Validation failed",
+          "details": [
+            {
+              "field": "type",
+              "message": "Group type must be one of: Vacas, Vaquillas, Terneros, Terneras, Toros"
+            }
+          ]
+        }
+        ```
+        - Código 401: Token inválido o faltante
+        - Código 403: Permisos insuficientes
+        - Código 500: Error interno del servidor
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupInput'
+      responses:
+        '201':
+          description: Animal group created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - $ref: '#/components/schemas/Group'
+        '400':
+          description: Bad request - Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /groups/{groupId}:
+    get:
+      tags:
+        - Groups
+      summary: Gets a specific animal group by ID
+      description: |
+        **Función:** Obtiene los detalles de un grupo de animales específico por su ID.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: groupId (requerido, integer)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v1/groups/123
+        ```
+        
+        **Respuesta:**
+        - Código 200: Objeto Group
+        ```json
+        {
+          "id": 123,
+          "farmId": 1,
+          "name": "Vacas Lecheras Sector A",
+          "type": "Vacas",
+          "production_type": "estanque",
+          "dpGroupId": 2,
+          "created_at": "2025-08-30T10:30:00Z"
+        }
+        ```
+        - Código 401: Token inválido o faltante
+        ```json
+        {
+          "error": "Unauthorized",
+          "message": "Invalid or missing token",
+          "details": []
+        }
+        ```
+        - Código 403: Permisos insuficientes
+        ```json
+        {
+          "error": "Forbidden",
+          "message": "Access denied to this group",
+          "details": []
+        }
+        ```
+        - Código 404: Grupo no encontrado
+        ```json
+        {
+          "error": "Not Found",
+          "message": "Group not found",
+          "details": []
+        }
+        ```
+        - Código 500: Error interno del servidor
+        ```json
+        {
+          "error": "Internal Server Error",
+          "message": "An unexpected error occurred",
+          "details": []
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Animal group details
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - $ref: '#/components/schemas/Group'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found - Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - Groups
+      summary: Updates an existing animal group
+      description: |
+        **Función:** Actualiza los datos de un grupo de animales existente.
+        
+        **Solicitud HTTP:**
+        - Método: PUT
+        - Headers: Authorization: Bearer {token}, Content-Type: application/json
+        - Path Parameters: groupId (requerido, integer)
+        - Cuerpo: JSON con name (opcional), type (opcional)
+        
+        **Tipos de ganado válidos:** Vacas, Vaquillas, Terneros, Terneras, Toros
+        
+        **Ejemplo de solicitud:**
+        ```json
+        {
+          "name": "Vacas Lecheras Premium",
+          "type": "Vacas",
+          "production_type": "estanque",
+          "dpGroupId": 5
+        }
+        ```
+        
+        **Respuesta:**
+        - Código 200: Objeto Group actualizado
+        ```json
+        {
+          "id": 123,
+          "farmId": 1,
+          "name": "Vacas Lecheras Premium",
+          "type": "Vacas",
+          "production_type": "estanque",
+          "dpGroupId": 5,
+          "created_at": "2025-08-30T10:30:00Z"
+        }
+        ```
+        - Código 400: Datos de entrada inválidos
+        ```json
+        {
+          "error": "Bad Request",
+          "message": "Validation failed",
+          "details": [
+            {
+              "field": "type",
+              "message": "Group type must be one of: Vacas, Vaquillas, Terneros, Terneras, Toros"
+            }
+          ]
+        }
+        ```
+        - Código 401: Token inválido o faltante
+        ```json
+        {
+          "error": "Unauthorized",
+          "message": "Invalid or missing token",
+          "details": []
+        }
+        ```
+        - Código 403: Permisos insuficientes
+        ```json
+        {
+          "error": "Forbidden",
+          "message": "Access denied to this group",
+          "details": []
+        }
+        ```
+        - Código 404: Grupo no encontrado
+        ```json
+        {
+          "error": "Not Found",
+          "message": "Group not found",
+          "details": []
+        }
+        ```
+        - Código 500: Error interno del servidor
+        ```json
+        {
+          "error": "Internal Server Error",
+          "message": "An unexpected error occurred",
+          "details": []
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupUpdate'
+      responses:
+        '200':
+          description: Animal group updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - $ref: '#/components/schemas/Group'
+        '400':
+          description: Bad request - Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found - Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Groups
+      summary: Deletes an animal group
+      description: |
+        **Función:** Elimina un grupo de animales del sistema. Solo se puede eliminar si no tiene registros de inventario o producción asociados.
+        
+        **Solicitud HTTP:**
+        - Método: DELETE
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: groupId (requerido, integer)
+        
+        **Ejemplo de solicitud:**
+        ```
+        DELETE /v1/groups/123
+        ```
+        
+        **Respuesta:**
+        - Código 204: Grupo eliminado exitosamente (sin contenido)
+        ```
+        (Sin contenido en el cuerpo de la respuesta)
+        ```
+        - Código 401: Token inválido o faltante
+        ```json
+        {
+          "error": "Unauthorized",
+          "message": "Invalid or missing token",
+          "details": []
+        }
+        ```
+        - Código 403: Permisos insuficientes
+        ```json
+        {
+          "error": "Forbidden",
+          "message": "Access denied to this group",
+          "details": []
+        }
+        ```
+        - Código 404: Grupo no encontrado
+        ```json
+        {
+          "error": "Not Found",
+          "message": "Group not found",
+          "details": []
+        }
+        ```
+        - Código 409: Conflicto - No se puede eliminar grupo con registros existentes
+        ```json
+        {
+          "error": "Conflict",
+          "message": "Cannot delete group with existing inventory or production logs",
+          "details": []
+        }
+        ```
+        - Código 500: Error interno del servidor
+        ```json
+        {
+          "error": "Internal Server Error",
+          "message": "An unexpected error occurred",
+          "details": []
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Animal group deleted successfully
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found - Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict - Cannot delete group with existing logs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/login:
+    post:
+      tags:
+        - Users
+      summary: User login
+      description: |
+        **Función:** Autentica un usuario en el sistema y devuelve un token JWT para acceder a los endpoints protegidos.
+        
+        **Solicitud HTTP:**
+        - Método: POST
+        - Headers: Content-Type: application/json
+        - Cuerpo: JSON con email (requerido) y password (requerido)
+        
+        **Ejemplo de solicitud:**
+        ```json
+        {
+          "email": "superadmin@agrogestion.com",
+          "password": "password123"
+        }
+        ```
+        
+        **Respuesta:**
+        - Código 200: Objeto con token JWT y datos del usuario
+        ```json
+        {
+          "data": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+            "user": {
+              "id": 1,
+              "email": "usuario@agrogestion.com",
+              "name": "Juan Pérez"
+              "globalRoleId": 11,
+              "globalRole": {
+                "id": 11,
+                "name": "SUPERADMIN"
+              },
+              "companyRoles": [],
+              "farmRoles": []
+            }
+          },
+          "receivedAt": "2025-01-03T10:00:00.000Z",
+          "respondedAt": "2025-01-03T10:00:00.123Z"
+        }
+        ```
+        - Código 400: Datos de entrada inválidos
+        ```json
+        {
+          "error": "Bad Request",
+          "message": "Validation failed",
+          "details": [
+            {
+              "field": "email",
+              "message": "Invalid email format"
+            }
+          ]
+        }
+        ```
+        - Código 401: Credenciales inválidas
+        ```json
+        {
+          "error": "Unauthorized",
+          "message": "Invalid credentials",
+          "details": []
+        }
+        ```
+        - Código 500: Error interno del servidor
+        ```json
+        {
+          "error": "Internal Server Error",
+          "message": "An unexpected error occurred",
+          "details": []
+        }
+        ```
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Authentication token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      name:
+                        type: string
+        '400':
+          description: Bad request - Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /statistics/farm/{farmId}/inventory:
+    get:
+      tags:
+        - Statistics
+      summary: Gets inventory statistics for a farm
+      description: |
+        **Función:** Obtiene estadísticas de inventario para una finca específica, incluyendo totales de animales, nacimientos, muertes y ventas.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: farmId (requerido, integer)
+        - Query Parameters: from (opcional, fecha YYYY-MM-DD), to (opcional, fecha YYYY-MM-DD)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v1/statistics/farm/1/inventory?from=2025-01-01&to=2025-01-31
+        ```
+        
+        **Respuesta:**
+        - Código 200: Objeto InventoryStats
+        ```json
+        {
+          "dailyStatistics": [
+            {
+              "date": "2025-01-01",
+              "totalAnimals": 125,
+              "births": 3,
+              "deaths": 1,
+              "sales": 2
+            },
+            {
+              "date": "2025-01-02",
+              "totalAnimals": 127,
+              "births": 2,
+              "deaths": 0,
+              "sales": 1
+            }
+          ],
+          "totalAnimals": 127,
+          "totalBirths": 5,
+          "totalDeaths": 1,
+          "totalSales": 3
+        }
+        ```
+        - Código 400: Parámetros inválidos
+        ```json
+        {
+          "error": "Bad Request",
+          "message": "Invalid parameters",
+          "details": []
+        }
+        ```
+        - Código 401: Token inválido o faltante
+        ```json
+        {
+          "error": "Unauthorized",
+          "message": "Invalid or missing token",
+          "details": []
+        }
+        ```
+        - Código 403: Permisos insuficientes
+        ```json
+        {
+          "error": "Forbidden",
+          "message": "Access denied to this farm",
+          "details": []
+        }
+        ```
+        - Código 404: Finca no encontrada
+        ```json
+        {
+          "error": "Not Found",
+          "message": "Farm not found",
+          "details": []
+        }
+        ```
+        - Código 500: Error interno del servidor
+        ```json
+        {
+          "error": "Internal Server Error",
+          "message": "An unexpected error occurred",
+          "details": []
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: from
+          in: query
+          required: false
+          description: Start date (YYYY-MM-DD)
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          required: false
+          description: End date (YYYY-MM-DD)
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Inventory statistics
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - $ref: '#/components/schemas/InventoryStats'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found - Farm not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /statistics/farm/{farmId}/production:
+    get:
+      tags:
+        - Statistics
+      summary: Gets production statistics for a farm
+      description: |
+        **Función:** Obtiene estadísticas de producción para una finca específica, incluyendo producción de leche y nacimientos.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: farmId (requerido, integer)
+        - Query Parameters: from (opcional, fecha YYYY-MM-DD), to (opcional, fecha YYYY-MM-DD)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v1/statistics/farm/1/production?from=2025-01-01&to=2025-01-31
+        ```
+        
+        **Respuesta:**
+        - Código 200: Objeto ProductionStats
+        ```json
+        {
+          "dailyStatistics": [
+            {
+              "date": "2025-01-01",
+              "milkLiters": 450.5,
+              "births": 2
+            },
+            {
+              "date": "2025-01-02",
+              "milkLiters": 475.2,
+              "births": 1
+            }
+          ],
+          "totalMilkLiters": 925.7,
+          "totalBirths": 3
+        }
+        ```
+        - Código 400: Parámetros inválidos
+        ```json
+        {
+          "error": "Bad Request",
+          "message": "Invalid parameters",
+          "details": []
+        }
+        ```
+        - Código 401: Token inválido o faltante
+        ```json
+        {
+          "error": "Unauthorized",
+          "message": "Invalid or missing token",
+          "details": []
+        }
+        ```
+        - Código 403: Permisos insuficientes
+        ```json
+        {
+          "error": "Forbidden",
+          "message": "Access denied to this farm",
+          "details": []
+        }
+        ```
+        - Código 404: Finca no encontrada
+        ```json
+        {
+          "error": "Not Found",
+          "message": "Farm not found",
+          "details": []
+        }
+        ```
+        - Código 500: Error interno del servidor
+        ```json
+        {
+          "error": "Internal Server Error",
+          "message": "An unexpected error occurred",
+          "details": []
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Production statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductionStats'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found - Farm not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /statistics/farm/{farmId}/reproduction:
+    get:
+      tags:
+        - Statistics
+      summary: Gets reproduction statistics for a farm
+      description: |
+        **Función:** Obtiene estadísticas reproductivas para una finca específica, incluyendo inseminaciones, pruebas de preñez y exámenes postparto.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: farmId (requerido, integer)
+        - Query Parameters: from (opcional, fecha YYYY-MM-DD), to (opcional, fecha YYYY-MM-DD)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v1/statistics/farm/1/reproduction?from=2025-01-01&to=2025-01-31
+        ```
+        
+        **Respuesta:**
+        - Código 200: Objeto ReproductionStats
+        ```json
+        {
+          "daily_statistics": [
+            {
+              "date": "2025-01-01",
+              "cow_inseminations": 5,
+              "heifer_inseminations": 3,
+              "cow_pregnancy_tests": 8,
+              "heifer_pregnancy_tests": 4,
+              "postpartum_exams": 6
+            },
+            {
+              "date": "2025-01-02",
+              "cow_inseminations": 4,
+              "heifer_inseminations": 2,
+              "cow_pregnancy_tests": 7,
+              "heifer_pregnancy_tests": 3,
+              "postpartum_exams": 5
+            }
+          ],
+          "total_cow_inseminations": 9,
+          "total_heifer_inseminations": 5,
+          "total_cow_pregnancy_tests": 15,
+          "total_heifer_pregnancy_tests": 7,
+          "total_postpartum_exams": 11
+        }
+        ```
+        - Código 400: Parámetros inválidos
+        ```json
+        {
+          "error": "Bad Request",
+          "message": "Invalid parameters",
+          "details": []
+        }
+        ```
+        - Código 401: Token inválido o faltante
+        ```json
+        {
+          "error": "Unauthorized",
+          "message": "Invalid or missing token",
+          "details": []
+        }
+        ```
+        - Código 403: Permisos insuficientes
+        ```json
+        {
+          "error": "Forbidden",
+          "message": "Access denied to this farm",
+          "details": []
+        }
+        ```
+        - Código 404: Finca no encontrada
+        ```json
+        {
+          "error": "Not Found",
+          "message": "Farm not found",
+          "details": []
+        }
+        ```
+        - Código 500: Error interno del servidor
+        ```json
+        {
+          "error": "Internal Server Error",
+          "message": "An unexpected error occurred",
+          "details": []
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Reproduction statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReproductionStats'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found - Farm not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /statistics/farm/{farmId}/health:
+    get:
+      tags:
+        - Statistics
+      summary: Gets health statistics for a farm
+      description: |
+        **Función:** Obtiene estadísticas de salud para una finca específica, incluyendo casos de mastitis, cojeras y descartes por diferentes causas.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: farmId (requerido, integer)
+        - Query Parameters: from (opcional, fecha YYYY-MM-DD), to (opcional, fecha YYYY-MM-DD)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v1/statistics/farm/1/health?from=2025-01-01&to=2025-01-31
+        ```
+        
+        **Respuesta:**
+        - Código 200: Objeto HealthStats
+        ```json
+        {
+          "daily_statistics": [
+            {
+              "date": "2025-01-01",
+              "mastitis": 3,
+              "lameness": 2,
+              "culling": [
+                {
+                  "cause": "Mastitis severa",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "date": "2025-01-02",
+              "mastitis": 1,
+              "lameness": 1,
+              "culling": []
+            }
+          ],
+          "total_mastitis": 4,
+          "total_lameness": 3,
+          "total_culling": [
+            {
+              "cause": "Mastitis severa",
+              "quantity": 1
+            },
+            {
+              "cause": "Vejez",
+              "quantity": 2
+            }
+          ]
+        }
+        ```
+        - Código 400: Parámetros inválidos
+        ```json
+        {
+          "error": "Bad Request",
+          "message": "Invalid parameters",
+          "details": []
+        }
+        ```
+        - Código 401: Token inválido o faltante
+        ```json
+        {
+          "error": "Unauthorized",
+          "message": "Invalid or missing token",
+          "details": []
+        }
+        ```
+        - Código 403: Permisos insuficientes
+        ```json
+        {
+          "error": "Forbidden",
+          "message": "Access denied to this farm",
+          "details": []
+        }
+        ```
+        - Código 404: Finca no encontrada
+        ```json
+        {
+          "error": "Not Found",
+          "message": "Farm not found",
+          "details": []
+        }
+        ```
+        - Código 500: Error interno del servidor
+        ```json
+        {
+          "error": "Internal Server Error",
+          "message": "An unexpected error occurred",
+          "details": []
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Health statistics
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - $ref: '#/components/schemas/HealthStats'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found - Farm not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /statistics/group/{groupId}/inventory:
+    get:
+      tags:
+        - Statistics
+      summary: Gets inventory statistics for a group
+      description: |
+        **Función:** Obtiene estadísticas de inventario para un grupo específico de animales, incluyendo totales de animales, nacimientos, muertes y ventas.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: groupId (requerido, integer)
+        - Query Parameters: from (opcional, fecha YYYY-MM-DD), to (opcional, fecha YYYY-MM-DD)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v1/statistics/group/123/inventory?from=2025-01-01&to=2025-01-31
+        ```
+        
+        **Respuesta:**
+        - Código 200: Objeto InventoryStats
+        ```json
+        {
+          "dailyStatistics": [
+            {
+              "date": "2025-01-01",
+              "totalAnimals": 85,
+              "births": 2,
+              "deaths": 0,
+              "sales": 1
+            },
+            {
+              "date": "2025-01-02",
+              "totalAnimals": 86,
+              "births": 1,
+              "deaths": 0,
+              "sales": 0
+            }
+          ],
+          "totalAnimals": 86,
+          "totalBirths": 3,
+          "totalDeaths": 0,
+          "totalSales": 1
+        }
+        ```
+        - Código 400: Parámetros inválidos
+        ```json
+        {
+          "error": "Bad Request",
+          "message": "Invalid parameters",
+          "details": []
+        }
+        ```
+        - Código 401: Token inválido o faltante
+        ```json
+        {
+          "error": "Unauthorized",
+          "message": "Invalid or missing token",
+          "details": []
+        }
+        ```
+        - Código 403: Permisos insuficientes
+        ```json
+        {
+          "error": "Forbidden",
+          "message": "Access denied to this group",
+          "details": []
+        }
+        ```
+        - Código 404: Grupo no encontrado
+        ```json
+        {
+          "error": "Not Found",
+          "message": "Group not found",
+          "details": []
+        }
+        ```
+        - Código 500: Error interno del servidor
+        ```json
+        {
+          "error": "Internal Server Error",
+          "message": "An unexpected error occurred",
+          "details": []
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+            description: Start date (YYYY-MM-DD)
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+            description: End date (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Group inventory statistics
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - $ref: '#/components/schemas/InventoryStats'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found - Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /statistics/group/{groupId}/production:
+    get:
+      tags:
+        - Statistics
+      summary: Gets production statistics for a group
+      description: |
+        **Función:** Obtiene estadísticas de producción para un grupo específico de animales, incluyendo producción de leche y nacimientos.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: groupId (requerido, integer)
+        - Query Parameters: from (opcional, fecha YYYY-MM-DD), to (opcional, fecha YYYY-MM-DD)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v1/statistics/group/123/production?from=2025-01-01&to=2025-01-31
+        ```
+        
+        **Respuesta:**
+        - Código 200: Objeto ProductionStats
+        ```json
+        {
+          "dailyStatistics": [
+            {
+              "date": "2025-01-01",
+              "milkLiters": 380.5,
+              "births": 1
+            },
+            {
+              "date": "2025-01-02",
+              "milkLiters": 395.2,
+              "births": 0
+            }
+          ],
+          "totalMilkLiters": 775.7,
+          "totalBirths": 1
+        }
+        ```
+        - Código 400: Parámetros inválidos
+        ```json
+        {
+          "error": "Bad Request",
+          "message": "Invalid parameters",
+          "details": []
+        }
+        ```
+        - Código 401: Token inválido o faltante
+        ```json
+        {
+          "error": "Unauthorized",
+          "message": "Invalid or missing token",
+          "details": []
+        }
+        ```
+        - Código 403: Permisos insuficientes
+        ```json
+        {
+          "error": "Forbidden",
+          "message": "Access denied to this group",
+          "details": []
+        }
+        ```
+        - Código 404: Grupo no encontrado
+        ```json
+        {
+          "error": "Not Found",
+          "message": "Group not found",
+          "details": []
+        }
+        ```
+        - Código 500: Error interno del servidor
+        ```json
+        {
+          "error": "Internal Server Error",
+          "message": "An unexpected error occurred",
+          "details": []
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+            description: Start date (YYYY-MM-DD)
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+            description: End date (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Group production statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductionStats'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found - Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /statistics/farm/{farmId}/disposal:
+    get:
+      tags:
+        - Statistics
+      summary: Get disposal logs for a farm
+      description: |
+        **Función:** Obtiene registros de descartes/eliminación de animales para una finca específica, incluyendo razones y cantidades.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: farmId (requerido, integer)
+        - Query Parameters: from (opcional, fecha YYYY-MM-DD), to (opcional, fecha YYYY-MM-DD)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v1/statistics/farm/1/disposal?from=2025-01-01&to=2025-01-31
+        ```
+        
+        **Respuesta:**
+        - Código 200: Objeto DisposalStats
+        ```json
+        {
+          "daily_statistics": [
+            {
+              "id": 1,
+              "farmId": 1,
+              "date": "2025-01-01",
+              "reason": "Mastitis severa",
+              "quantity": 2
+            },
+            {
+              "id": 2,
+              "farmId": 1,
+              "date": "2025-01-02",
+              "reason": "Vejez",
+              "quantity": 1
+            }
+          ],
+          "total_quantity": 3,
+          "total_culling": [
+            {
+              "cause": "Mastitis severa",
+              "quantity": 2
+            },
+            {
+              "cause": "Vejez",
+              "quantity": 1
+            }
+          ]
+        }
+        ```
+        - Código 401: Token inválido o faltante
+        ```json
+        {
+          "error": "Unauthorized",
+          "message": "Invalid or missing token",
+          "details": []
+        }
+        ```
+        - Código 403: Permisos insuficientes
+        ```json
+        {
+          "error": "Forbidden",
+          "message": "Access denied to this farm",
+          "details": []
+        }
+        ```
+        - Código 404: Finca no encontrada
+        ```json
+        {
+          "error": "Not Found",
+          "message": "Farm not found",
+          "details": []
+        }
+        ```
+        - Código 500: Error interno del servidor
+        ```json
+        {
+          "error": "Internal Server Error",
+          "message": "An unexpected error occurred",
+          "details": []
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+            description: Start date (YYYY-MM-DD)
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+            description: End date (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Disposal statistics for farm
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisposalStats'
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found - Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /ai-analytics/analyze:
+    post:
+      tags:
+        - AI Analytics
+      summary: Request AI analysis of farm data
+      description: |
+        **Función:** Solicita un análisis de IA para una granja específica dentro de un rango de fechas.
+
+        **Solicitud HTTP:**
+        - Método: POST
+        - Headers: Authorization: Bearer {token}, Content-Type: application/json
+        - Cuerpo:
+        ```json
+        {
+          "farmId": 102,
+          "startDate": "2025-01-01",
+          "endDate": "2025-01-31"
+        }
+        ```
+
+        **Respuesta:**
+        - Código 201: Análisis completado exitosamente
+        ```json
+        {
+          "data": {
+            "success": true,
+            "message": "AI analysis completed successfully",
+            "analysis": {
+              "id": 11,
+              "farmId": 102,
+              "userId": 180,
+              "startDate": "2025-01-01T00:00:00.000Z",
+              "endDate": "2025-01-31T00:00:00.000Z",
+              "status": "completed",
+              "insights": {
+                "health": {},
+                "metadata": {
+                  "analysisDate": "2025-09-14T17:04:43.539Z",
+                  "farmId": 102,
+                  "qualityScore": 55,
+                  "version": "1.0",
+                  "source": "OpenAI GPT Analysis"
+                },
+                "inventory": {},
+                "production": {},
+                "suggestions": [
+                  {
+                    "priority": "critical",
+                    "area": "unknown",
+                    "action": "Implement comprehensive data collection system",
+                    "timeline": "immediate",
+                    "expectedImpact": "High",
+                    "affectedAreas": ["production", "reproduction", "health", "inventory"],
+                    "resources": "Data management software, training",
+                    "cost": "medium"
+                  }
+                ],
+                "reproduction": {},
+                "operationalAreas": {},
+                "interAreaAnalysis": {},
+                "overallAssessment": {
+                  "farmHealth": "critical",
+                  "priorityAreas": ["production", "reproduction", "health", "inventory"],
+                  "urgentActions": 4,
+                  "riskLevel": "critical"
+                }
+              },
+              "rawResponse": "{\"rawInsights\":{...}}",
+              "errorMessage": null,
+              "createdAt": "2025-09-14T17:04:36.996Z",
+              "updatedAt": "2025-09-14T17:04:43.540Z",
+              "farm": {
+                "id": 102,
+                "companyId": 179,
+                "name": "Campo Norte",
+                "location": "Sector Los Álamos, Parcela 15-A"
+              }
+            }
+          },
+          "receivedAt": "2025-09-14T17:04:36.000Z",
+          "respondedAt": "2025-09-14T17:04:43.540Z"
+        }
+        ```
+        - Código 400: Datos de entrada inválidos
+        ```json
+        {
+          "success": false,
+          "message": "Validation failed",
+          "error": "farmId is required",
+          "receivedAt": "2025-09-14T17:04:36.000Z",
+          "respondedAt": "2025-09-14T17:04:36.100Z"
+        }
+        ```
+        - Código 500: Error interno del servidor
+        ```json
+        {
+          "success": false,
+          "message": "Analysis request failed", 
+          "error": "Internal server error",
+          "receivedAt": "2025-09-14T17:04:36.000Z",
+          "respondedAt": "2025-09-14T17:04:36.200Z"
+        }
+        ```
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                farmId:
+                  type: integer
+                  description: ID de la granja a analizar
+                startDate:
+                  type: string
+                  format: date
+                  description: Fecha de inicio del análisis
+                endDate:
+                  type: string
+                  format: date
+                  description: Fecha de término del análisis
+      responses:
+        '201':
+          description: Análisis solicitado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIAnalysisResponse'
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ai-analytics/history/{farmId}:
+    get:
+      tags:
+        - AI Analytics
+      summary: Retrieve analysis history for a farm
+      description: |
+        **Función:** Obtiene el historial de análisis de IA para una granja específica.
+
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Parámetros en la URL:
+          - farmId: ID de la granja
+        - Parámetros opcionales en la query:
+          - limit: Número de registros a devolver
+          - offset: Desplazamiento para paginación
+
+        **Respuesta:**
+        - Código 200: Historial de análisis recuperado exitosamente
+        ```json
+        {
+          "data": [
+            {
+              "id": 1,
+              "farmId": 1,
+              "status": "completed",
+              "createdAt": "2025-01-01T00:00:00Z"
+            }
+          ],
+          "pagination": {
+            "limit": 10,
+            "offset": 0,
+            "total": 1
+          }
+        }
+        ```
+        - Código 404: Granja no encontrada
+        - Código 500: Error interno del servidor
+      parameters:
+        - name: farmId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la granja
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          description: Número de registros a devolver
+        - name: offset
+          in: query
+          schema:
+            type: integer
+          description: Desplazamiento para paginación
+      responses:
+        '200':
+          description: Historial de análisis recuperado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIAnalyticsHistoryResponse'
+        '404':
+          description: Granja no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ai-analytics/analysis/{analysisId}:
+    get:
+      tags:
+        - AI Analytics
+      summary: Retrieve a specific analysis by ID
+      description: |
+        **Función:** Recupera los detalles de un análisis de IA específico por su ID.
+
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Parámetros en la URL:
+          - analysisId: ID del análisis
+
+        **Respuesta:**
+        - Código 200: Análisis recuperado exitosamente
+        ```json
+        {
+          "id": 1,
+          "farmId": 1,
+          "status": "completed",
+          "createdAt": "2025-01-01T00:00:00Z",
+          "data": {
+            "insights": []
+          }
+        }
+        ```
+        - Código 404: Análisis no encontrado
+        - Código 500: Error interno del servidor
+      parameters:
+        - name: analysisId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del análisis
+      responses:
+        '200':
+          description: Análisis recuperado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIAnalysisDetailResponse'
+        '404':
+          description: Análisis no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ai-analytics/latest/{farmId}:
+    get:
+      tags:
+        - AI Analytics
+      summary: Retrieve the latest analysis for a farm
+      description: |
+        **Función:** Obtiene el análisis de IA más reciente para una granja específica.
+
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Parámetros en la URL:
+          - farmId: ID de la granja
+
+        **Respuesta:**
+        - Código 200: Último análisis recuperado exitosamente
+        ```json
+        {
+          "data": {
+            "id": 11,
+            "farmId": 102,
+            "userId": 180,
+            "startDate": "2025-01-01T00:00:00.000Z",
+            "endDate": "2025-01-31T00:00:00.000Z",
+            "status": "completed",
+            "insights": {
+              "health": {},
+              "metadata": {
+                "analysisDate": "2025-09-14T17:04:43.539Z",
+                "farmId": 102,
+                "version": "1.0"
+              },
+              "inventory": {},
+              "production": {},
+              "suggestions": [],
+              "reproduction": {},
+              "overallAssessment": {}
+            },
+            "createdAt": "2025-09-14T17:04:36.996Z",
+            "updatedAt": "2025-09-14T17:04:43.540Z",
+            "farm": {
+              "id": 102,
+              "name": "Campo Norte",
+              "location": "Sector Los Álamos, Parcela 15-A"
+            }
+          },
+          "receivedAt": "2025-11-22T10:00:00.000Z",
+          "respondedAt": "2025-11-22T10:00:00.123Z"
+        }
+        ```
+        - Código 404: No se encontró ningún análisis para la granja
+        - Código 403: Permisos insuficientes
+        - Código 500: Error interno del servidor
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la granja para obtener el último análisis
+      responses:
+        '200':
+          description: Último análisis recuperado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIAnalysisDetailResponse'
+        '403':
+          description: Permisos insuficientes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: No se encontró ningún análisis para la granja
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /import/inventory:
+    post:
+      tags:
+        - Import
+      summary: Import inventory data from Excel file
+      description: |
+        **Función:** Importa datos de inventario desde un archivo Excel (.xls).
+
+        **Solicitud HTTP:**
+        - Método: POST
+        - Headers: Authorization: Bearer {token}
+        - Query Parameters: farmId (integer, requerido)
+        - Body: multipart/form-data con archivo 'file'
+
+        **Archivo Excel esperado:**
+        - Formato: .xls
+        - Tamaño máximo: 10MB
+        - Estructura: Inventario por grupos, nacimientos, muertes, ventas
+
+        **Respuesta:**
+        - Código 202: Importación iniciada exitosamente
+        ```json
+        {
+          "success": true,
+          "message": "File uploaded and processing started",
+          "importId": "uuid-string",
+          "receivedAt": "2025-01-08T12:00:00.000Z",
+          "respondedAt": "2025-01-08T12:00:00.001Z"
+        }
+        ```
+        - Código 400: Archivo inválido o parámetros faltantes
+        - Código 401: Token inválido o faltante
+        - Código 403: Sin permisos para la granja
+        - Código 500: Error interno del servidor
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID of the farm to import data for
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Excel file (.xls) containing inventory data
+              required:
+                - file
+      responses:
+        '202':
+          description: Import process started successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportResponse'
+        '400':
+          description: Bad request - Invalid file or missing parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - No access to specified farm
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /import/production:
+    post:
+      tags:
+        - Import
+      summary: Import production data from Excel file
+      description: |
+        **Función:** Importa datos de producción lechera desde un archivo Excel (.xls).
+
+        **Solicitud HTTP:**
+        - Método: POST
+        - Headers: Authorization: Bearer {token}
+        - Query Parameters: farmId (integer, requerido)
+        - Body: multipart/form-data con archivo 'file'
+
+        **Archivo Excel esperado:**
+        - Formato: .xls
+        - Tamaño máximo: 10MB
+        - Estructura: Datos de producción por grupo y fecha
+
+        **Respuesta:**
+        - Código 202: Importación iniciada exitosamente
+        ```json
+        {
+          "success": true,
+          "message": "File uploaded and processing started",
+          "importId": "uuid-string",
+          "receivedAt": "2025-01-08T12:00:00.000Z",
+          "respondedAt": "2025-01-08T12:00:00.001Z"
+        }
+        ```
+        - Código 400: Archivo inválido o parámetros faltantes
+        - Código 401: Token inválido o faltante
+        - Código 403: Sin permisos para la granja
+        - Código 500: Error interno del servidor
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID of the farm to import data for
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Excel file (.xls) containing production data
+              required:
+                - file
+      responses:
+        '202':
+          description: Import process started successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportResponse'
+        '400':
+          description: Bad request - Invalid file or missing parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - No access to specified farm
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /import/reproduction:
+    post:
+      tags:
+        - Import
+      summary: Import reproduction data from Excel file
+      description: |
+        **Función:** Importa datos de reproducción desde un archivo Excel (.xls).
+
+        **Solicitud HTTP:**
+        - Método: POST
+        - Headers: Authorization: Bearer {token}
+        - Query Parameters: farmId (integer, requerido)
+        - Body: multipart/form-data con archivo 'file'
+
+        **Archivo Excel esperado:**
+        - Formato: .xls
+        - Tamaño máximo: 10MB
+        - Estructura: Datos de inseminaciones, preñeces, partos
+
+        **Respuesta:**
+        - Código 202: Importación iniciada exitosamente
+        ```json
+        {
+          "success": true,
+          "message": "File uploaded and processing started",
+          "importId": "uuid-string",
+          "receivedAt": "2025-01-08T12:00:00.000Z",
+          "respondedAt": "2025-01-08T12:00:00.001Z"
+        }
+        ```
+        - Código 400: Archivo inválido o parámetros faltantes
+        - Código 401: Token inválido o faltante
+        - Código 403: Sin permisos para la granja
+        - Código 500: Error interno del servidor
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID of the farm to import data for
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Excel file (.xls) containing reproduction data
+              required:
+                - file
+      responses:
+        '202':
+          description: Import process started successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportResponse'
+        '400':
+          description: Bad request - Invalid file or missing parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - No access to specified farm
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /import/health:
+    post:
+      tags:
+        - Import
+      summary: Import health data from Excel file
+      description: |
+        **Función:** Importa datos de salud desde un archivo Excel (.xls).
+
+        **Solicitud HTTP:**
+        - Método: POST
+        - Headers: Authorization: Bearer {token}
+        - Query Parameters: farmId (integer, requerido)
+        - Body: multipart/form-data con archivo 'file'
+
+        **Archivo Excel esperado:**
+        - Formato: .xls
+        - Tamaño máximo: 10MB
+        - Estructura: Datos de mastitis, cojeras y eventos de desecho
+
+        **Respuesta:**
+        - Código 202: Importación iniciada exitosamente
+        ```json
+        {
+          "success": true,
+          "message": "File uploaded and processing started",
+          "importId": "uuid-string",
+          "receivedAt": "2025-01-08T12:00:00.000Z",
+          "respondedAt": "2025-01-08T12:00:00.001Z"
+        }
+        ```
+        - Código 400: Archivo inválido o parámetros faltantes
+        - Código 401: Token inválido o faltante
+        - Código 403: Sin permisos para la granja
+        - Código 500: Error interno del servidor
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID of the farm to import data for
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Excel file (.xls) containing health data
+              required:
+                - file
+      responses:
+        '202':
+          description: Import process started successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportResponse'
+        '400':
+          description: Bad request - Invalid file or missing parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - No access to specified farm
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /import/structure:
+    post:
+      tags:
+        - Import
+      summary: Import organizational structure (companies, farms, groups) from Excel file
+      description: |
+        **Función:** Importa la estructura organizacional desde un archivo Excel (.xls o .xlsx).
+        
+        **Formato del archivo Excel:**
+        El archivo debe contener las siguientes columnas en orden:
+        - Company Name: Nombre de la compañía (debe existir en el sistema)
+        - Farm Name: Nombre de la granja (se crea si no existe)
+        - Group Name: Nombre del grupo de animales (se crea o actualiza)
+        - Group DP ID: ID del grupo en DP (opcional)
+        - Animal type: Tipo de animal (Vacas, Vaquillas, Terneros, Terneras, Toros)
+        - Production Type: Tipo de producción (estanque, descarte, improductiva)
+        
+        **Comportamiento:**
+        - Si la granja no existe en la compañía, se crea automáticamente
+        - Si el grupo no existe en la granja, se crea con los datos proporcionados
+        - Si el grupo existe, se actualiza con dpGroupId, type y productionType (el nombre no se modifica)
+        
+        **Solicitud HTTP:**
+        - Método: POST
+        - Headers: Authorization: Bearer {token}, Content-Type: multipart/form-data
+        - Body: Archivo Excel (.xls o .xlsx)
+        
+        **Ejemplo de respuesta exitosa:**
+        ```json
+        {
+          "success": true,
+          "message": "Structure import completed",
+          "data": {
+            "totalRows": 23,
+            "companiesProcessed": 1,
+            "farmsCreated": [
+              {
+                "id": 102,
+                "name": "Los Molinos",
+                "companyName": "Granja San José"
+              }
+            ],
+            "farmsFound": [],
+            "groupsCreated": [
+              {
+                "id": 1,
+                "name": "L1 Ordeña AP",
+                "farmName": "Los Molinos",
+                "companyName": "Granja San José",
+                "dpGroupId": 1,
+                "type": "Vacas",
+                "productionType": "estanque"
+              }
+            ],
+            "groupsUpdated": [],
+            "errors": []
+          },
+          "receivedAt": "2025-11-16T10:30:00.000Z",
+          "respondedAt": "2025-11-16T10:30:05.000Z"
+        }
+        ```
+        
+        **Errores comunes:**
+        - Código 400: Archivo inválido, formato incorrecto o tipos de animal no válidos
+        - Código 401: Token inválido o faltante
+        - Código 500: Error interno del servidor
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Excel file (.xls or .xlsx) with structure data
+              required:
+                - file
+      responses:
+        '200':
+          description: Structure import completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StructureImportResponse'
+        '400':
+          description: Bad request - Invalid file or data format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /import/logs/{farmId}:
+    get:
+      tags:
+        - Import
+      summary: Get import logs for a farm
+      description: |
+        **Función:** Obtiene el historial de importaciones para una granja específica.
+
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: farmId (integer, requerido)
+        - Query Parameters: page (integer, opcional, default 1), limit (integer, opcional, default 10)
+
+        **Respuesta:**
+        - Código 200: Lista de logs de importación
+        ```json
+        {
+          "data": {
+            "logs": [
+              {
+                "id": 1,
+                "importId": "uuid-string",
+                "farmId": 1,
+                "module": "inventory",
+                "status": "completed",
+                "createdAt": "2025-01-08T12:00:00.000Z",
+                "updatedAt": "2025-01-08T12:05:00.000Z",
+                "errorMessage": null
+              }
+            ],
+            "pagination": {
+              "page": 1,
+              "limit": 10,
+              "total": 1,
+              "totalPages": 1
+            }
+          },
+          "receivedAt": "2025-01-08T12:00:00.000Z",
+          "respondedAt": "2025-01-08T12:00:00.001Z"
+        }
+        ```
+        - Código 401: Token inválido o faltante
+        - Código 403: Sin permisos para la granja
+        - Código 500: Error interno del servidor
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the farm to get import logs for
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Page number for pagination
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+          description: Number of items per page
+      responses:
+        '200':
+          description: Import logs retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportLogsResponse'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - No access to specified farm
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+  # ============================================
+  # V2 ENDPOINTS - Granular Statistics
+  # ============================================
+
+  /v2/statistics/farm/{farmId}/inventory/totalAnimals:
+    get:
+      tags:
+        - Statistics V2
+      summary: Get total animals count for a farm (V2)
+      description: |
+        **Función:** Obtiene el conteo total de animales para una granja específica en un rango de fechas.
+        
+        **Diferencia con V1:** Este endpoint devuelve únicamente el total de animales por fecha, 
+        permitiendo consultas más ligeras y específicas.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: farmId (requerido, integer)
+        - Query Parameters: from (opcional, fecha YYYY-MM-DD), to (opcional, fecha YYYY-MM-DD)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v2/statistics/farm/1/inventory/totalAnimals?from=2025-01-01&to=2025-01-31
+        ```
+        
+        **Respuesta:**
+        - Código 200: Array de objetos TotalAnimalsData
+        ```json
+        {
+          "data": [
+            {
+              "date": "2025-01-01",
+              "totalAnimals": 150
+            },
+            {
+              "date": "2025-01-02",
+              "totalAnimals": 152
+            }
+          ],
+          "receivedAt": "2025-01-15T10:00:00.000Z",
+          "respondedAt": "2025-01-15T10:00:00.123Z"
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la granja
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de inicio (YYYY-MM-DD)
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de fin (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Total animals data retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/TotalAnimalsData'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found - Farm not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v2/statistics/farm/{farmId}/inventory/births:
+    get:
+      tags:
+        - Statistics V2
+      summary: Get births count for a farm (V2)
+      description: |
+        **Función:** Obtiene el conteo de nacimientos para una granja específica en un rango de fechas.
+        
+        **Diferencia con V1:** Este endpoint devuelve únicamente los nacimientos por fecha, 
+        permitiendo consultas más ligeras y específicas.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: farmId (requerido, integer)
+        - Query Parameters: from (opcional, fecha YYYY-MM-DD), to (opcional, fecha YYYY-MM-DD)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v2/statistics/farm/1/inventory/births?from=2025-01-01&to=2025-01-31
+        ```
+        
+        **Respuesta:**
+        - Código 200: Array de objetos BirthsData
+        ```json
+        {
+          "data": [
+            {
+              "date": "2025-01-01",
+              "births": 2
+            },
+            {
+              "date": "2025-01-02",
+              "births": 3
+            }
+          ],
+          "receivedAt": "2025-01-15T10:00:00.000Z",
+          "respondedAt": "2025-01-15T10:00:00.123Z"
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la granja
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de inicio (YYYY-MM-DD)
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de fin (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Births data retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/BirthsData'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found - Farm not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v2/statistics/farm/{farmId}/inventory/deaths:
+    get:
+      tags:
+        - Statistics V2
+      summary: Get deaths count for a farm (V2)
+      description: |
+        **Función:** Obtiene el conteo de muertes para una granja específica en un rango de fechas.
+        
+        **Diferencia con V1:** Este endpoint devuelve únicamente las muertes por fecha, 
+        permitiendo consultas más ligeras y específicas.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: farmId (requerido, integer)
+        - Query Parameters: from (opcional, fecha YYYY-MM-DD), to (opcional, fecha YYYY-MM-DD)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v2/statistics/farm/1/inventory/deaths?from=2025-01-01&to=2025-01-31
+        ```
+        
+        **Respuesta:**
+        - Código 200: Array de objetos DeathsData
+        ```json
+        {
+          "data": [
+            {
+              "date": "2025-01-01",
+              "deaths": 1
+            },
+            {
+              "date": "2025-01-03",
+              "deaths": 2
+            }
+          ],
+          "receivedAt": "2025-01-15T10:00:00.000Z",
+          "respondedAt": "2025-01-15T10:00:00.123Z"
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la granja
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de inicio (YYYY-MM-DD)
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de fin (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Deaths data retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/DeathsData'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found - Farm not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v2/statistics/farm/{farmId}/inventory/sales:
+    get:
+      tags:
+        - Statistics V2
+      summary: Get sales count for a farm (V2)
+      description: |
+        **Función:** Obtiene el conteo de ventas para una granja específica en un rango de fechas.
+        
+        **Diferencia con V1:** Este endpoint devuelve únicamente las ventas por fecha, 
+        permitiendo consultas más ligeras y específicas.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: farmId (requerido, integer)
+        - Query Parameters: from (opcional, fecha YYYY-MM-DD), to (opcional, fecha YYYY-MM-DD)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v2/statistics/farm/1/inventory/sales?from=2025-01-01&to=2025-01-31
+        ```
+        
+        **Respuesta:**
+        - Código 200: Array de objetos SalesData
+        ```json
+        {
+          "data": [
+            {
+              "date": "2025-01-05",
+              "sales": 3
+            },
+            {
+              "date": "2025-01-10",
+              "sales": 2
+            }
+          ],
+          "receivedAt": "2025-01-15T10:00:00.000Z",
+          "respondedAt": "2025-01-15T10:00:00.123Z"
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la granja
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de inicio (YYYY-MM-DD)
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de fin (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Sales data retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/SalesData'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found - Farm not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v2/statistics/farm/{farmId}/production/milkLiters:
+    get:
+      tags:
+        - Statistics V2
+      summary: Get milk production for a farm (V2)
+      description: |
+        **Función:** Obtiene la producción de leche (en litros) para una granja específica en un rango de fechas.
+        
+        **Diferencia con V1:** Este endpoint devuelve únicamente litros de leche por fecha (sin nacimientos) y todas las claves usan CamelCase.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: farmId (requerido, integer)
+        - Query Parameters: from (opcional, fecha YYYY-MM-DD), to (opcional, fecha YYYY-MM-DD)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v2/statistics/farm/1/production/milkLiters?from=2025-01-01&to=2025-01-31
+        ```
+        
+        **Respuesta:**
+        - Código 200: Array de objetos MilkProductionData
+        ```json
+        {
+          "data": [
+            {
+              "date": "2025-01-01",
+              "milkLiters": 450.5
+            },
+            {
+              "date": "2025-01-02",
+              "milkLiters": 475.2
+            }
+          ],
+          "receivedAt": "2025-01-15T10:00:00.000Z",
+          "respondedAt": "2025-01-15T10:00:00.123Z"
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: farmId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la granja
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de inicio (YYYY-MM-DD)
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de fin (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Milk production data retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/MilkProductionData'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found - Farm not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v2/statistics/group/{groupId}/inventory/totalAnimals:
+    get:
+      tags:
+        - Statistics V2
+      summary: Get total animals count for a group (V2)
+      description: |
+        **Función:** Obtiene el conteo total de animales para un grupo específico en un rango de fechas.
+        
+        **Diferencia con V1:** Devuelve únicamente el total de animales por fecha para el grupo.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: groupId (requerido, integer)
+        - Query Parameters: from (opcional, fecha YYYY-MM-DD), to (opcional, fecha YYYY-MM-DD)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v2/statistics/group/123/inventory/totalAnimals?from=2025-01-01&to=2025-01-31
+        ```
+        
+        **Respuesta:**
+        - Código 200: Array de objetos TotalAnimalsData
+        ```json
+        {
+          "data": [
+            {
+              "date": "2025-01-01",
+              "totalAnimals": 85
+            },
+            {
+              "date": "2025-01-02",
+              "totalAnimals": 86
+            }
+          ],
+          "receivedAt": "2025-01-15T10:00:00.000Z",
+          "respondedAt": "2025-01-15T10:00:00.123Z"
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del grupo
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de inicio (YYYY-MM-DD)
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de fin (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Total animals data retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/TotalAnimalsData'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found - Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v2/statistics/group/{groupId}/inventory/births:
+    get:
+      tags:
+        - Statistics V2
+      summary: Get births count for a group (V2)
+      description: |
+        **Función:** Obtiene el conteo de nacimientos para un grupo específico en un rango de fechas.
+        
+        **Diferencia con V1:** Devuelve únicamente los nacimientos por fecha para el grupo.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: groupId (requerido, integer)
+        - Query Parameters: from (opcional, fecha YYYY-MM-DD), to (opcional, fecha YYYY-MM-DD)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v2/statistics/group/123/inventory/births?from=2025-01-01&to=2025-01-31
+        ```
+        
+        **Respuesta:**
+        - Código 200: Array de objetos BirthsData
+        ```json
+        {
+          "data": [
+            {
+              "date": "2025-01-01",
+              "births": 2
+            },
+            {
+              "date": "2025-01-02",
+              "births": 1
+            }
+          ],
+          "receivedAt": "2025-01-15T10:00:00.000Z",
+          "respondedAt": "2025-01-15T10:00:00.123Z"
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del grupo
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de inicio (YYYY-MM-DD)
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de fin (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Births data retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/BirthsData'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found - Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v2/statistics/group/{groupId}/inventory/deaths:
+    get:
+      tags:
+        - Statistics V2
+      summary: Get deaths count for a group (V2)
+      description: |
+        **Función:** Obtiene el conteo de muertes para un grupo específico en un rango de fechas.
+        
+        **Diferencia con V1:** Devuelve únicamente las muertes por fecha para el grupo.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: groupId (requerido, integer)
+        - Query Parameters: from (opcional, fecha YYYY-MM-DD), to (opcional, fecha YYYY-MM-DD)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v2/statistics/group/123/inventory/deaths?from=2025-01-01&to=2025-01-31
+        ```
+        
+        **Respuesta:**
+        - Código 200: Array de objetos DeathsData
+        ```json
+        {
+          "data": [
+            {
+              "date": "2025-01-01",
+              "deaths": 1
+            },
+            {
+              "date": "2025-01-03",
+              "deaths": 2
+            }
+          ],
+          "receivedAt": "2025-01-15T10:00:00.000Z",
+          "respondedAt": "2025-01-15T10:00:00.123Z"
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del grupo
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de inicio (YYYY-MM-DD)
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de fin (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Deaths data retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/DeathsData'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found - Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v2/statistics/group/{groupId}/inventory/sales:
+    get:
+      tags:
+        - Statistics V2
+      summary: Get sales count for a group (V2)
+      description: |
+        **Función:** Obtiene el conteo de ventas para un grupo específico en un rango de fechas.
+        
+        **Diferencia con V1:** Devuelve únicamente las ventas por fecha para el grupo.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        - Path Parameters: groupId (requerido, integer)
+        - Query Parameters: from (opcional, fecha YYYY-MM-DD), to (opcional, fecha YYYY-MM-DD)
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v2/statistics/group/123/inventory/sales?from=2025-01-01&to=2025-01-31
+        ```
+        
+        **Respuesta:**
+        - Código 200: Array de objetos SalesData
+        ```json
+        {
+          "data": [
+            {
+              "date": "2025-01-05",
+              "sales": 1
+            },
+            {
+              "date": "2025-01-10",
+              "sales": 2
+            }
+          ],
+          "receivedAt": "2025-01-15T10:00:00.000Z",
+          "respondedAt": "2025-01-15T10:00:00.123Z"
+        }
+        ```
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del grupo
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de inicio (YYYY-MM-DD)
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Fecha de fin (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Sales data retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/SalesData'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found - Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
