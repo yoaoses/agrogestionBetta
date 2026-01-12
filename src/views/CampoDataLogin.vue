@@ -1,6 +1,6 @@
 <!-- src/views/CampoDataLogin.vue - Versión full-screen optimizada -->
 <template>
-  <div class="d-flex flex-row" style="min-height: 100vh;">
+  <div class="d-flex flex-row" style="min-height: var(--content-height);">
     <!-- Columna izquierda: 1/3, formulario y texto -->
     <div class="col-12 col-lg-6 position-relative d-flex flex-column justify-content-center align-items-center p-3 p-lg-5">
       <!-- Fondo con overlay -->
@@ -11,7 +11,7 @@
       </div>
       <!-- Texto grande -->
       <div class="text-center text-lg-start mb-4 position-relative" style="z-index: 10;">
-        <h1 class="display-3 display-lg-1 fw-bold mb-4 text-success">
+        <h1 class="display-3 display-lg-1 fw-bold mb-4 text-agrotech-green">
           <i class="bi bi-tree-fill fs-1 me-2"></i>AgroGestión
         </h1>
         <p class="fs-5 fs-lg-4 text-dark">
@@ -78,7 +78,7 @@
 
     <!-- Columna derecha: 2/3, imagen de fondo -->
     <div class="col-12 col-lg-6 position-relative"
-         :style="{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', minHeight: '100vh' }">
+         :style="{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', minHeight: 'var(--content-height)' }">
       <!-- Overlay gradiente para legibilidad -->
       <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.4), transparent);"></div>
     </div>

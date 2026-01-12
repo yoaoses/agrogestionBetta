@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { login, setAuthToken, getCompanies } from '../api/api.js'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -17,16 +18,15 @@ export const useAuthStore = defineStore('auth', {
       console.log('AuthStore login iniciado con credentials:', credentials)
       this.isLoading = true
       try {
-        const response = await window.api.login(credentials)
+        const response = await login(credentials)
         console.log('Respuesta de API login:', response)
         console.log('response.data:', JSON.stringify(response.data, null, 2))
-        const { token, user } = response.data.data
-        console.log('Token y user extraídos:', token, user)
+        const { token } = response.data.data
+        console.log('Token extraído:', token)
         this.token = token
-        this.user = user
         this.isAuthenticated = true
         localStorage.setItem('token', token)
-        window.api.setAuthToken(token)
+        setAuthToken(token)
         console.log('Login exitoso, estado actualizado - token:', this.token, 'isAuthenticated:', this.isAuthenticated, 'isAuth:', this.isAuth)
         return { success: true }
       } catch (error) {
@@ -42,7 +42,7 @@ export const useAuthStore = defineStore('auth', {
       this.user = null
       this.isAuthenticated = false
       localStorage.removeItem('token')
-      window.api.setAuthToken(null)
+      setAuthToken(null)
     },
     async verifyToken() {
       console.log('verifyToken iniciado - token:', this.token)
@@ -53,10 +53,10 @@ export const useAuthStore = defineStore('auth', {
       }
       this.isLoading = true
       try {
-        window.api.setAuthToken(this.token)
-        console.log('Llamando a getCompanies para verificar token')
-        await window.api.getCompanies()
-        console.log('getCompanies exitoso, isAuthenticated = true')
+        setAuthToken(this.token)
+        console.log('Llamando a getCompanies para verificar token en verifyToken')
+        await getCompanies()
+        console.log('getCompanies exitoso en verifyToken, isAuthenticated = true')
         this.isAuthenticated = true
         return true
       } catch (error) {

@@ -30,7 +30,7 @@ function updatePadding(appEl) {
 
 <template>
   <div>
-    <NavBar class="sticky-top" v-if="route.path !== '/login'" />
+    <NavBar class="sticky-top" v-if="route.path !== '/login' && route.path !== '/'" />
     <router-view :class="{ 'full-screen': route.path === '/login' }" />
   </div>
 </template>

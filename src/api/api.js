@@ -1,7 +1,6 @@
-// IIFE to avoid polluting global scope
+// API module
 import axios from 'axios';
-(function() {
-  console.log('API module loading...');
+console.log('API module loading...');
   // Base URLs
   const BASE_URL_LOCAL_V1 = 'http://localhost:3000/v1';
   const BASE_URL_ONLINE_V1 = 'http://agrogestionbackend-development.up.railway.app/v1';
@@ -456,8 +455,8 @@ const getImportLogs = (farmId, params = {}) => {
   return apiV1.get(`/import/logs/${farmId}`, { params });
 };
 
-// Expose API functions globally
-window.api = {
+// Export API functions
+export {
   setAuthToken,
   setUseLocal,
   getCompanies,
@@ -499,4 +498,3 @@ window.api = {
 };
 
 console.log('API module loaded successfully');
-})();

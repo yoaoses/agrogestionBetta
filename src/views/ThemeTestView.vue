@@ -1,5 +1,5 @@
 <template>
-  <div class="p-0 bg-body text-body" style="height: 100vh; width: 100vw;">
+  <div class="p-0 bg-body text-body" style="min-height: var(--content-height); width: 100vw;">
     <div class="container-fluid p-4">
       <h1 class="display-4 fw-bold mb-4 text-center">Framework Bootstrap - Muestra Completa</h1>
         <div class="row">

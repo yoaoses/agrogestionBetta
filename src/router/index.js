@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LandingView from '../views/LandingView.vue'
+import DashboardView from '../views/DashboardView.vue'
 import CampoDataLogin from '../views/CampoDataLogin.vue'
 import ConfigView from '../views/ConfigView.vue'
 import ThemeTestView from '../views/ThemeTestView.vue'
@@ -17,9 +17,9 @@ const routes = [
     component: CampoDataLogin
   },
   {
-    path: '/dashboard',
+    path: '/dashboard/:companyId?/:farmId?',
     name: 'Dashboard',
-    component: LandingView,
+    component: DashboardView,
     meta: { requiresAuth: true }
   },
   {
@@ -46,12 +46,6 @@ router.beforeEach(async (to, from, next) => {
   console.log('Guard ejecutándose - to:', to.path, 'from:', from.path)
   const authStore = useAuthStore()
   console.log('AuthStore - token:', authStore.token, 'isAuthenticated:', authStore.isAuthenticated, 'isAuth:', authStore.isAuth)
-  // Verificar token si hay token pero no está autenticado
-  if (authStore.token && !authStore.isAuthenticated) {
-    console.log('Verificando token...')
-    await authStore.verifyToken()
-    console.log('Después de verifyToken - isAuthenticated:', authStore.isAuthenticated, 'isAuth:', authStore.isAuth)
-  }
 
   if (to.path === '/') {
     console.log('Ruta / - isAuth:', authStore.isAuth)
@@ -73,6 +67,12 @@ router.beforeEach(async (to, from, next) => {
     }
   } else if (to.matched.some(record => record.meta.requiresAuth)) {
     console.log('Ruta protegida:', to.path, '- isAuth:', authStore.isAuth)
+    // Verificar token solo para rutas protegidas
+    if (authStore.token && !authStore.isAuthenticated) {
+      console.log('Verificando token para ruta protegida...')
+      await authStore.verifyToken()
+      console.log('Después de verifyToken para ruta protegida - isAuthenticated:', authStore.isAuthenticated, 'isAuth:', authStore.isAuth)
+    }
     if (!authStore.isAuth) {
       console.log('No autenticado, guardando intendedRoute:', to.fullPath, 'y redirigiendo a /login')
       authStore.setIntendedRoute(to.fullPath)

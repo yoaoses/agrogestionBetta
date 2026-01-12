@@ -1,5 +1,5 @@
 <template>
-  <div class="min-vh-100 w-100 d-flex flex-column" :style="{ backgroundColor: 'var(--bg-primary)' }">
+  <div class="w-100 d-flex flex-column" :style="{ backgroundColor: 'var(--bg-primary)', minHeight: 'var(--content-height)' }">
     <!-- Navbar o header aquí si tienes -->
 
     <main class="flex-grow-1 d-flex align-items-center justify-content-center p-3">
