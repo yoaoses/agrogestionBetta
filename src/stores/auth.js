@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia'
-import { login, setAuthToken, getCompanies } from '../api/api.js'
+import { login, setAuthToken } from '../api/api.js'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: localStorage.getItem('token') || null,
-    user: null,
+    user: JSON.parse(localStorage.getItem('user')) || null,
+    userEmail: localStorage.getItem('userEmail') || null,
+    userName: localStorage.getItem('userName') || null,
     isAuthenticated: false,
     isLoading: false,
     showLoginModal: false,
@@ -21,13 +23,20 @@ export const useAuthStore = defineStore('auth', {
         const response = await login(credentials)
         console.log('Respuesta de API login:', response)
         console.log('response.data:', JSON.stringify(response.data, null, 2))
-        const { token } = response.data.data
+        const { token, user } = response.data.data
         console.log('Token extraído:', token)
+        console.log('Usuario extraído:', user)
         this.token = token
+        this.user = user
+        this.userEmail = user.email || user.userEmail
+        this.userName = user.name || user.userName
         this.isAuthenticated = true
         localStorage.setItem('token', token)
+        localStorage.setItem('user', JSON.stringify(user))
+        localStorage.setItem('userEmail', this.userEmail)
+        localStorage.setItem('userName', this.userName)
         setAuthToken(token)
-        console.log('Login exitoso, estado actualizado - token:', this.token, 'isAuthenticated:', this.isAuthenticated, 'isAuth:', this.isAuth)
+        console.log('Login exitoso, estado actualizado - token:', this.token, 'userName:', this.userName, 'isAuthenticated:', this.isAuthenticated, 'isAuth:', this.isAuth)
         return { success: true }
       } catch (error) {
         console.error('Error en login:', error)
@@ -40,32 +49,23 @@ export const useAuthStore = defineStore('auth', {
     logout() {
       this.token = null
       this.user = null
+      this.userEmail = null
+      this.userName = null
       this.isAuthenticated = false
       localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      localStorage.removeItem('userEmail')
+      localStorage.removeItem('userName')
       setAuthToken(null)
     },
     async verifyToken() {
-      console.log('verifyToken iniciado - token:', this.token)
       if (!this.token) {
-        console.log('No hay token, isAuthenticated = false')
         this.isAuthenticated = false
         return false
       }
-      this.isLoading = true
-      try {
-        setAuthToken(this.token)
-        console.log('Llamando a getCompanies para verificar token en verifyToken')
-        await getCompanies()
-        console.log('getCompanies exitoso en verifyToken, isAuthenticated = true')
-        this.isAuthenticated = true
-        return true
-      } catch (error) {
-        console.error('Error en verifyToken:', error)
-        this.logout()
-        return false
-      } finally {
-        this.isLoading = false
-      }
+      setAuthToken(this.token)
+      this.isAuthenticated = true
+      return true
     },
     showLoginModal() {
       this.showLoginModal = true

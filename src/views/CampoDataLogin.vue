@@ -129,26 +129,15 @@ export default {
       }
     },
     async handleLogin() {
-      console.log('Iniciando login con email:', this.email)
       const result = await this.authStore.login({ email: this.email, password: this.password })
-      console.log('Resultado del login:', result)
-      console.log('Estado del authStore después del login - isAuth:', this.authStore.isAuth, 'token:', this.authStore.token, 'isAuthenticated:', this.authStore.isAuthenticated)
       if (result.success) {
-        console.log('Login exitoso, redirigiendo')
-        console.log('intendedRoute antes de redirigir:', this.authStore.intendedRoute)
         const route = '/'
-        console.log('Ruta a redirigir:', route)
         this.authStore.clearIntendedRoute()
-        console.log('intendedRoute después de clear:', this.authStore.intendedRoute)
-        console.log('Intentando router.push a:', route)
         try {
           await this.$router.push(route)
-          console.log('Router.push ejecutado exitosamente')
         } catch (error) {
-          console.error('Error en router.push:', error)
         }
       } else {
-        console.log('Login fallido:', result.error)
         this.toastMessage = result.error || "Credenciales incorrectas"
         this.showToast = true
       }

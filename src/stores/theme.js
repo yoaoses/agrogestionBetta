@@ -24,7 +24,7 @@ export const useThemeStore = defineStore('theme', {
       }
     },
     setTheme(theme, isManual = false) {
-      console.log('Setting theme to:', theme)
+// console.log('Setting theme to:', theme)
       this.theme = theme
       if (isManual) {
         localStorage.setItem('theme', theme)
@@ -41,8 +41,8 @@ export const useThemeStore = defineStore('theme', {
       } else {
         document.documentElement.classList.remove('dark')
       }
-      console.log('data-bs-theme set to:', document.body.getAttribute('data-bs-theme'))
-      console.log('html classList:', document.documentElement.classList.toString())
+// console.log('data-bs-theme set to:', document.body.getAttribute('data-bs-theme'))
+// console.log('html classList:', document.documentElement.classList.toString())
     },
     toggleTheme() {
       const newTheme = this.theme === 'light' ? 'dark' : 'light'

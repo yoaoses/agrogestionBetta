@@ -1,7 +1,9 @@
 import { reactive } from 'vue'
 import api from '../api/api.js'
+import { useFarmStore } from '../stores/farm.js'
 
 export function useFarmDetails() {
+  const store = useFarmStore()
   const cache = reactive({})
 
   const getCached = (key) => cache[key]
@@ -19,22 +21,18 @@ export function useFarmDetails() {
         api.getFarmMilkProductionV2(farmId, dateRange),
         api.getFarmBirthsV2(farmId, dateRange)
       ])
+      console.log('Response from getFarmMilkProductionV2:', milkResponse);
+      console.log('Response from getFarmBirthsV2:', birthsResponse);
 
       // Procesar datos
       const milkData = { labels: [], values: [] } // placeholder
       const birthsData = { labels: [], values: [] }
 
-      const farmsData = localStorage.getItem('agrogestion_farms')
-      let farmInfo = {
+      let farmInfo = store.getFarmById(farmId) || {
         id: farmId,
         name: `Finca ${farmId}`,
-        location: 'Ubicación no disponible'
-      }
-
-      if (farmsData) {
-        const farms = JSON.parse(farmsData)
-        const farm = farms.find(f => f.id == farmId)
-        if (farm) farmInfo = farm
+        location: 'Ubicación no disponible',
+        description: ''
       }
 
       const result = {

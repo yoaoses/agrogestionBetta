@@ -1,62 +1,42 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useAuthStore } from '../stores/auth.js'
+import { useFarmStore } from '../stores/farm.js'
 
 export function useDashboard() {
+  const authStore = useAuthStore()
+  const farmStore = useFarmStore()
   const currentSection = ref('company')
-  const companies = ref([])
-  const farms = ref([])
   const selectedCompanyId = ref(null)
   const selectedFarmId = ref(null)
 
+  const companies = computed(() => farmStore.getUnifiedCompanies)
+  const farms = computed(() => {
+    if (selectedCompanyId.value) {
+      return farmStore.getUnifiedFarmsByCompany(selectedCompanyId.value)
+    }
+    return []
+  })
+
   const loadInitialData = async () => {
-    companies.value = getMockCompanies()
+    if (!authStore.isAuth) {
+      console.warn('Usuario no autenticado, no se pueden cargar datos')
+      return
+    }
+    await farmStore.fetchCompanies()
     if (companies.value.length > 0) {
       selectedCompanyId.value = companies.value[0].id
-      farms.value = getMockFarms()
+      await farmStore.fetchFarms(selectedCompanyId.value)
       localStorage.setItem('agrogestion_farms', JSON.stringify(farms.value))
     }
   }
 
-  const getMockCompanies = () => [
-    { id: 1, name: 'Los Molinos' },
-    { id: 2, name: 'AgroSur' },
-    { id: 3, name: 'CampoVerde' },
-    { id: 4, name: 'San Jose' }
-  ]
-
-  const getMockFarms = () => [
-    { id: 1, name: 'Finca Los Alamos', location: 'Región Metropolitana', companyId: 1 },
-    { id: 2, name: 'Finca El Valle', location: 'Región del Maule', companyId: 1 },
-    { id: 3, name: 'Finca Patagonia', location: 'Región de Los Lagos', companyId: 2 },
-    { id: 4, name: 'Finca Norte', location: 'Región de Coquimbo', companyId: 3 },
-    { id: 5, name: 'Finca Central', location: 'Región Metropolitana', companyId: 4 },
-    { id: 6, name: 'Finca Sur', location: 'Región del Biobío', companyId: 4 }
-  ]
-
-  const getMockStatuses = () => ({
-    'Los Molinos': { color: 'green', outline: true, icon: 'fas fa-chart-line', text: 'En desarrollo' },
-    'San Jose': { color: 'blue', outline: false, icon: 'fas fa-building', text: 'Activo' },
-    default: { color: 'yellow', outline: false, icon: 'fas fa-clock', text: 'Pendiente' }
-  })
 
   const getCompanyData = () => {
     return companies.value.map(company => {
-      const statuses = getMockStatuses()
-      const status = statuses[company.name] || statuses.default
-      let mockAddress, mockRut
-      if (company.name === 'Los Molinos') {
-        mockAddress = 'Calle Principal 123, Santiago'
-        mockRut = '12.345.678-9'
-      } else if (company.name === 'San Jose') {
-        mockAddress = 'Avenida Central 456, Valparaíso'
-        mockRut = '23.456.789-0'
-      } else {
-        mockAddress = 'Dirección Mock ' + company.id
-        mockRut = '98.765.432-1'
-      }
+      // Status basado en datos reales: si la compañía tiene nombre, activo
+      const status = { color: 'green', outline: false, icon: 'fas fa-building', text: 'Activo' } // Status por defecto
       return {
         ...company,
-        mockAddress,
-        mockRut,
         status
       }
     })
@@ -64,10 +44,9 @@ export function useDashboard() {
 
   const getFarmData = () => {
     const farmsByCompany = {}
-    farms.value.forEach(farm => {
-      const companyId = farm.companyId || 1
-      if (!farmsByCompany[companyId]) farmsByCompany[companyId] = []
-      farmsByCompany[companyId].push(farm)
+    // Get all farms from store
+    Object.keys(farmStore.farms).forEach(companyId => {
+      farmsByCompany[companyId] = farmStore.getUnifiedFarmsByCompany(companyId)
     })
     return Object.keys(farmsByCompany).map(companyId => {
       const company = companies.value.find(c => c.id == companyId)
@@ -85,8 +64,12 @@ export function useDashboard() {
 
   const selectCompany = async (companyId) => {
     if (selectedCompanyId.value !== companyId) {
+      if (!authStore.isAuth) {
+        console.warn('Usuario no autenticado, no se pueden cargar farms')
+        return
+      }
       selectedCompanyId.value = companyId
-      // farms.value = await dataService.getFarms(companyId)
+      await farmStore.fetchFarms(companyId)
       localStorage.setItem('agrogestion_farms', JSON.stringify(farms.value))
       selectedFarmId.value = farms.value.length > 0 ? farms.value[0].id : null
     }

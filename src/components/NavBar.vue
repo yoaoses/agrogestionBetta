@@ -1,182 +1,161 @@
 <template>
-  <nav ref="navRef" :class="['navbar', 'navbar-expand-lg', 'bg-body', 'text-body', themeStore.theme]">
-    <div class="container-fluid">
+  <!-- Toggle button for mobile drawer -->
+  <button @click="toggleDrawer" class="drawer-toggle d-lg-none" type="button" aria-label="Toggle sidebar">
+    <i class="bi bi-list"></i>
+  </button>
+
+  <!-- Sidebar -->
+  <aside ref="sidebarRef" :class="['sidebar', 'bg-body', 'text-body', themeStore.theme, { 'drawer-open': isDrawerOpen }]">
+    <div class="sidebar-content d-flex flex-column h-100">
       <!-- Logo -->
-      <router-link to="/" class="navbar-brand d-flex align-items-center">
-        <svg class="me-2" width="32" height="32" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M10 2L3 7v11a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V7l-7-5z" clip-rule="evenodd"></path>
-        </svg>
-        <span class="fs-4 fw-semibold">CampoData</span>
-      </router-link>
+      <div class="sidebar-logo d-flex align-items-center">
+        <div>
+          <h6 class="mb-0 fs-4"><i :class="'bi ' + dynamicTitle.icon"></i> {{ dynamicTitle.title }}</h6>
+          <p v-if="dynamicTitle.text" class="mb-0 small text-muted">{{ dynamicTitle.text }}</p>
+        </div>
+      </div>
 
-      <!-- Mobile menu button -->
-      <button @click="toggleMobileMenu" class="navbar-toggler" type="button" aria-controls="navbarNav" :aria-expanded="showMobileMenu" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+      <!-- Ubicación -->
+      <div class="sidebar-location">
+        <p v-if="navigationStore.selectedCompany" class="mb-1">{{ navigationStore.selectedCompany.name }}</p>
+        <p v-if="navigationStore.selectedFarm" class="mb-1">{{ navigationStore.selectedFarm.name }}</p>
+        <p v-else-if="!navigationStore.selectedCompany" class="mb-1 text-muted">Selecciona una empresa</p>
+      </div>
 
-      <!-- Menu items -->
-      <div :class="['navbar-collapse', showMobileMenu ? 'show' : 'collapse']" id="navbarNav">
-        <ul class="navbar-nav me-auto">
+      <hr>
+
+      <!-- Navigation -->
+      <nav class="sidebar-nav flex-grow-1">
+        <ul class="nav flex-column">
           <!-- Inicio -->
           <li class="nav-item">
-            <router-link to="/" class="nav-link" @click="showMobileMenu = false">Inicio</router-link>
+            <router-link to="/home" class="nav-link" :class="{ active: $route.path === '/home' }" @click="closeDrawerOnMobile">Inicio</router-link>
           </li>
 
-          <!-- Companies Dropdown -->
-           <li class="nav-item dropdown">
-             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false" @click="showMobileMenu = false">
-               Companies
-             </a>
-             <ul class="dropdown-menu">
-               <li><a class="dropdown-item disabled" href="#" style="cursor: default;">Selecciona una empresa</a></li>
-               <li v-for="company in companies" :key="company.id">
-                 <a class="dropdown-item" href="#" @click="selectCompany(company)" style="cursor: pointer;">{{ company.name }}</a>
-               </li>
-             </ul>
-           </li>
+          <!-- Dashboard -->
+          <li class="nav-item">
+            <router-link to="/entities" class="nav-link" :class="{ active: $route.path.startsWith('/entities') }" @click="closeDrawerOnMobile">Entidades</router-link>
+          </li>
 
-          <!-- Farms Dropdown -->
-           <li class="nav-item dropdown">
-             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false" @click="showMobileMenu = false">
-               Farms
-             </a>
-             <ul class="dropdown-menu">
-               <li><a class="dropdown-item disabled" href="#" style="cursor: default;">Selecciona una finca</a></li>
-               <li v-for="farm in farms" :key="farm.id">
-                 <a class="dropdown-item" href="#" @click="selectFarm(farm)" style="cursor: pointer;">{{ farm.name }}</a>
-               </li>
-             </ul>
-           </li>
+          <!-- Companies and Farms -->
+          <li class="nav-item">
+            <ul class="list-unstyled">
+              <li v-for="company in navigationStore.companies" :key="company.id">
+                <a @click="selectCompany(company)" class="nav-link company-link" :class="{ active: $route.params.companyId == company.id }">{{ company.name }}</a>
+                <ul class="list-unstyled ms-3">
+                  <li v-for="farm in (groupedFarms[company.name] || [])" :key="farm.id">
+                    <a @click="selectFarm(farm)" class="nav-link farm-link" :class="{ active: $route.params.farmId == farm.id }">{{ farm.name }}</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
 
           <!-- Conf IA -->
           <li class="nav-item">
-            <router-link to="/config" class="nav-link" @click="showMobileMenu = false">Conf IA</router-link>
-          </li>
-
-          <!-- Pruebas Tema -->
-          <li class="nav-item">
-            <router-link to="/theme-test" class="nav-link" @click="showMobileMenu = false">Pruebas Tema</router-link>
+            <router-link to="/config" class="nav-link" :class="{ active: $route.path === '/config' }" @click="closeDrawerOnMobile">Conf IA</router-link>
           </li>
         </ul>
+      </nav>
 
-        <!-- Theme Switch and User Dropdown -->
-        <div class="d-flex ms-auto me-4">
-          <div class="btn-group" role="group" aria-label="Theme selector">
-            <input type="radio" class="btn-check" name="theme" id="light-theme" autocomplete="off" :checked="!isDark" @change="themeStore.setTheme('light', true)">
-            <label class="btn btn-outline" for="light-theme">
-              <i class="bi bi-brightness-high-fill"></i>
-            </label>
-            <input type="radio" class="btn-check" name="theme" id="dark-theme" autocomplete="off" :checked="isDark" @change="themeStore.setTheme('dark', true)">
-            <label class="btn btn-outline" for="dark-theme">
-              <i class="bi bi-moon-stars-fill"></i>
-            </label>
-          </div>
-        </div>
-            <button type="button" :class="['btn', 'btn-outline-primary']" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-person-circle"></i>
-            </button>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><h6 class="dropdown-header">{{ userName }}</h6></li>
-            <li><span class="dropdown-item-text">{{ userEmail }}</span></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><router-link class="dropdown-item" to="/config">Settings</router-link></li>
-            <li><a class="dropdown-item" href="#" @click="handleLogout" style="cursor: pointer;">Sign out</a></li>
-          </ul>
-      </div>
     </div>
-  </nav>
+  </aside>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, watch } from 'vue'
+// console.log('NavBar script: Starting execution')
+import { ref, onMounted, nextTick, watch, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useAuthStore } from '../stores/auth.js'
-import { useThemeStore } from '../stores/theme.js'
-import { useFarmData } from '../composables/useFarmData.js'
-import { storeToRefs } from 'pinia'
+import { useThemeStore } from '../stores/theme'
+import { useNavigationStore } from '../stores/navigation.js'
+
+// console.log('NavBar script: Imports done')
 
 const router = useRouter()
 const route = useRoute()
-const authStore = useAuthStore()
 const themeStore = useThemeStore()
-const { isDark } = storeToRefs(themeStore)
-const { getCompanies, getFarms } = useFarmData()
+const navigationStore = useNavigationStore()
 
-const showMobileMenu = ref(false)
-const navRef = ref(null)
+// console.log('NavBar script: Variables initialized')
 
-const companies = ref([])
-const farms = ref([])
-const selectedCompany = ref(null)
-const selectedFarm = ref(null)
+const isDrawerOpen = ref(false)
 
-const userName = 'Usuario Demo'
-const userEmail = 'demo@campodata.com'
-
-const toggleMobileMenu = () => {
-  showMobileMenu.value = !showMobileMenu.value
+const toggleDrawer = () => {
+  isDrawerOpen.value = !isDrawerOpen.value
 }
 
-const handleLogout = () => {
-  authStore.logout()
-  router.push('/login')
+const closeDrawerOnMobile = () => {
+  if (window.innerWidth < 992) {
+    isDrawerOpen.value = false
+  }
 }
 
 const selectCompany = (company) => {
-  selectedCompany.value = company
-  // Cuando se selecciona una compañía, resetear la finca seleccionada
-  selectedFarm.value = null
+  navigationStore.selectCompany(company)
   // Redirigir al dashboard con la compañía seleccionada
   router.push('/dashboard/' + company.id)
-  showMobileMenu.value = false
-  // Opcional: actualizar farms para la nueva compañía
-  getFarms(company.id).then(farmsData => {
-    farms.value = farmsData
-  })
+  closeDrawerOnMobile()
 }
 
 const selectFarm = (farm) => {
-  selectedFarm.value = farm
+  navigationStore.selectFarm(farm)
   // Redirigir al dashboard con compañía y finca seleccionadas
-  router.push('/dashboard/' + selectedCompany.value.id + '/' + farm.id)
-  showMobileMenu.value = false
+  router.push('/dashboard/' + navigationStore.selectedCompany.id + '/' + farm.id)
+  closeDrawerOnMobile()
 }
 
 onMounted(async () => {
-  console.log('NavBar mounted, window width:', window.innerWidth)
-  console.log('Theme:', themeStore.theme)
-  console.log('NavBar: Llamando getCompanies desde NavBar')
+// console.log('SideBar mounted, window width:', window.innerWidth)
+// console.log('Theme:', themeStore.theme)
+// console.log('SideBar: Llamando loadCompanies desde SideBar')
 
   try {
-    companies.value = await getCompanies()
-    console.log('NavBar: getCompanies exitoso, llamando getFarms')
-    if (companies.value.length > 0) {
-      farms.value = await getFarms(companies.value[0].id)
-      console.log('NavBar: getFarms exitoso')
+    await navigationStore.loadCompanies()
+// console.log('SideBar: loadCompanies exitoso, llamando loadAllFarms')
+    await navigationStore.loadAllFarms()
+// console.log('SideBar: loadAllFarms exitoso')
+    if (navigationStore.companies.length > 0) {
+      await navigationStore.loadFarms(navigationStore.companies[0].id)
+// console.log('SideBar: loadFarms exitoso')
     }
   } catch (err) {
-    console.error('Error fetching data:', err)
+// console.error('Error fetching data:', err)
   }
-
-  // Medir altura real del navbar y actualizar --nav-height
-  await nextTick()
-  document.documentElement.style.setProperty('--nav-height', navRef.value.offsetHeight + 'px')
-  console.log('NavBar height set to:', navRef.value.offsetHeight + 'px')
 })
 
 // Watch for route changes to update selectedCompany and selectedFarm
 watch(route, () => {
-  if (route.params.companyId) {
-    selectedCompany.value = companies.value.find(c => c.id == route.params.companyId) || null
-  } else {
-    selectedCompany.value = null
-  }
-  if (route.params.farmId) {
-    selectedFarm.value = farms.value.find(f => f.id == route.params.farmId) || null
-  } else {
-    selectedFarm.value = null
-  }
+  navigationStore.setSelectedFromRoute(route.params.companyId, route.params.farmId)
 }, { immediate: true })
+
+const dynamicTitle = computed(() => {
+  if (route.name === 'Dashboard') {
+    if (navigationStore.selectedFarm) {
+      return { title: 'Entidades', text: navigationStore.selectedFarm.name, icon: 'bi-speedometer2' }
+    } else if (navigationStore.selectedCompany) {
+      return { title: 'Entidades', text: navigationStore.selectedCompany.name, icon: 'bi-speedometer2' }
+    } else {
+      return { title: 'Inicio', text: '', icon: 'bi-house' }
+    }
+  } else if (route.name === 'Config') {
+    return { title: 'Configuración IA', text: '', icon: 'bi-gear' }
+  } else if (route.name === 'UserOptions') {
+    return { title: 'Configuración Personal', text: '', icon: 'bi-gear' }
+  } else {
+    return { title: 'Inicio', text: '', icon: 'bi-house' }
+  }
+})
+
+const groupedFarms = computed(() => {
+  const groups = {}
+  navigationStore.allFarms.forEach(farm => {
+    if (!groups[farm.companyName]) {
+      groups[farm.companyName] = []
+    }
+    groups[farm.companyName].push(farm)
+  })
+  return groups
+})
 </script>
 
 <style scoped>
@@ -187,6 +166,8 @@ watch(route, () => {
 .nav-link:hover {
   background-color: var(--neutral-light);
   border-radius: 0.25rem;
+  font-size: 1.1em;
+  font-weight: bold;
 }
 
 .nav-link.active {
@@ -197,7 +178,75 @@ watch(route, () => {
   outline: none;
 }
 
+.company-link, .farm-link {
+  cursor: pointer;
+}
+
 .btn:focus {
   outline: none;
+}
+
+/* Tree styles */
+.tree-toggle-btn {
+  border: none;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+}
+
+.tree-toggle-btn:hover {
+  text-decoration: underline;
+}
+
+.tree-link {
+  padding-left: 1rem;
+  font-size: 0.9rem;
+}
+
+.tree-farms {
+  padding-top: 0.25rem;
+}
+
+/* Slide transition */
+.slide-enter-active, .slide-leave-active {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.slide-enter-from, .slide-leave-to {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.slide-enter-to, .slide-leave-from {
+  max-height: 500px;
+  opacity: 1;
+  overflow: hidden;
+}
+
+.tree-company-header {
+  padding: 0.375rem 0.75rem;
+  font-weight: 500;
+  color: var(--bs-body-color);
+}
+
+.tree-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tree-header i {
+  transition: transform 0.3s ease;
+}
+
+.tree-header i.rotated {
+  transform: rotate(90deg);
+}
+
+.company-separator {
+  margin: 0.5rem 0;
+  border: 0;
+  border-top: 1px solid var(--bs-border-color);
 }
 </style>

@@ -9,7 +9,10 @@
 
   /* Altura del navbar y contenido */
   --nav-height: 60px;
-  --content-height: calc(100vh - var(--nav-height));
+  --content-height: 100vh;
+
+  /* Sidebar */
+  --sidebar-width: 250px;
 
   /* Paleta CampoData / Agrotech */
   --agrotech-green: #00C853;
@@ -41,4 +44,94 @@ body {
 .full-screen {
   min-height: var(--content-height);
   width: 100%;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 60px;
+  height: calc(100vh - 60px);
+  width: var(--sidebar-width);
+  z-index: 1000;
+  transition: transform 0.3s ease;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-content {
+  padding: 1rem;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.sidebar-logo {
+  margin-bottom: 2rem;
+}
+
+.sidebar-nav {
+  margin-bottom: 2rem;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+}
+
+/* Drawer Toggle Button */
+.drawer-toggle {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1050;
+  background: var(--bg-primary);
+  border: 1px solid var(--neutral-medium);
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  display: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.drawer-toggle:hover {
+  background: var(--bg-secondary);
+}
+
+/* Responsive: Mobile Drawer */
+@media (max-width: 991.98px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.drawer-open {
+    transform: translateX(0);
+  }
+
+  .drawer-toggle {
+    display: block;
+  }
+}
+
+/* Overlay for mobile drawer */
+@media (max-width: 991.98px) {
+  .sidebar::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .sidebar.drawer-open::before {
+    opacity: 1;
+  }
+}
+
+/* Force Farms dropdown to open to the right outside the sidebar */
+.sidebar .dropdown-menu.dropdown-menu-end {
+  transform: translateX(100%);
+  left: 0;
 }

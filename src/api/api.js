@@ -1,6 +1,5 @@
 // API module
 import axios from 'axios';
-console.log('API module loading...');
   // Base URLs
   const BASE_URL_LOCAL_V1 = 'http://localhost:3000/v1';
   const BASE_URL_ONLINE_V1 = 'http://agrogestionbackend-development.up.railway.app/v1';
@@ -141,7 +140,10 @@ const deleteGroup = (groupId) => {
  * @returns {Promise} Axios response
  */
 const login = (credentials) => {
-  return apiV1.post('/users/login', credentials);
+  return apiV1.post('/users/login', credentials).then(response => {
+    console.log('API login response:', response);
+    return response;
+  });
 };
 
 // ============================================
@@ -496,5 +498,3 @@ export {
   importStructure,
   getImportLogs,
 };
-
-console.log('API module loaded successfully');
