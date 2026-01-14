@@ -1,6 +1,5 @@
 <template>
   <div class="selection-view">
-    <h2>Selecciona una Compañía o Granja</h2>
     <div class="companies-container">
       <CompanyCard
         v-for="company in companiesWithFarms"
@@ -14,40 +13,33 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useFarmStore } from '../stores/farm.js'
+import { useEntitiesData } from '../composables/useEntitiesData.js'
 import CompanyCard from '../components/CompanyCard.vue'
 
 const router = useRouter()
-const farmStore = useFarmStore()
-const companies = ref([])
-const farms = ref([])
+const { getEntities } = useEntitiesData()
+const entities = ref([])
 
 onMounted(async () => {
   try {
-    companies.value = await farmStore.fetchCompanies()
-// console.log('Companies:', companies.value)
-    for (const company of companies.value) {
-      const farmsForCompany = await farmStore.fetchFarms(company.id)
-      farms.value.push(...(farmsForCompany || []))
-    }
-// console.log('Farms:', farms.value)
+    entities.value = await getEntities()
   } catch (error) {
     console.error('Error loading data:', error)
   }
+  await nextTick()
+  console.log('.selection-view offsetHeight:', document.querySelector('.selection-view').offsetHeight)
+  console.log('.companies-container offsetHeight:', document.querySelector('.companies-container').offsetHeight)
 })
 
 const companiesWithFarms = computed(() => {
-  return companies.value && Array.isArray(companies.value) ? companies.value.map(company => {
-    const farmsForCompany = farms.value.filter(f => f.companyId == company.id)
-    return {
-      id: company.id,
-      name: company.name,
-      location: company.address,
-      farms: farmsForCompany.map(f => ({ id: f.id, name: f.name, location: f.location }))
-    }
-  }) : []
+  return entities.value && Array.isArray(entities.value) ? entities.value.map(company => ({
+    id: company.id,
+    name: company.name,
+    location: company.location,
+    farms: company.farms
+  })) : []
 })
 
 const goToCompanyDashboard = (companyId) => {
@@ -61,12 +53,16 @@ const goToFarmDashboard = ({ companyId, farmId }) => {
 
 <style scoped>
 .selection-view {
-  padding: 20px;
+  padding: 10px 0px;
+  height: 100%;
+  overflow: hidden;
 }
 
 .companies-container {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  overflow-y: auto;
+  height: 100%;
 }
 </style>

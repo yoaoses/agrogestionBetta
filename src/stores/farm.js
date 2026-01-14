@@ -41,8 +41,7 @@ export const useFarmStore = defineStore('farm', {
       this.loadingCompaniesPromise = (async () => {
         try {
           const response = await apiGetCompanies()
-          console.log('Response from getCompanies:', response)
-          const standardized = response.data.data.map(company => ({
+          const standardized = response.data.map(company => ({
             id: company.id,
             name: company.name,
             address: company.address || 'Dirección no especificada',
@@ -73,11 +72,7 @@ export const useFarmStore = defineStore('farm', {
       this.isLoadingFarms[companyId] = true
       try {
         const response = await apiGetFarms(companyId)
-        console.log('Response from getFarms:', response)
-        if (!response.data || !Array.isArray(response.data.data)) {
-          return []
-        }
-        const standardized = response.data.data.map(farm => ({
+        const standardized = response.data.map(farm => ({
           id: farm.id,
           name: farm.name,
           location: farm.location || 'Ubicación no especificada',

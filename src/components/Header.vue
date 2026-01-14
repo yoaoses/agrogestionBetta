@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-body border-bottom fixed-top">
+  <nav ref="navbarRef" class="navbar navbar-expand-lg navbar-light bg-body border-bottom fixed-top">
     <div class="container-fluid">
       <!-- Logo -->
       <router-link to="/" class="navbar-brand d-flex align-items-center">
@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useNavigationStore } from '../stores/navigation.js'
 import { useAuthStore } from '../stores/auth.js'
@@ -69,6 +69,8 @@ const themeStore = useThemeStore()
 const { isDark } = storeToRefs(themeStore)
 
 const { userName: storedUserName } = storeToRefs(authStore)
+
+const navbarRef = ref(null)
 
 const userName = computed(() => storedUserName.value || 'Usuario')
 
@@ -100,6 +102,11 @@ const breadcrumbs = computed(() => {
   }
 
   return crumbs
+})
+
+onMounted(async () => {
+   await nextTick()
+   console.log('Header.vue navbar offsetHeight:', navbarRef.value.offsetHeight)
 })
 </script>
 

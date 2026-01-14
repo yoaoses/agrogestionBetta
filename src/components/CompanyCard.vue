@@ -36,7 +36,6 @@ const { company } = defineProps({
 defineEmits(['go-to-company-dashboard', 'go-to-farm-dashboard'])
 
 const checkIssues = (obj) => {
-// console.log('verifying problems for', obj.name)
   // Para compañía, si tiene farms, green, sino warning
   if (obj.farms) {
     return obj.farms.length > 0 ? 'green' : 'warning'
@@ -66,7 +65,6 @@ const statusText = computed(() => {
 })
 
 const getStatusIcon = (farm) => {
-// console.log('getStatusIcon called with farm:', farm)
   const farmStatus = checkIssues(farm)
   if (farmStatus === 'green') return 'bi bi-check-circle'
   if (farmStatus === 'warning') return 'bi bi-exclamation-triangle'
@@ -129,7 +127,7 @@ const getStatusText = (farm) => {
 .farm-mini-card {
   min-width: 200px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 8px;
   background-color: #fff;
   cursor: pointer;

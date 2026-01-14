@@ -23,7 +23,7 @@ export const useAuthStore = defineStore('auth', {
         const response = await login(credentials)
         console.log('Respuesta de API login:', response)
         console.log('response.data:', JSON.stringify(response.data, null, 2))
-        const { token, user } = response.data.data
+        const { token, user } = response.data
         console.log('Token extraído:', token)
         console.log('Usuario extraído:', user)
         this.token = token

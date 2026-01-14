@@ -7,55 +7,63 @@
   <!-- Sidebar -->
   <aside ref="sidebarRef" :class="['sidebar', 'bg-body', 'text-body', themeStore.theme, { 'drawer-open': isDrawerOpen }]">
     <div class="sidebar-content d-flex flex-column h-100">
-      <!-- Logo -->
+      <!-- Logo and Location -->
       <div class="sidebar-logo d-flex align-items-center">
-        <div>
+        <div class="w-100">
           <h6 class="mb-0 fs-4"><i :class="'bi ' + dynamicTitle.icon"></i> {{ dynamicTitle.title }}</h6>
           <p v-if="dynamicTitle.text" class="mb-0 small text-muted">{{ dynamicTitle.text }}</p>
+          <div class="location-info">
+            <p v-if="navigationStore.selectedCompany" class="mb-0 small">{{ navigationStore.selectedCompany.name }}</p>
+            <p v-if="navigationStore.selectedFarm" class="mb-0 small">{{ navigationStore.selectedFarm.name }}</p>
+            <p v-else-if="!navigationStore.selectedCompany" class="mb-0 small text-muted">Selecciona una empresa</p>
+          </div>
         </div>
       </div>
 
-      <!-- Ubicación -->
-      <div class="sidebar-location">
-        <p v-if="navigationStore.selectedCompany" class="mb-1">{{ navigationStore.selectedCompany.name }}</p>
-        <p v-if="navigationStore.selectedFarm" class="mb-1">{{ navigationStore.selectedFarm.name }}</p>
-        <p v-else-if="!navigationStore.selectedCompany" class="mb-1 text-muted">Selecciona una empresa</p>
-      </div>
-
-      <hr>
-
       <!-- Navigation -->
       <nav class="sidebar-nav flex-grow-1">
-        <ul class="nav flex-column">
-          <!-- Inicio -->
-          <li class="nav-item">
-            <router-link to="/home" class="nav-link" :class="{ active: $route.path === '/home' }" @click="closeDrawerOnMobile">Inicio</router-link>
-          </li>
+        <div class="sidebar-nav-container">
+          <ul class="nav flex-column">
+            <!-- Inicio -->
+            <li class="nav-item">
+              <router-link to="/home" class="nav-link" :class="{ active: $route.path === '/home' }" @click="closeDrawerOnMobile">
+                <i class="bi bi-house"></i> Inicio
+              </router-link>
+            </li>
 
-          <!-- Dashboard -->
-          <li class="nav-item">
-            <router-link to="/entities" class="nav-link" :class="{ active: $route.path.startsWith('/entities') }" @click="closeDrawerOnMobile">Entidades</router-link>
-          </li>
+            <!-- Dashboard -->
+            <li class="nav-item">
+              <router-link to="/entities" class="nav-link entities-link" :class="{ active: $route.path.startsWith('/entities') }" @click="closeDrawerOnMobile">
+                <i class="bi bi-diagram-3"></i> Entidades
+              </router-link>
+            </li>
 
-          <!-- Companies and Farms -->
-          <li class="nav-item">
-            <ul class="list-unstyled">
-              <li v-for="company in navigationStore.companies" :key="company.id">
-                <a @click="selectCompany(company)" class="nav-link company-link" :class="{ active: $route.params.companyId == company.id }">{{ company.name }}</a>
-                <ul class="list-unstyled ms-3">
-                  <li v-for="farm in (groupedFarms[company.name] || [])" :key="farm.id">
-                    <a @click="selectFarm(farm)" class="nav-link farm-link" :class="{ active: $route.params.farmId == farm.id }">{{ farm.name }}</a>
+            <!-- Companies and Farms -->
+            <li class="nav-item">
+              <div v-for="company in navigationStore.companies" :key="company.id">
+                <div class="tree-header">
+                  <a @click="selectCompany(company)" class="nav-link company-link flex-grow-1" :class="{ active: $route.params.companyId == company.id }">
+                    <i class="bi bi-building"></i> {{ company.name }}
+                  </a>
+                </div>
+                <ul v-if="groupedFarms[company.name] && groupedFarms[company.name].length > 0" class="list-unstyled ms-3 tree-farms">
+                  <li v-for="farm in groupedFarms[company.name]" :key="farm.id">
+                    <a @click="selectFarm(farm)" class="nav-link farm-link" :class="{ active: $route.params.farmId == farm.id }">
+                      <i class="bi bi-tree"></i> {{ farm.name }}
+                    </a>
                   </li>
                 </ul>
-              </li>
-            </ul>
-          </li>
+              </div>
+            </li>
 
-          <!-- Conf IA -->
-          <li class="nav-item">
-            <router-link to="/config" class="nav-link" :class="{ active: $route.path === '/config' }" @click="closeDrawerOnMobile">Conf IA</router-link>
-          </li>
-        </ul>
+            <!-- Conf IA -->
+            <li class="nav-item">
+              <router-link to="/config" class="nav-link" :class="{ active: $route.path === '/config' }" @click="closeDrawerOnMobile">
+                <i class="bi bi-gear"></i> Conf IA
+              </router-link>
+            </li>
+          </ul>
+        </div>
       </nav>
 
     </div>
@@ -78,6 +86,7 @@ const navigationStore = useNavigationStore()
 
 // console.log('NavBar script: Variables initialized')
 
+const sidebarRef = ref(null)
 const isDrawerOpen = ref(false)
 
 const toggleDrawer = () => {
@@ -121,6 +130,9 @@ onMounted(async () => {
   } catch (err) {
 // console.error('Error fetching data:', err)
   }
+
+  await nextTick()
+  console.log('NavBar.vue sidebar offsetHeight:', sidebarRef.value.offsetHeight)
 })
 
 // Watch for route changes to update selectedCompany and selectedFarm
@@ -159,19 +171,44 @@ const groupedFarms = computed(() => {
 </script>
 
 <style scoped>
+.sidebar-logo {
+  position: sticky;
+  top: 0;
+  background-color: var(--bs-body-bg);
+  border-bottom: 1px solid var(--bs-border-color);
+  z-index: 10;
+  padding-bottom: 0;
+}
+
+hr {
+  margin: 0;
+}
+
+.location-info {
+  margin-top: 0.25rem;
+}
+
+.sidebar-nav-container {
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
 .nav-link {
-  padding: 0.375rem 0.75rem;
+  padding: 0.25rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .nav-link:hover {
   background-color: var(--neutral-light);
   border-radius: 0.25rem;
-  font-size: 1.1em;
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .nav-link.active {
   border-bottom: 2px solid var(--neutral-dark);
+  font-weight: 600;
 }
 
 .nav-link:focus {
@@ -180,52 +217,21 @@ const groupedFarms = computed(() => {
 
 .company-link, .farm-link {
   cursor: pointer;
+  width: 100%;
 }
 
-.btn:focus {
-  outline: none;
+.farm-link {
+  padding-left: 2rem;
+  font-size: 0.95rem;
 }
 
 /* Tree styles */
-.tree-toggle-btn {
-  border: none;
-  background: none;
-  color: inherit;
-  font-size: inherit;
-}
-
-.tree-toggle-btn:hover {
-  text-decoration: underline;
-}
-
-.tree-link {
-  padding-left: 1rem;
-  font-size: 0.9rem;
-}
-
 .tree-farms {
   padding-top: 0.25rem;
 }
 
-/* Slide transition */
-.slide-enter-active, .slide-leave-active {
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-}
-
-.slide-enter-from, .slide-leave-to {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-}
-
-.slide-enter-to, .slide-leave-from {
-  max-height: 500px;
-  opacity: 1;
-  overflow: hidden;
-}
-
 .tree-company-header {
-  padding: 0.375rem 0.75rem;
+  padding: 0.5rem 1rem;
   font-weight: 500;
   color: var(--bs-body-color);
 }
@@ -236,12 +242,12 @@ const groupedFarms = computed(() => {
   gap: 0.5rem;
 }
 
-.tree-header i {
-  transition: transform 0.3s ease;
+.entities-link.active {
+  border-bottom: none;
 }
 
-.tree-header i.rotated {
-  transform: rotate(90deg);
+.nav-item:first-child .nav-link {
+  padding-top: 0;
 }
 
 .company-separator {
