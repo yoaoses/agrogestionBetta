@@ -29,7 +29,7 @@ export function useEntitiesData() {
 
     try {
       const companiesResponse = await getCompanies()
-      const companies = companiesResponse.data.map(c => ({
+      const companies = companiesResponse.data.data.map(c => ({
         id: c.id,
         name: c.name,
         location: c.address || 'Dirección no especificada',
@@ -38,7 +38,7 @@ export function useEntitiesData() {
 
       for (const company of companies) {
         const farmsResponse = await getFarms(company.id)
-        company.farms = farmsResponse.data.map(f => ({
+        company.farms = farmsResponse.data.data.map(f => ({
           id: f.id,
           name: f.name,
           location: f.location || 'Ubicación no especificada'

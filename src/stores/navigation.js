@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useFarmData } from '../composables/useFarmData.js'
+import router from '../router/index.js'
 
 export const useNavigationStore = defineStore('navigation', () => {
   const companies = ref([])
@@ -8,6 +9,42 @@ export const useNavigationStore = defineStore('navigation', () => {
   const allFarms = ref([])
   const selectedCompany = ref(null)
   const selectedFarm = ref(null)
+
+  // Persistir en localStorage
+  const loadFromStorage = () => {
+    const storedCompany = localStorage.getItem('selectedCompany')
+    const storedFarm = localStorage.getItem('selectedFarm')
+    if (storedCompany) {
+      selectedCompany.value = JSON.parse(storedCompany)
+    }
+    if (storedFarm) {
+      selectedFarm.value = JSON.parse(storedFarm)
+    }
+  }
+
+  const saveToStorage = () => {
+    if (selectedCompany.value) {
+      localStorage.setItem('selectedCompany', JSON.stringify(selectedCompany.value))
+    } else {
+      localStorage.removeItem('selectedCompany')
+    }
+    if (selectedFarm.value) {
+      localStorage.setItem('selectedFarm', JSON.stringify(selectedFarm.value))
+    } else {
+      localStorage.removeItem('selectedFarm')
+    }
+  }
+
+  const groupedFarms = computed(() => {
+    const groups = {}
+    allFarms.value.forEach(farm => {
+      if (!groups[farm.companyName]) {
+        groups[farm.companyName] = []
+      }
+      groups[farm.companyName].push(farm)
+    })
+    return groups
+  })
 
   const { getCompanies, getFarms } = useFarmData()
 
@@ -31,9 +68,16 @@ export const useNavigationStore = defineStore('navigation', () => {
     try {
       allFarms.value = []
       for (const company of companies.value) {
-        const companyFarms = await getFarms(company.id)
-        allFarms.value.push(...companyFarms.map(farm => ({ ...farm, companyName: company.name })))
+        try {
+          const companyFarms = await getFarms(company.id)
+          const mappedFarms = companyFarms.map(farm => ({ ...farm, companyName: company.name, companyId: company.id }))
+          allFarms.value.push(...mappedFarms)
+        } catch (farmErr) {
+          console.error('Error loading farms for company', company.name, ':', farmErr)
+        }
       }
+      // Remove duplicates by id
+      allFarms.value = [...new Map(allFarms.value.map(f => [f.id, f])).values()]
     } catch (err) {
       console.error('Error loading all farms:', err)
     }
@@ -42,12 +86,17 @@ export const useNavigationStore = defineStore('navigation', () => {
   const selectCompany = (company) => {
     selectedCompany.value = company
     selectedFarm.value = null
+    saveToStorage()
     loadFarms(company.id)
+    router.push(`/dashboard/${company.id}`)
   }
 
-  const selectFarm = (farm) => {
+  const selectFarm = async (farm) => {
     selectedFarm.value = farm
-    selectedCompany.value = companies.value.find(c => c.id == farm.companyId)
+    selectedCompany.value = companies.value.find(c => c.id == farm.companyId) || selectedCompany.value
+    saveToStorage()
+    await loadFarms(selectedCompany.value.id)
+    router.push(`/dashboard/${selectedCompany.value.id}/${farm.id}`)
   }
 
   const setSelectedFromRoute = (companyId, farmId) => {
@@ -61,12 +110,17 @@ export const useNavigationStore = defineStore('navigation', () => {
     } else {
       selectedFarm.value = null
     }
+    saveToStorage()
   }
+
+  // Cargar desde storage al inicializar
+  loadFromStorage()
 
   return {
     companies,
     farms,
     allFarms,
+    groupedFarms,
     selectedCompany,
     selectedFarm,
     loadCompanies,

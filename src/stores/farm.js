@@ -8,7 +8,18 @@ export const useFarmStore = defineStore('farm', {
     cache: {}, // for additional caching if needed
     isLoadingCompanies: false,
     loadingCompaniesPromise: null,
-    isLoadingFarms: {} // keyed by companyId
+    isLoadingFarms: {}, // keyed by companyId
+    loadingFarmsPromises: {}, // keyed by companyId
+    selectedCompanyId: (() => {
+      const val = localStorage.getItem('selectedCompanyId');
+      const parsed = parseInt(val, 10);
+      return isNaN(parsed) ? null : parsed;
+    })(),
+    selectedFarmId: (() => {
+      const val = localStorage.getItem('selectedFarmId');
+      const parsed = parseInt(val, 10);
+      return isNaN(parsed) ? null : parsed;
+    })()
   }),
   getters: {
     getCompanies: (state) => state.companies,
@@ -27,6 +38,16 @@ export const useFarmStore = defineStore('farm', {
         if (farm) return { ...farm, location: farm.location }
       }
       return null
+    },
+    getSelectedCompanyId: (state) => state.selectedCompanyId,
+    getSelectedFarmId: (state) => state.selectedFarmId,
+    getSelectedCompany: (state) => state.companies.find(c => c.id === state.selectedCompanyId) || null,
+    getSelectedFarm: (state) => {
+      for (const companyId in state.farms) {
+        const farm = state.farms[companyId].find(f => f.id === state.selectedFarmId)
+        if (farm) return farm
+      }
+      return null
     }
   },
   actions: {
@@ -41,8 +62,8 @@ export const useFarmStore = defineStore('farm', {
       this.loadingCompaniesPromise = (async () => {
         try {
           const response = await apiGetCompanies()
-          const standardized = response.data.map(company => ({
-            id: company.id,
+          const standardized = response.data.data.map(company => ({
+            id: Number(company.id),
             name: company.name,
             address: company.address || 'Dirección no especificada',
             description: company.description || '',
@@ -67,28 +88,42 @@ export const useFarmStore = defineStore('farm', {
         return this.farms[companyId] // cached
       }
       if (this.isLoadingFarms[companyId]) {
-        return // prevent simultaneous calls
+        return this.loadingFarmsPromises[companyId] // return the ongoing promise
       }
       this.isLoadingFarms[companyId] = true
-      try {
-        const response = await apiGetFarms(companyId)
-        const standardized = response.data.map(farm => ({
-          id: farm.id,
-          name: farm.name,
-          location: farm.location || 'Ubicación no especificada',
-          description: farm.description || '',
-          companyId: farm.companyId,
-          createdAt: farm.created_at,
-          updatedAt: farm.updated_at
-        }))
-        this.farms[companyId] = standardized
-        return standardized
-      } catch (error) {
-        console.error('Error fetching farms:', error)
-        throw error
-      } finally {
-        this.isLoadingFarms[companyId] = false
-      }
+      this.loadingFarmsPromises[companyId] = (async () => {
+        try {
+          const response = await apiGetFarms(companyId)
+          const standardized = response.data.data.map(farm => ({
+            id: Number(farm.id),
+            name: farm.name,
+            location: farm.location || 'Ubicación no especificada',
+            description: farm.description || '',
+            companyId: Number(farm.companyId),
+            createdAt: farm.created_at,
+            updatedAt: farm.updated_at
+          }))
+          this.farms[companyId] = standardized
+          return standardized
+        } catch (error) {
+          console.error('Error fetching farms:', error)
+          throw error
+        } finally {
+          this.isLoadingFarms[companyId] = false
+          delete this.loadingFarmsPromises[companyId]
+        }
+      })()
+      return this.loadingFarmsPromises[companyId]
+    },
+    setSelectedCompanyId(companyId) {
+      this.selectedCompanyId = companyId
+      localStorage.setItem('selectedCompanyId', companyId)
+      this.selectedFarmId = null;
+      localStorage.removeItem('selectedFarmId');
+    },
+    setSelectedFarmId(farmId) {
+      this.selectedFarmId = farmId
+      localStorage.setItem('selectedFarmId', farmId)
     }
   }
 })

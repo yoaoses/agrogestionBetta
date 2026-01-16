@@ -131,8 +131,6 @@ const preferences = ref({
 
 const paletteJson = ref('')
 
-onMounted(() => console.log('UserOptionsView mounted'))
-
 const saveProfile = () => {
   // Lógica para guardar perfil
   alert('Perfil guardado exitosamente!')

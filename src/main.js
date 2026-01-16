@@ -1,33 +1,27 @@
-// console.log('Starting main.js');
 import { createApp } from 'vue'
-// console.log('Imported Vue');
 import 'bootstrap/dist/css/bootstrap.min.css'
-// console.log('Imported Bootstrap CSS');
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
-// console.log('Imported Bootstrap JS');
 import '@popperjs/core'
-// console.log('Imported Popper.js');
 import 'bootstrap-icons/font/bootstrap-icons.css'
-// console.log('Imported Bootstrap Icons CSS');
 import './style.css'
-// console.log('Imported style.css');
 import { createPinia } from 'pinia'
-// console.log('Pinia imported');
 import App from './App.vue'
-// console.log('App imported');
 import './api/api.js'
-// console.log('Attempting to import router');
 import router from './router'
-// console.log('Router imported successfully');
+import HighchartsVue from 'highcharts-vue'
+import Highcharts from 'highcharts/highstock'
 
-// console.log('Creating app');
-const app = createApp(App).use(createPinia()).use(router)
-// console.log('App created');
+const app = createApp(App).use(createPinia()).use(router).use(HighchartsVue, { Highcharts })
 
 // Initialize theme store
 import { useThemeStore } from './stores/theme'
 const themeStore = useThemeStore()
 themeStore.initTheme()
 
+// Set auth store instance for API interceptors
+import { setAuthStoreInstance } from './api/api.js'
+import { useAuthStore } from './stores/auth'
+const authStore = useAuthStore()
+setAuthStoreInstance(authStore)
+
 app.mount('#app')
-// console.log('App mounted');

@@ -4349,6 +4349,50 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+# ============================================
+# Documentación de la estructura de respuesta para el endpoint /v2/statistics/farm/{farmId}/production/milkLiters
+# ============================================
+#
+# Este endpoint devuelve estadísticas de producción de leche para una granja específica.
+#
+# Estructura de respuesta general:
+# - data: Array de objetos MilkProductionData (cada uno representa producción diaria)
+# - receivedAt: Timestamp ISO8601 UTC cuando se recibió la solicitud
+# - respondedAt: Timestamp ISO8601 UTC cuando se envió la respuesta
+#
+# Estructura detallada del array 'data':
+# Cada elemento del array es un objeto con las siguientes propiedades:
+# - date: Fecha en formato YYYY-MM-DD (tipo: string, formato: date)
+#   Ejemplo: "2025-01-15"
+# - milkLiters: Litros de leche producidos en esa fecha (tipo: number, formato: float)
+#   Ejemplo: 145.75
+#
+# Ejemplo completo de estructura de datos de respuesta:
+# {
+#   "data": [
+#     {
+#       "date": "2025-01-01",
+#       "milkLiters": 450.5
+#     },
+#     {
+#       "date": "2025-01-02",
+#       "milkLiters": 475.2
+#     },
+#     {
+#       "date": "2025-01-03",
+#       "milkLiters": 460.8
+#     }
+#   ],
+#   "receivedAt": "2025-01-15T10:00:00.000Z",
+#   "respondedAt": "2025-01-15T10:00:00.123Z"
+# }
+#
+# Notas para futuras referencias:
+# - El array 'data' puede estar vacío si no hay datos para el rango de fechas solicitado.
+# - Las fechas están en orden cronológico ascendente.
+# - Los valores de milkLiters son números decimales que representan litros.
+# - Este endpoint es parte de la versión V2 de estadísticas, optimizada para consultas granulares.
+
   /v2/statistics/farm/{farmId}/production/milkLiters:
     get:
       tags:

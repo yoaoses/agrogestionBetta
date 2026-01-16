@@ -29,8 +29,6 @@ onMounted(async () => {
     console.error('Error loading data:', error)
   }
   await nextTick()
-  console.log('.selection-view offsetHeight:', document.querySelector('.selection-view').offsetHeight)
-  console.log('.companies-container offsetHeight:', document.querySelector('.companies-container').offsetHeight)
 })
 
 const companiesWithFarms = computed(() => {

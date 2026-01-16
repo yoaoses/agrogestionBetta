@@ -55,35 +55,24 @@ const router = createRouter({
 
 // Guard de navegación
 router.beforeEach(async (to, from, next) => {
-// console.log('Guard ejecutándose - to:', to.path, 'from:', from.path)
   const authStore = useAuthStore()
-// console.log('AuthStore - token:', authStore.token, 'isAuthenticated:', authStore.isAuthenticated, 'isAuth:', authStore.isAuth)
 
   if (to.path === '/login') {
-// console.log('Ruta /login - isAuth:', authStore.isAuth)
     if (authStore.isAuth) {
-// console.log('Usuario autenticado en /login, redirigiendo a /entities')
       next('/entities')
     } else {
-// console.log('Usuario no autenticado en /login, permitiendo')
       next()
     }
   } else if (to.matched.some(record => record.meta.requiresAuth)) {
-    // console.log('Ruta protegida:', to.path, '- isAuth:', authStore.isAuth)
     if (to.path === '/user-options') {
-      // console.log('Intentando acceder a /user-options')
-      // console.log('isAuth:', authStore.isAuth, 'token:', authStore.token)
     }
     if (!authStore.isAuth) {
-      // console.log('No autenticado, guardando intendedRoute:', to.fullPath, 'y redirigiendo a /login')
       authStore.setIntendedRoute(to.fullPath)
       next('/login')
     } else {
-      // console.log('Autenticado, permitiendo acceso a:', to.path)
       next()
     }
   } else {
-// console.log('Ruta no protegida:', to.path, '- permitiendo')
     next()
   }
 })
