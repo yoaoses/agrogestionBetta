@@ -20,7 +20,7 @@ watch([() => props.data, () => props.title, () => props.yTitle], () => {
     chartInstance.value.destroy()
   }
   if (chartRef.value) {
-    chartInstance.value = Highcharts.chart(chartRef.value, chartOptions.value)
+    chartInstance.value = Highcharts.stockChart(chartRef.value, chartOptions.value)
   }
 }, { deep: true })
 
@@ -117,10 +117,54 @@ const chartOptions = computed(() => {
         enabled: false
       },
       title: { text: null },
+      rangeSelector: {
+        selected: 1,
+        inputEnabled: false,
+        buttonTheme: {
+          fill: '#f2f2f2',
+          stroke: '#bfc8d1',
+          'stroke-width': 1,
+          r: 7
+        },
+        buttons: [{
+          type: 'month',
+          count: 1,
+          text: '1m'
+        }, {
+          type: 'month',
+          count: 3,
+          text: '3m'
+        }, {
+          type: 'month',
+          count: 6,
+          text: '6m'
+        }, {
+          type: 'ytd',
+          text: 'YTD'
+        }, {
+          type: 'year',
+          count: 1,
+          text: '1y'
+        }, {
+          type: 'all',
+          text: 'All'
+        }]
+      },
+      navigator: {
+        enabled: true,
+        height: 40,
+        maskFill: 'rgba(102,133,194,0.3)',
+        series: {
+          type: 'column',
+          color: '#bfc8d1'
+        },
+        xAxis: {
+          gridLineWidth: 0
+        }
+      },
       legend: { enabled: true },
       plotOptions: {
         column: {
-          stacking: 'normal'
         }
       },
       xAxis: {
@@ -129,7 +173,8 @@ const chartOptions = computed(() => {
       },
       yAxis: {
         title: { text: props.yTitle },
-        maxPadding: 0.1
+        maxPadding: 0.1,
+        opposite: false
       },
       series: datasets.map(dataset => ({
         name: dataset.name || props.yTitle,
@@ -150,7 +195,7 @@ const chartOptions = computed(() => {
 // Agregar listener de resize para redimensionar el gráfico
 onMounted(() => {
    if (chartRef.value) {
-     chartInstance.value = Highcharts.chart(chartRef.value, chartOptions.value)
+     chartInstance.value = Highcharts.stockChart(chartRef.value, chartOptions.value)
    }
    const resizeHandler = () => {
      if (chartInstance.value) {

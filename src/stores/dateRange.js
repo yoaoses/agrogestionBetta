@@ -7,8 +7,8 @@ export const useDateRangeStore = defineStore('dateRange', () => {
   const defaultEndDate = today.toISOString().split('T')[0]
   const defaultStartDate = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate()).toISOString().split('T')[0]
 
-  const startDate = ref(defaultStartDate)
-  const endDate = ref(defaultEndDate)
+  const startDate = ref(localStorage.getItem('startDate') || defaultStartDate)
+  const endDate = ref(localStorage.getItem('endDate') || defaultEndDate)
   const isLoading = ref(false)
 
   const dateRange = computed(() => ({
@@ -19,6 +19,8 @@ export const useDateRangeStore = defineStore('dateRange', () => {
   const setDateRange = (start, end) => {
     startDate.value = start
     endDate.value = end
+    localStorage.setItem('startDate', start)
+    localStorage.setItem('endDate', end)
   }
 
   const setLoading = (loading) => {
@@ -26,9 +28,11 @@ export const useDateRangeStore = defineStore('dateRange', () => {
   }
 
   const reset = () => {
-    startDate.value = null
-    endDate.value = null
+    startDate.value = defaultStartDate
+    endDate.value = defaultEndDate
     isLoading.value = false
+    localStorage.removeItem('startDate')
+    localStorage.removeItem('endDate')
   }
 
   return {

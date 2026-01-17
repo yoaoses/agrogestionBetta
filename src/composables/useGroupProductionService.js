@@ -4,7 +4,7 @@ import { getGroups, getGroupMilkProduction } from '../api/api.js'
 // Función para convertir datos de API a ChartData con propiedad configurable
 const convertToChartData = (data, valueKey = 'value') => {
   if (!data || !Array.isArray(data)) {
-    return { labels: [], values: [], lastRecordDate: null }
+    return { labels: [], values: [], lastRecordDate: null, name: null }
   }
 
   const sorted = data.sort((a, b) => new Date(a.date) - new Date(b.date))
@@ -18,7 +18,8 @@ const convertToChartData = (data, valueKey = 'value') => {
   })
   const values = sorted.map(d => d[valueKey] || 0)
   const lastRecordDate = sorted.length > 0 ? new Date(sorted[sorted.length - 1].date) : null
-  return { labels, values, lastRecordDate }
+  const name = data[0] && data[0].name ? data[0].name : null
+  return { labels, values, lastRecordDate, name }
 }
 
 export async function generateGroupProductionTheme(entityId) {
@@ -87,11 +88,11 @@ export async function generateGroupProductionTheme(entityId) {
         let descarteValues = sortedDates.map(date => aggregatedByType['descarte'][date] || 0)
         let descarteName = 'Descarte'
 
-        // Si no hay datos reales para descarte, generar mock basados en estanque * 0.1 y cambiar nombre a 'Descarte Mock-data'
+        // Si no hay datos reales para descarte, generar mock basados en estanque * 0.1 y cambiar nombre a 'Descarte (Mock)'
         const hasRealDescarteData = Object.keys(aggregatedByType['descarte']).length > 0 && descarteValues.some(v => v > 0)
         if (!hasRealDescarteData) {
           descarteValues = estanqueValues.map(v => v * 0.1)
-          descarteName = 'Descarte Mock-data'
+          descarteName = 'Descarte (Mock)'
         }
 
         datasets = [
@@ -111,12 +112,12 @@ export async function generateGroupProductionTheme(entityId) {
         const data = Object.keys(aggregatedByType[type]).map(date => ({ date, milkLiters: aggregatedByType[type][date] })).sort((a, b) => new Date(a.date) - new Date(b.date))
         const chartData = convertToChartData(data, 'milkLiters')
         let title = type.charAt(0).toUpperCase() + type.slice(1)
-        let name = type.charAt(0).toUpperCase() + type.slice(1)
+        let seriesName = chartData.name || type.charAt(0).toUpperCase() + type.slice(1)
         if (type === 'descarte' && chartData.values.length === 0) {
-          title = 'Mock Data'
-          name = 'Descarte Mock-data'
+          title = 'Descarte (Mock)'
+          seriesName = 'Descarte (Mock)'
         }
-        datasets = [{ name: name, labels: chartData.labels, values: chartData.values }]
+        datasets = [{ name: seriesName, labels: chartData.labels, values: chartData.values }]
         lastRecord = {
           date: chartData.lastRecordDate ? chartData.lastRecordDate.toISOString() : new Date().toISOString(),
           value: chartData.values[chartData.values.length - 1] || 0,

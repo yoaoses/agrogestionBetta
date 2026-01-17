@@ -26,23 +26,24 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
 // Convertir datos de API a ChartData con propiedad configurable
 const convertToChartData = (data, valueKey = 'value') => {
-    if (!data || !Array.isArray(data)) {
-      return { labels: [], values: [], lastRecordDate: null }
-    }
+     if (!data || !Array.isArray(data)) {
+       return { labels: [], values: [], lastRecordDate: null, name: null }
+     }
 
-    const sorted = data.sort((a, b) => new Date(a.date) - new Date(b.date))
-   const labels = sorted.map(d => {
-     const date = new Date(d.date)
-     const dd = String(date.getDate()).padStart(2, '0')
-     const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
-     const mm = monthNames[date.getMonth()]
-     const yyyy = String(date.getFullYear())
-     return `${dd}-${mm}-${yyyy}`
-   })
-   const values = sorted.map(d => d[valueKey] || 0)
-   const lastRecordDate = sorted.length > 0 ? new Date(sorted[sorted.length - 1].date) : null
-   return { labels, values, lastRecordDate }
-}
+     const sorted = data.sort((a, b) => new Date(a.date) - new Date(b.date))
+    const labels = sorted.map(d => {
+      const date = new Date(d.date)
+      const dd = String(date.getDate()).padStart(2, '0')
+      const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+      const mm = monthNames[date.getMonth()]
+      const yyyy = String(date.getFullYear())
+      return `${dd}-${mm}-${yyyy}`
+    })
+    const values = sorted.map(d => d[valueKey] || 0)
+    const lastRecordDate = sorted.length > 0 ? new Date(sorted[sorted.length - 1].date) : null
+    const name = data[0] && data[0].name ? data[0].name : null
+    return { labels, values, lastRecordDate, name }
+ }
 
 // Mapa de temas a funciones API
 const themeAPIs = {
@@ -76,15 +77,15 @@ const generateThemeData = async (apiFunctionName, entityId, type, signal) => {
    let kpisData = []
 
   if (apiFunc && type === 'farm') {
-    try {
-      const params = {
-        entityId: entityId.toString(),
-        dateRange: {
-          from: dateRangeStore.startDate,
-          to: dateRangeStore.endDate
-        }
-      }
-      const response = await apiFunc(params.entityId, params.dateRange.from, params.dateRange.to, signal)
+   try {
+     const params = {
+       entityId: entityId.toString(),
+       dateRange: {
+         from: dateRangeStore.startDate,
+         to: dateRangeStore.endDate
+       }
+     }
+     const response = await apiFunc(params.entityId, params.dateRange.from, params.dateRange.to, signal)
       const data = response.data
       if (apiFunctionName === 'milk_production') {
         milkData = data.data // El array está en data.data
@@ -208,7 +209,8 @@ export function useDashboardService() {
   const getThemesData = async (entityId, type) => {
     if (!entityId || !type) return []
 
-    const cacheKey = `${type}-${entityId}`
+    const dateRangeStore = useDateRangeStore()
+    const cacheKey = `${type}-${entityId}-${dateRangeStore.startDate}-${dateRangeStore.endDate}`
     if (cache.value[cacheKey] && !isExpired(cache.value[cacheKey].timestamp)) {
       return cache.value[cacheKey].data
     }

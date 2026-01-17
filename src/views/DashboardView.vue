@@ -82,14 +82,12 @@ const currentThemeIndex = ref(0)
 
 const handleDateRangeExecute = async (event) => {
   const dateRange = event.detail
+  dateRangeStore.setDateRange(dateRange.start, dateRange.end)
   dateRangeStore.setLoading(true)
   // Recargar datos
   const type = route.params.farmId ? 'farm' : 'company'
   const entityId = route.params.farmId || route.params.companyId
   await getThemesData(entityId, type)
-  // Reset to first theme
-  currentThemeIndex.value = 0
-  activeLinkIndex.value = 0
   dateRangeStore.setLoading(false)
 }
 

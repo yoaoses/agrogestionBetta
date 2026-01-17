@@ -34,7 +34,7 @@ export function useDashboard() {
       await farmStore.fetchFarms(companyIdToSelect)
       localStorage.setItem('agrogestion_farms', JSON.stringify(farms.value))
       if (farms.value.length > 0 && !farmStore.selectedFarmId) {
-        farmStore.setSelectedFarm(farms.value[0].id)
+        farmStore.setSelectedFarmId(farms.value[0].id)
       }
     }
   }
