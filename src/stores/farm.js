@@ -1,15 +1,18 @@
 import { defineStore } from 'pinia'
-import { getCompanies as apiGetCompanies, getFarms as apiGetFarms } from '../api/api.js'
+import { getCompanies as apiGetCompanies, getFarms as apiGetFarms, getFarmGroups as apiGetFarmGroups } from '../api/api.js'
 
 export const useFarmStore = defineStore('farm', {
   state: () => ({
     companies: [],
     farms: {}, // keyed by companyId
+    groups: {}, // keyed by farmId
     cache: {}, // for additional caching if needed
     isLoadingCompanies: false,
     loadingCompaniesPromise: null,
     isLoadingFarms: {}, // keyed by companyId
     loadingFarmsPromises: {}, // keyed by companyId
+    isLoadingGroups: {}, // keyed by farmId
+    loadingGroupsPromises: {}, // keyed by farmId
     selectedCompanyId: (() => {
       const val = localStorage.getItem('selectedCompanyId');
       const parsed = parseInt(val, 10);
@@ -24,6 +27,7 @@ export const useFarmStore = defineStore('farm', {
   getters: {
     getCompanies: (state) => state.companies,
     getFarmsByCompany: (state) => (companyId) => state.farms[companyId] || [],
+    getGroupsByFarm: (state) => (farmId) => state.groups[farmId] || [],
     getUnifiedCompanies: (state) => state.companies.map(company => ({
       ...company,
       location: company.address
@@ -124,6 +128,37 @@ export const useFarmStore = defineStore('farm', {
     setSelectedFarmId(farmId) {
       this.selectedFarmId = farmId
       localStorage.setItem('selectedFarmId', farmId)
+    },
+    async fetchGroups(farmId) {
+      if (this.groups[farmId]) {
+        return this.groups[farmId] // cached
+      }
+      if (this.isLoadingGroups[farmId]) {
+        return this.loadingGroupsPromises[farmId] // return the ongoing promise
+      }
+      this.isLoadingGroups[farmId] = true
+      this.loadingGroupsPromises[farmId] = (async () => {
+        try {
+          const response = await apiGetFarmGroups(farmId)
+          const standardized = response.data.data.map(group => ({
+            id: Number(group.id),
+            name: group.name,
+            description: group.description || '',
+            farmId: Number(group.farmId),
+            createdAt: group.created_at,
+            updatedAt: group.updated_at
+          }))
+          this.groups[farmId] = standardized
+          return standardized
+        } catch (error) {
+          console.error('Error fetching groups:', error)
+          throw error
+        } finally {
+          this.isLoadingGroups[farmId] = false
+          delete this.loadingGroupsPromises[farmId]
+        }
+      })()
+      return this.loadingGroupsPromises[farmId]
     }
   }
 })

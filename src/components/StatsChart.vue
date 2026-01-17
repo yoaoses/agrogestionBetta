@@ -7,12 +7,22 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import Highcharts from 'highcharts/highstock'
 
 const props = defineProps({
-  data: Object,
+  data: [Object, Array],
   title: String,
   yTitle: String
 })
 
 const chartRef = ref(null)
+const chartInstance = ref(null)
+
+watch([() => props.data, () => props.title, () => props.yTitle], () => {
+  if (chartInstance.value) {
+    chartInstance.value.destroy()
+  }
+  if (chartRef.value) {
+    chartInstance.value = Highcharts.chart(chartRef.value, chartOptions.value)
+  }
+}, { deep: true })
 
 const formatDate = (dateStr) => {
   const date = new Date(dateStr)
@@ -50,8 +60,8 @@ const parseSpanishDate = (dateStr) => {
 
 
 // Convertir datos para series de tiempo
-const convertToTimeSeriesData = (data) => {
-  if (!data || !data.labels || !data.values || data.labels.length === 0) {
+const convertToTimeSeriesData = (dataset) => {
+  if (!dataset || !dataset.labels || !dataset.values || dataset.labels.length === 0) {
     // Crear datos de prueba para series de tiempo (2 años diarios)
     const now = new Date()
     const twoYearsAgo = new Date(now.getFullYear() - 2, now.getMonth(), now.getDate())
@@ -63,7 +73,7 @@ const convertToTimeSeriesData = (data) => {
     return dataPoints
   }
   // Intentar parsear labels como fechas
-  const timeSeries = data.labels.map((label, index) => {
+  const timeSeries = dataset.labels.map((label, index) => {
     let timestamp
     if (typeof label === 'string') {
       const parsed = parseSpanishDate(label)
@@ -71,20 +81,20 @@ const convertToTimeSeriesData = (data) => {
         timestamp = parsed.getTime()
       } else {
         // Si no se puede parsear, usar índice
-        timestamp = new Date() - (data.labels.length - index) * 24 * 60 * 60 * 1000
+        timestamp = new Date() - (dataset.labels.length - index) * 24 * 60 * 60 * 1000
       }
     } else if (typeof label === 'number') {
       timestamp = label
     } else {
-      timestamp = new Date() - (data.labels.length - index) * 24 * 60 * 60 * 1000
+      timestamp = new Date() - (dataset.labels.length - index) * 24 * 60 * 60 * 1000
     }
-    return [timestamp, data.values[index]]
+    return [timestamp, dataset.values[index]]
   })
   return timeSeries
 }
 
 const chartOptions = computed(() => {
-    const timeSeriesData = convertToTimeSeriesData(props.data)
+    const datasets = Array.isArray(props.data) ? props.data : [props.data]
 
     const options = {
       chart: {
@@ -92,6 +102,11 @@ const chartOptions = computed(() => {
         zoomType: 'x',
         responsive: true,
         maintainAspectRatio: false,
+        zooming: {
+          mouseWheel: {
+            enabled: true
+          }
+        },
         resetZoomButton: {
           theme: {
             display: 'none'
@@ -102,7 +117,12 @@ const chartOptions = computed(() => {
         enabled: false
       },
       title: { text: null },
-      legend: { enabled: false },
+      legend: { enabled: true },
+      plotOptions: {
+        column: {
+          stacking: 'normal'
+        }
+      },
       xAxis: {
         type: 'datetime',
         title: { text: 'Fecha' }
@@ -111,38 +131,38 @@ const chartOptions = computed(() => {
         title: { text: props.yTitle },
         maxPadding: 0.1
       },
-     series: [{
-       name: props.yTitle,
-       data: timeSeriesData,
-       dataGrouping: {
-         enabled: true,
-         units: [['day', [1]], ['week', [1]], ['month', [1, 3, 6]]]
-       }
-     }],
-     tooltip: {
-       xDateFormat: '%d/%m/%Y'
-     }
-   }
+      series: datasets.map(dataset => ({
+        name: dataset.name || props.yTitle,
+        data: convertToTimeSeriesData(dataset),
+        dataGrouping: {
+          enabled: true,
+          units: [['day', [1]], ['week', [1]], ['month', [1, 3, 6]]]
+        }
+      })),
+      tooltip: {
+        xDateFormat: '%d/%m/%Y'
+      }
+    }
 
-   return options
+    return options
 })
 
 // Agregar listener de resize para redimensionar el gráfico
 onMounted(() => {
    if (chartRef.value) {
-     chartRef.value = Highcharts.chart(chartRef.value, chartOptions.value)
+     chartInstance.value = Highcharts.chart(chartRef.value, chartOptions.value)
    }
    const resizeHandler = () => {
-     if (chartRef.value) {
-       chartRef.value.reflow()
+     if (chartInstance.value) {
+       chartInstance.value.reflow()
      }
    }
    window.addEventListener('resize', resizeHandler)
 
    onUnmounted(() => {
      window.removeEventListener('resize', resizeHandler)
-     if (chartRef.value) {
-       chartRef.value.destroy()
+     if (chartInstance.value) {
+       chartInstance.value.destroy()
      }
    })
 })

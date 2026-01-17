@@ -181,8 +181,58 @@ const getFarmBirths = async (farmId, from, to, signal) => {
   }
 };
 
+/**
+ * Get animal groups for a farm
+ * @param {number} farmId - Farm ID
+ * @returns {Promise} API response
+ */
+const getGroups = async (farmId) => {
+  try {
+    const response = await apiClient.get(`${BASE_URL_V1}/groups`, {
+      params: { farmId }
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Get farm groups for a farm
+ * @param {number} farmId - Farm ID
+ * @returns {Promise} API response
+ */
+const getFarmGroups = async (farmId) => {
+  try {
+    const response = await apiClient.get(`${BASE_URL_V1}/groups`, {
+      params: { farmId }
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Get milk production stats for a group
+ * @param {number} groupId - Group ID
+ * @param {string} [from] - Start date (YYYY-MM-DD)
+ * @param {string} [to] - End date (YYYY-MM-DD)
+ * @returns {Promise} API response
+ */
+const getGroupMilkProduction = async (groupId, from, to) => {
+  try {
+    const response = await apiClient.get(`${BASE_URL_V1}/statistics/group/${groupId}/production`, {
+      params: { from, to }
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // ============================================
 // EXPORTS
 // ============================================
 
-export { login, setAuthToken, getCompanies, getFarms, getFarmMilkProductionV2, getFarmHealthStats, getFarmInventoryStats, getFarmTotalAnimalsV2, getFarmBirths };
+export { login, setAuthToken, getCompanies, getFarms, getFarmMilkProductionV2, getFarmHealthStats, getFarmInventoryStats, getFarmTotalAnimalsV2, getFarmBirths, getGroups, getFarmGroups, getGroupMilkProduction };

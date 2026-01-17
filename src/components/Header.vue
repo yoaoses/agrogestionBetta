@@ -85,10 +85,8 @@ const handleLogout = () => {
 }
 
 const handleDropdownClick = () => {
-  console.log('handleDropdownClick called, dropdownRef.value:', dropdownRef.value)
   if (dropdownRef.value) {
     dropdownRef.value.toggle()
-    console.log('Dropdown toggled')
   } else {
     console.warn('dropdownRef.value is null')
   }
@@ -146,19 +144,14 @@ watch(() => navigationStore.selectedFarm, (newVal, oldVal) => {
 
 onMounted(async () => {
     await nextTick()
-    console.log('Bootstrap available:', typeof bootstrap)
-    console.log('dropdownButtonRef.value:', dropdownButtonRef.value)
     if (dropdownButtonRef.value) {
       try {
         dropdownRef.value = new bootstrap.Dropdown(dropdownButtonRef.value)
-        console.log('Dropdown instance created:', dropdownRef.value)
         dropdownButtonRef.value.addEventListener('shown.bs.dropdown', () => {
           isDropdownOpen.value = true
-          console.log('Dropdown shown')
         })
         dropdownButtonRef.value.addEventListener('hidden.bs.dropdown', () => {
           isDropdownOpen.value = false
-          console.log('Dropdown hidden')
         })
         document.addEventListener('click', handleClickOutside)
       } catch (error) {

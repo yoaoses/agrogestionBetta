@@ -3,7 +3,7 @@
     <!-- Contenido scrollable -->
     <div ref="scrollableContentRef" class="scrollable-content" tabindex="0">
       <!-- Navegación interna sticky -->
-      <nav ref="navbarRef" id="navbar-scrollspy" class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+      <nav ref="navbarRef" class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container-fluid">
           <span class="navbar-brand fw-bold text-success">{{ dynamicTitle }}</span>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -12,7 +12,7 @@
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
               <li class="nav-item" v-for="(theme, index) in themesData" :key="index">
-                <a class="nav-link" :class="{ active: activeLinkIndex === index }" @click.prevent="goToSlide(index)">
+                <a class="nav-link" :class="{ active: activeLinkIndex === index }" @click.prevent="switchTheme(index)">
                   <span v-if="cardLoadingStates.get(index)" class="nav-spinner">
                     <div class="spinner-border spinner-border-sm text-light" role="status">
                       <span class="visually-hidden">Cargando...</span>
@@ -41,15 +41,14 @@
         </div>
 
         <div v-else>
-          <div v-for="(theme, index) in themesData" :key="`theme-${index}`" :id="`theme-${index}`">
-            <ThematicCard
-              :themeData="theme"
-              :index="index + 1"
-              :loading="cardLoadingStates.get(index)"
-              :progress="cardProgressStates.get(index) || 0"
-            />
-          </div>
-        </div>
+           <ThematicCard
+             v-if="themesData.length > 0"
+             :themeData="themesData[currentThemeIndex]"
+             :index="currentThemeIndex + 1"
+             :loading="cardLoadingStates.get(currentThemeIndex)"
+             :progress="cardProgressStates.get(currentThemeIndex) || 0"
+           />
+         </div>
       </div>
     </div>
   </div>
@@ -60,6 +59,7 @@ import { computed, onMounted, ref, reactive, nextTick, watch, onUnmounted } from
 import { useRoute } from 'vue-router'
 import { useDashboard } from '../composables/useDashboard.js'
 import { useDashboardService } from '../composables/useDashboardService.js'
+import { useFarmData } from '../composables/useFarmData.js'
 import { useDateRangeStore } from '../stores/dateRange.js'
 import { useNavigationStore } from '../stores/navigation.js'
 import ThematicCard from '../components/ThematicCard.vue'
@@ -68,17 +68,17 @@ import DotsLoader from '../components/DotsLoader.vue'
 const route = useRoute()
 const { companies, farms, loadInitialData, selectCompany, selectFarm } = useDashboard()
 const { loading, error, themesData, getThemesData } = useDashboardService()
+const { getGroups } = useFarmData()
 const dateRangeStore = useDateRangeStore()
 const navigationStore = useNavigationStore()
 
 // Estado para carga por card
 const cardLoadingStates = ref(new Map())
 const cardProgressStates = ref(new Map())
-const observer = ref(null)
-const cardElements = ref(new Map())
 const dashboardContainerRef = ref(null)
 const navbarRef = ref(null)
-const activeLinkIndex = ref(null)
+const activeLinkIndex = ref(0)
+const currentThemeIndex = ref(0)
 
 const handleDateRangeExecute = async (event) => {
   const dateRange = event.detail
@@ -87,6 +87,9 @@ const handleDateRangeExecute = async (event) => {
   const type = route.params.farmId ? 'farm' : 'company'
   const entityId = route.params.farmId || route.params.companyId
   await getThemesData(entityId, type)
+  // Reset to first theme
+  currentThemeIndex.value = 0
+  activeLinkIndex.value = 0
   dateRangeStore.setLoading(false)
 }
 
@@ -107,40 +110,34 @@ onMounted(async () => {
     if (entityId) {
       await getThemesData(entityId, type)
     }
+    // Llamar al endpoint de grupos si hay farmId
+    if (route.params.farmId) {
+      try {
+        const groups = await getGroups(route.params.farmId)
+      } catch (error) {
+        console.error('Error al obtener grupos:', error)
+      }
+    }
    await nextTick()
-   // Inicializar estados de carga por card
-   if (themesData.value) {
-     themesData.value.forEach((_, index) => {
-       cardLoadingStates.value.set(index, true)
-       cardProgressStates.value.set(index, 0)
-     })
-     // Simular carga independiente por card
-     const loadIntervals = themesData.value.map((_, index) => {
-       return setInterval(() => {
-         const current = cardProgressStates.value.get(index) || 0
-         if (current < 100) {
-           cardProgressStates.value.set(index, Math.min(100, current + Math.random() * 20))
-         } else {
-           cardLoadingStates.value.set(index, false)
-           clearInterval(loadIntervals[index])
-         }
-       }, 200 + Math.random() * 300)
-     })
+   // Inicializar estados de carga para el tema actual
+   if (themesData.value && themesData.value.length > 0) {
+     cardLoadingStates.value.set(currentThemeIndex.value, true)
+     cardProgressStates.value.set(currentThemeIndex.value, 0)
+     // Simular carga
+     const loadInterval = setInterval(() => {
+       const current = cardProgressStates.value.get(currentThemeIndex.value) || 0
+       if (current < 100) {
+         cardProgressStates.value.set(currentThemeIndex.value, Math.min(100, current + Math.random() * 20))
+       } else {
+         cardLoadingStates.value.set(currentThemeIndex.value, false)
+         clearInterval(loadInterval)
+       }
+     }, 200 + Math.random() * 300)
    }
    // Calcular altura del navbar interno y setear variable CSS
    if (navbarRef.value) {
-     const updateNavbarHeight = () => {
-       const navbarHeight = navbarRef.value.offsetHeight
-       const dashboardHeight = dashboardContainerRef.value ? dashboardContainerRef.value.offsetHeight : 0
-       const windowHeight = window.innerHeight
-       const documentHeight = document.documentElement.clientHeight
-       console.log('Alturas - Navbar:', navbarHeight, 'Dashboard:', dashboardHeight, 'Window:', windowHeight, 'Document:', documentHeight)
-       document.documentElement.style.setProperty('--inner-nav-height', `${navbarHeight}px`)
-     }
-     updateNavbarHeight()
-     // Usar ResizeObserver para actualizar cuando cambie el tamaño
-     const resizeObserver = new ResizeObserver(updateNavbarHeight)
-     resizeObserver.observe(navbarRef.value)
+     const navbarHeight = navbarRef.value.offsetHeight
+     document.documentElement.style.setProperty('--inner-nav-height', `${navbarHeight}px`)
    }
 
    // Agregar listener para date range execute
@@ -172,15 +169,23 @@ watch(() => route.params, async (newParams, oldParams) => {
   const entityId = newParams.farmId || newParams.companyId
   if (entityId) {
     await getThemesData(entityId, type)
+    // Reset to first theme
+    currentThemeIndex.value = 0
+    activeLinkIndex.value = 0
+  }
+  // Llamar al endpoint de grupos si hay farmId
+  if (newParams.farmId) {
+    try {
+      const groups = await getGroups(newParams.farmId)
+    } catch (error) {
+      console.error('Error al obtener grupos:', error)
+    }
   }
 }, { immediate: false })
 
-const goToSlide = (index) => {
-   const element = document.getElementById(`theme-${index}`)
-   if (element) {
-     element.scrollIntoView({ behavior: 'smooth' })
-   }
-   activeLinkIndex.value = index
+const switchTheme = (index) => {
+    currentThemeIndex.value = index
+    activeLinkIndex.value = index
 }
 
 const selectedCompany = computed(() => {
@@ -232,8 +237,7 @@ const dynamicTitle = computed(() => {
 }
 
 .themes-container {
-   height: calc(100vh - var(--inner-nav-height, 60px));
-   overflow: auto;
+    height: calc(100vh - var(--inner-nav-height, 60px));
 }
 
 .loading-section {

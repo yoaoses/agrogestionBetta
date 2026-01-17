@@ -13,10 +13,14 @@ export function useFarmData() {
     return store.getUnifiedFarmsByCompany(companyId)
   }
 
-  // Agregar más métodos según necesidad
+  const getGroups = async (farmId) => {
+    await store.fetchGroups(farmId)
+    return store.getGroupsByFarm(farmId)
+  }
 
   return {
     getCompanies,
-    getFarms
+    getFarms,
+    getGroups
   }
 }

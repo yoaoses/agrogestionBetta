@@ -4,7 +4,7 @@
       <div class="col">
         <h6>{{ themeData.theme }}</h6>
       </div>
-      <div class="col-auto">
+      <div class="col-auto" style="margin-right: 16px;">
         <div class="btn-group" role="group" aria-label="Basic example">
           <button
             v-for="(tab, index) in themeData.tabs"
@@ -33,43 +33,38 @@
     </div>
     <div v-if="!loading" class="charts-section">
       <StatsChart
-        v-show="activeTab === 0"
-        :data="themeData.tabs[0]?.chartData"
-        :title="themeData.tabs[0]?.title"
-        :yTitle="themeData.tabs[0]?.yTitle || 'Valor'"
-      />
-      <StatsChart
-        v-show="activeTab === 1"
-        :data="themeData.tabs[1]?.chartData"
-        :title="themeData.tabs[1]?.title"
-        :yTitle="themeData.tabs[1]?.yTitle || 'Valor'"
+        :data="themeData.tabs[activeTab]?.chartData"
+        :title="themeData.tabs[activeTab]?.title"
+        :yTitle="themeData.tabs[activeTab]?.yTitle || 'Valor'"
       />
     </div>
     <div v-if="!loading" class="data-placeholder">
       <div class="dynamic-content">
-        <div v-if="themeData.section2Data.type === 'participation'">
-          <h4>Participación Farms/KPIs</h4>
-          <div class="participation">
-            <div v-for="item in themeData.section2Data.data" :key="item.farm || item.kpi" class="participation-item">
-              <span class="item-name">{{ item.farm || item.kpi }}</span>
-              <span class="item-value">{{ item.percent ? item.percent.toFixed(1) + '%' : item.value }}</span>
+        <div v-if="themeData.kpisData && themeData.kpisData.length > 0" class="kpis-section">
+          <div v-for="kpi in themeData.kpisData" :key="kpi.name" class="kpi-card">
+            <div class="kpi-content">
+              <div class="kpi-header">
+                <i :class="`fas ${kpi.icon}`" class="kpi-icon"></i>
+                <i class="bi bi-info-circle kpi-info-icon" :title="kpi.desc"></i>
+                <span class="kpi-name">{{ kpi.name }}</span>
+              </div>
+              <div class="kpi-value">
+                {{ kpi.value }} {{ kpi.unit }}
+              </div>
+            </div>
+            <div class="kpi-efficiency">
+              <div class="efficiency-circle">
+                <svg width="40" height="40">
+                  <circle cx="20" cy="20" r="16" stroke="#e9ecef" stroke-width="3" fill="none" />
+                  <circle cx="20" cy="20" r="16" stroke="#00C853" stroke-width="3" fill="none" stroke-dasharray="100.5" :stroke-dashoffset="100.5 - (100.5 * Math.min(100, (kpi.value / kpi.expected) * 100) / 100)" transform="rotate(-90 20 20)" />
+                </svg>
+                <div class="efficiency-text">{{ Math.round(Math.min(100, (kpi.value / kpi.expected) * 100)) }}%</div>
+              </div>
             </div>
           </div>
         </div>
-        <div v-else-if="themeData.section2Data.type === 'summary'">
-          <h4>Resumen</h4>
-          <div v-if="Array.isArray(themeData.section2Data.data)">
-            <ul>
-              <li v-for="item in themeData.section2Data.data" :key="item">{{ item }}</li>
-            </ul>
-          </div>
-          <div v-else>
-            <p>{{ themeData.section2Data.data }}</p>
-          </div>
-        </div>
         <div v-else>
-          <h4>{{ themeData.section2Data.type }}</h4>
-          <pre>{{ JSON.stringify(themeData.section2Data.data, null, 2) }}</pre>
+          <p>No hay KPIs disponibles</p>
         </div>
       </div>
       <div class="footer">
@@ -108,10 +103,9 @@ const cardRef = ref(null)
 const activeTab = ref(0)
 
 onMounted(() => {
-  nextTick(() => {
-    window.dispatchEvent(new Event('resize'))
-    console.log('Altura de la tarjeta:', cardRef.value.offsetHeight)
-  })
+   nextTick(() => {
+     window.dispatchEvent(new Event('resize'))
+   })
 })
 
 const getLastRecord = () => {
@@ -286,6 +280,96 @@ const getLastRecord = () => {
   margin-top: 5px;
   font-size: 0.8em;
   color: #666;
+}
+
+.kpis-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.kpi-card {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.kpi-content {
+  flex: 1;
+}
+
+.kpi-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.kpi-icon {
+  color: #00C853;
+  font-size: 1.2em;
+}
+
+.kpi-name {
+  margin-left: 8px;
+  font-weight: bold;
+  font-size: 0.8em;
+  color: #333;
+  flex: 1;
+  text-align: left;
+}
+
+.kpi-info-icon {
+  color: #0288D1;
+  cursor: pointer;
+  font-size: 1em;
+  margin-left: 8px;
+}
+
+.kpi-value {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #00C853;
+  padding-left: 44px; /* align with name */
+}
+
+.kpi-efficiency {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.efficiency-circle {
+  position: relative;
+  display: inline-block;
+}
+
+.efficiency-circle svg circle {
+  transition: stroke-dashoffset 0.3s ease;
+}
+
+.efficiency-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.7em;
+  font-weight: bold;
+  color: #333;
+}
+
+.kpi-popover .popover-header {
+  font-size: 0.9em;
+}
+
+.kpi-popover .popover-body {
+  font-size: 0.8em;
 }
 
 /* No responsive height adjustments needed */
