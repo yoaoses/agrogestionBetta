@@ -13,10 +13,14 @@ const TARGETS = {
 function calculateMilkKPIs(milkData, birthsData) {
   if (!milkData || milkData.length === 0) return []
 
-  const totalMilk = milkData.reduce((sum, d) => sum + (d.milkLiters || 0), 0)
+  const totalMilk = milkData.reduce((sum, d) => {
+    return sum + (d.value || 0);
+  }, 0)
   const days = new Set(milkData.map(d => d.date)).size || 1
   const avgMilk = totalMilk / days
-  const totalBirths = birthsData ? birthsData.reduce((sum, d) => sum + (d.births || 0), 0) : 0
+  const totalBirths = birthsData ? birthsData.reduce((sum, d) => {
+    return sum + (d.value || 0);
+  }, 0) : 0
   const birthRate = (totalBirths / days) * 30 // mensual
   const milkPerBirth = totalBirths > 0 ? totalMilk / totalBirths : 0
 

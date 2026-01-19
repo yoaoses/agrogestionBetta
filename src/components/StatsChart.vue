@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import Highcharts from 'highcharts/highstock'
 
 const props = defineProps({
@@ -14,15 +14,6 @@ const props = defineProps({
 
 const chartRef = ref(null)
 const chartInstance = ref(null)
-
-watch([() => props.data, () => props.title, () => props.yTitle], () => {
-  if (chartInstance.value) {
-    chartInstance.value.destroy()
-  }
-  if (chartRef.value) {
-    chartInstance.value = Highcharts.stockChart(chartRef.value, chartOptions.value)
-  }
-}, { deep: true })
 
 const formatDate = (dateStr) => {
   const date = new Date(dateStr)
@@ -58,10 +49,9 @@ const parseSpanishDate = (dateStr) => {
   return new Date(englishStr)
 }
 
-
 // Convertir datos para series de tiempo
 const convertToTimeSeriesData = (dataset) => {
-  if (!dataset || !dataset.labels || !dataset.values || dataset.labels.length === 0) {
+  if (!dataset || !dataset.labels || !dataset.values || dataset.labels.length === 0 || dataset.values.length === 0) {
     // Crear datos de prueba para series de tiempo (2 años diarios)
     const now = new Date()
     const twoYearsAgo = new Date(now.getFullYear() - 2, now.getMonth(), now.getDate())
@@ -72,24 +62,27 @@ const convertToTimeSeriesData = (dataset) => {
     }
     return dataPoints
   }
-  // Intentar parsear labels como fechas
-  const timeSeries = dataset.labels.map((label, index) => {
+  const minLength = Math.min(dataset.labels.length, dataset.values.length)
+  const timeSeries = []
+  for (let i = 0; i < minLength; i++) {
+    const label = dataset.labels[i]
+    const value = parseFloat(dataset.values[i])
+    if (isNaN(value)) continue // skip invalid values
     let timestamp
     if (typeof label === 'string') {
       const parsed = parseSpanishDate(label)
       if (!isNaN(parsed)) {
         timestamp = parsed.getTime()
       } else {
-        // Si no se puede parsear, usar índice
-        timestamp = new Date() - (dataset.labels.length - index) * 24 * 60 * 60 * 1000
+        timestamp = new Date() - (minLength - i) * 24 * 60 * 60 * 1000
       }
     } else if (typeof label === 'number') {
       timestamp = label
     } else {
-      timestamp = new Date() - (dataset.labels.length - index) * 24 * 60 * 60 * 1000
+      timestamp = new Date() - (minLength - i) * 24 * 60 * 60 * 1000
     }
-    return [timestamp, dataset.values[index]]
-  })
+    timeSeries.push([timestamp, value])
+  }
   return timeSeries
 }
 
@@ -100,18 +93,7 @@ const chartOptions = computed(() => {
       chart: {
         type: 'column',
         zoomType: 'x',
-        responsive: true,
-        maintainAspectRatio: false,
-        zooming: {
-          mouseWheel: {
-            enabled: true
-          }
-        },
-        resetZoomButton: {
-          theme: {
-            display: 'none'
-          }
-        }
+        height: 350
       },
       accessibility: {
         enabled: false
@@ -174,7 +156,8 @@ const chartOptions = computed(() => {
       yAxis: {
         title: { text: props.yTitle },
         maxPadding: 0.1,
-        opposite: false
+        opposite: false,
+        tickAmount: 4
       },
       series: datasets.map(dataset => ({
         name: dataset.name || props.yTitle,
@@ -192,11 +175,22 @@ const chartOptions = computed(() => {
     return options
 })
 
-// Agregar listener de resize para redimensionar el gráfico
+const createChart = () => {
+  if (!chartRef.value) return
+  if (chartInstance.value) {
+    chartInstance.value.destroy()
+  }
+  try {
+    chartInstance.value = Highcharts.stockChart(chartRef.value, chartOptions.value)
+  } catch (error) {
+    console.error('Error creating chart:', error)
+  }
+}
+
 onMounted(() => {
-   if (chartRef.value) {
-     chartInstance.value = Highcharts.stockChart(chartRef.value, chartOptions.value)
-   }
+   nextTick(() => {
+     createChart()
+   })
    const resizeHandler = () => {
      if (chartInstance.value) {
        chartInstance.value.reflow()
@@ -212,14 +206,20 @@ onMounted(() => {
    })
 })
 
+watch([() => props.data, () => props.title, () => props.yTitle], () => {
+  nextTick(() => {
+    createChart()
+  })
+}, { deep: true })
+
 </script>
 
 <style scoped>
 .chart {
-   position: absolute;
-   top: 0;
-   left: 0;
+   position: relative;
    width: 100%;
    height: 100%;
+   border-radius: 8px;
+   overflow: hidden;
 }
 </style>

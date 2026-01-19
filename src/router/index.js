@@ -5,6 +5,7 @@ import CampoDataLogin from '../views/CampoDataLogin.vue'
 import ConfigView from '../views/ConfigView.vue'
 import HomeView from '../views/HomeView.vue'
 import UserOptionsView from '../views/UserOptionsView.vue'
+import ApiTestView from '../views/ApiTestView.vue'
 import { useAuthStore } from '../stores/auth.js'
 
 const routes = [
@@ -44,6 +45,12 @@ const routes = [
     path: '/user-options',
     name: 'UserOptions',
     component: UserOptionsView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/api-test',
+    name: 'ApiTest',
+    component: ApiTestView,
     meta: { requiresAuth: true }
   }
 ]

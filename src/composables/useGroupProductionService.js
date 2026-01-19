@@ -28,8 +28,6 @@ export async function generateGroupProductionTheme(entityId) {
   let tabs = []
   let kpisData = []
 
-  console.log('Construyendo tema de producción por grupos')
-
   try {
     // Obtener grupos
     const groupsResponse = await getGroups(entityId)
@@ -37,8 +35,6 @@ export async function generateGroupProductionTheme(entityId) {
     // Ajustar lógica para manejar si data es el array o si la respuesta completa es el array
     let groupsData = groupsResponse.data?.data || [];
     const groups = groupsData.filter(g => ['descarte', 'estanque', 'combinado'].includes(g.productionType))
-
-    console.log('Grupos filtrados:', groups)
 
     // Obtener producciones para cada grupo
     const productions = await Promise.all(groups.map(g => getGroupMilkProduction(g.id, dateRangeStore.startDate, dateRangeStore.endDate)))
@@ -132,7 +128,6 @@ export async function generateGroupProductionTheme(entityId) {
       }
     })
 
-    console.log('Tabs resultantes:', tabs)
   } catch (err) {
     console.error('Error in group_production:', err)
     tabs = []

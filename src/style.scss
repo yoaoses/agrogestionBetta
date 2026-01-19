@@ -1,0 +1,328 @@
+/* style.css - Versión limpia y funcional */
+
+
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --text-primary: #213547;
+  --text-secondary: #9e9e9e;
+
+  /* Altura del navbar y contenido */
+  --nav-height: 60px;
+  --inner-nav-height: 56px;
+  --content-height: 100vh;
+  --main-content-height: calc(100vh - 60px - var(--inner-nav-height) - 1rem);
+
+  /* Sidebar */
+  --sidebar-width: 240px;
+
+  /* Paleta CampoData / Agrotech */
+  --agrotech-green: #00C853;
+  --agrotech-green-dark: #00A044;
+  --agrotech-green-light: #00E676;
+  --agrotech-blue: #0288D1;
+  --agrotech-blue-dark: #0277BD;
+  --agrotech-blue-light: #03A9F4;
+  --neutral-light: #F5F5F5;
+  --neutral-medium: #9E9E9E;
+  --neutral-dark: #424242;
+  --earth-brown-light: #A1887F;
+  --earth-brown-dark: #8D6E63;
+}
+
+.dark {
+  --bg-primary: #242424;
+  --bg-secondary: #1a1a1a;
+  --text-primary: rgba(255, 255, 255, 0.87);
+  --text-secondary: #9e9e9e;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+
+/* Opcional: si quieres full-screen sin interferencias */
+.full-screen {
+  min-height: var(--content-height);
+  width: 100%;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 60px;
+  height: calc(100vh - var(--nav-height));
+  width: var(--sidebar-width);
+  z-index: 1000;
+  transition: transform 0.3s ease;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-content {
+  padding: 1rem;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.sidebar-logo {
+  margin-bottom: 2rem;
+}
+
+.sidebar-nav {
+  margin-bottom: 2rem;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+}
+
+/* Drawer Toggle Button */
+.drawer-toggle {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1050;
+  background: var(--bg-primary);
+  border: 1px solid var(--neutral-medium);
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  display: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.drawer-toggle:hover {
+  background: var(--bg-secondary);
+}
+
+/* Responsive: Mobile Drawer */
+@media (max-width: 991.98px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.drawer-open {
+    transform: translateX(0);
+  }
+
+  .drawer-toggle {
+    display: block;
+  }
+}
+
+/* Overlay for mobile drawer */
+@media (max-width: 991.98px) {
+  .sidebar::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .sidebar.drawer-open::before {
+    opacity: 1;
+  }
+}
+
+/* Force Farms dropdown to open to the right outside the sidebar */
+.sidebar .dropdown-menu.dropdown-menu-end {
+  transform: translateX(100%);
+  left: 0;
+}
+
+/* App Layout Styles */
+.app-layout {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ThematicCard styles */
+.thematic-card .dashboard-section-row {
+   position: relative;
+   margin-bottom: 0;
+   min-height: 400px;
+   padding: 1rem;
+}
+
+.thematic-card .content-wrapper {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  height: 100%;
+}
+
+
+.thematic-card .charts-section, .thematic-card .data-placeholder {
+   padding: 5px;
+   overflow: hidden;
+   max-width: 100%;
+   box-sizing: border-box;
+}
+
+.thematic-card .charts-section .chart {
+}
+
+.thematic-card .data-placeholder {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.thematic-card .dynamic-content {
+}
+
+
+.thematic-card .footer {
+  border-top: 2px solid #00C853;
+  padding-top: 12px;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.thematic-card .loading-overlay {
+   position: absolute;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   background: rgba(255, 255, 255, 0.9);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   z-index: 10;
+}
+
+.thematic-card .spinner-container {
+  text-align: center;
+}
+
+.thematic-card .loading-text {
+  margin: 10px 0;
+  font-size: 0.9em;
+  color: #00C853;
+}
+
+.thematic-card .progress-bar {
+  width: 100px;
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.thematic-card .progress-fill {
+  height: 100%;
+  background: #00C853;
+  transition: width 0.3s ease;
+}
+
+.thematic-card .progress-text {
+  margin-top: 5px;
+  font-size: 0.8em;
+  color: #666;
+}
+
+.thematic-card .kpis-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.thematic-card .kpi-card {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.thematic-card .kpi-content {
+  flex: 1;
+}
+
+.thematic-card .kpi-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.thematic-card .kpi-icon {
+  color: #00C853;
+  font-size: 1.2em;
+}
+
+.thematic-card .kpi-name {
+  margin-left: 8px;
+  font-weight: bold;
+  font-size: 0.8em;
+  color: #333;
+  flex: 1;
+  text-align: left;
+}
+
+.thematic-card .kpi-info-icon {
+  color: #0288D1;
+  cursor: pointer;
+  font-size: 1em;
+  margin-left: 8px;
+}
+
+.thematic-card .kpi-value {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #00C853;
+  padding-left: 44px; /* align with name */
+}
+
+.thematic-card .kpi-efficiency {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.thematic-card .efficiency-circle {
+  position: relative;
+  display: inline-block;
+}
+
+.thematic-card .efficiency-circle svg circle {
+  transition: stroke-dashoffset 0.3s ease;
+}
+
+.thematic-card .efficiency-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.7em;
+  font-weight: bold;
+  color: #333;
+}
+
+.thematic-card .kpi-popover .popover-header {
+  font-size: 0.9em;
+}
+
+.thematic-card .kpi-popover .popover-body {
+  font-size: 0.8em;
+}
+
+.thematic-card .error-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+}

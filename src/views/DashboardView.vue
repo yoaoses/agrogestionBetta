@@ -1,7 +1,15 @@
 <template>
   <div ref="dashboardContainerRef" class="dashboard-container">
+    <!-- Full dashboard cover/loader overlay -->
+    <div v-if="loading" class="full-loading-overlay d-flex align-items-center justify-content-center">
+      <div class="text-center">
+        <Loader />
+        <p class="mt-3 text-muted">Cargando datos del dashboard...</p>
+      </div>
+    </div>
+
     <!-- Contenido scrollable -->
-    <div ref="scrollableContentRef" class="scrollable-content" tabindex="0">
+    <div v-else ref="scrollableContentRef" class="scrollable-content" tabindex="0">
       <!-- Navegación interna sticky -->
       <nav ref="navbarRef" class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container-fluid">
@@ -26,14 +34,7 @@
         </div>
       </nav>
       <div class="themes-container">
-        <div v-if="loading" class="loading-section d-flex align-items-center justify-content-center">
-          <div class="text-center">
-            <DotsLoader />
-            <p class="mt-3 text-muted">Cargando datos del dashboard...</p>
-          </div>
-        </div>
-
-        <div v-else-if="error" class="error-section text-center py-5">
+        <div v-if="error" class="error-section text-center py-5">
           <div class="alert alert-danger" role="alert">
             <h4 class="alert-heading">Error al cargar datos</h4>
             <p>{{ error }}</p>
@@ -63,7 +64,7 @@ import { useFarmData } from '../composables/useFarmData.js'
 import { useDateRangeStore } from '../stores/dateRange.js'
 import { useNavigationStore } from '../stores/navigation.js'
 import ThematicCard from '../components/ThematicCard.vue'
-import DotsLoader from '../components/DotsLoader.vue'
+import Loader from '../components/Loader.vue'
 
 const route = useRoute()
 const { companies, farms, loadInitialData, selectCompany, selectFarm } = useDashboard()
@@ -212,10 +213,11 @@ const dynamicTitle = computed(() => {
 <style scoped>
 .dashboard-container {
    height: 100vh;
+   position: relative;
 }
 
 .navbar {
-  background-color: #00C853 !important;
+  background-color: var(--agrotech-blue-dark) !important;
   position: sticky;
   top: 0;
   z-index: 1020;
@@ -231,17 +233,21 @@ const dynamicTitle = computed(() => {
 }
 
 .nav-link:hover {
-  color: #0288D1 !important;
+  color: var(--agrotech-blue-light) !important;
 }
 
 .themes-container {
     height: calc(100vh - var(--inner-nav-height, 60px));
 }
 
-.loading-section {
-   height: 100%;
-   position: relative;
-   z-index: 1030;
+.full-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  z-index: 1050;
 }
 
 /* Responsive */
@@ -261,9 +267,9 @@ const dynamicTitle = computed(() => {
 
 /* Scrollspy active state */
 .navbar .nav-link.active {
-  color: #0288D1 !important;
+  color: var(--agrotech-blue-light) !important;
   font-weight: bold;
-  border-bottom: 2px solid #0288D1;
+  border-bottom: 2px solid var(--agrotech-blue-light);
 }
 
 .nav-spinner {

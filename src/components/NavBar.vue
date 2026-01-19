@@ -43,7 +43,7 @@
 
             <!-- Companies and Farms -->
             <li class="nav-item">
-              <DotsLoader v-if="isLoading" size="small" />
+              <Loader v-if="isLoading" size="small" />
               <div v-else>
                 <div v-for="company in navigationStore.companies" :key="company.id">
                   <div class="tree-header">
@@ -72,6 +72,13 @@
             <li class="nav-item">
               <router-link to="/config" class="nav-link" :class="{ active: $route.path === '/config' }" @click="closeDrawerOnMobile">
                 <i class="bi bi-gear"></i> Conf IA
+              </router-link>
+            </li>
+
+            <!-- API Test -->
+            <li class="nav-item">
+              <router-link to="/api-test" class="nav-link" :class="{ active: $route.path === '/api-test' }" @click="closeDrawerOnMobile">
+                <i class="bi bi-code"></i> API Test
               </router-link>
             </li>
           </ul>
@@ -116,7 +123,7 @@ import { useThemeStore } from '../stores/theme'
 import { useNavigationStore } from '../stores/navigation.js'
 import { useDateRangeStore } from '../stores/dateRange.js'
 import DateRangePicker from './DateRangePicker.vue'
-import DotsLoader from './DotsLoader.vue'
+import Loader from './Loader.vue'
 import { Modal } from 'bootstrap'
 
 

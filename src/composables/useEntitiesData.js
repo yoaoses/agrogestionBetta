@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { getCompanies, getFarms } from '../api/api.js'
+import { useNavigationStore } from '../stores/navigation.js'
 
 /**
  * @typedef {Object} FarmEntity
@@ -17,6 +17,7 @@ import { getCompanies, getFarms } from '../api/api.js'
  */
 
 export function useEntitiesData() {
+  const store = useNavigationStore()
   const cache = ref({})
   const TTL = 5 * 60 * 1000 // 5 minutes
 
@@ -28,20 +29,20 @@ export function useEntitiesData() {
     }
 
     try {
-      const companiesResponse = await getCompanies()
-      const companies = companiesResponse.data.data.map(c => ({
+      await store.fetchCompanies()
+      const companies = store.getUnifiedCompanies().map(c => ({
         id: c.id,
         name: c.name,
-        location: c.address || 'Dirección no especificada',
+        location: c.location,
         farms: []
       }))
 
       for (const company of companies) {
-        const farmsResponse = await getFarms(company.id)
-        company.farms = farmsResponse.data.data.map(f => ({
+        await store.fetchFarms(company.id)
+        company.farms = store.getUnifiedFarmsByCompany(company.id).map(f => ({
           id: f.id,
           name: f.name,
-          location: f.location || 'Ubicación no especificada'
+          location: f.location
         }))
       }
 

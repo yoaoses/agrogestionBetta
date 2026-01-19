@@ -2012,6 +2012,215 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /users/profile:
+    get:
+      tags:
+        - Users
+      summary: Get user profile
+      description: |
+        **Función:** Obtiene el perfil completo del usuario autenticado, incluyendo roles globales, de compañía y de granja.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v1/users/profile
+        Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        ```
+        
+        **Respuesta:**
+        - Código 200: Datos completos del usuario
+        ```json
+        {
+          "data": {
+            "id": 1,
+            "email": "usuario@agrogestion.com",
+            "name": "Juan Pérez",
+            "globalRoleId": 11,
+            "globalRole": {
+              "id": 11,
+              "name": "SUPERADMIN"
+            },
+            "companyRoles": [
+              {
+                "companyId": 1,
+                "role": "ADMIN",
+                "company": {
+                  "id": 1,
+                  "name": "Agrícola El Sol"
+                }
+              }
+            ],
+            "farmRoles": [
+              {
+                "farmId": 1,
+                "role": "MANAGER",
+                "modules": ["inventory", "production"],
+                "farm": {
+                  "id": 1,
+                  "name": "Finca Norte"
+                }
+              }
+            ]
+          },
+          "receivedAt": "2025-01-03T10:00:00.000Z",
+          "respondedAt": "2025-01-03T10:00:00.123Z"
+        }
+        ```
+        - Código 401: Token no válido o expirado
+        - Código 404: Usuario no encontrado
+        - Código 500: Error interno del servidor
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User profile data
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          email:
+                            type: string
+                          name:
+                            type: string
+                          globalRoleId:
+                            type: integer
+                            nullable: true
+                          globalRole:
+                            type: object
+                            nullable: true
+                          companyRoles:
+                            type: array
+                            items:
+                              type: object
+                          farmRoles:
+                            type: array
+                            items:
+                              type: object
+        '401':
+          description: Unauthorized - Invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found - User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/verify-token:
+    get:
+      tags:
+        - Users
+      summary: Verify JWT token validity
+      description: |
+        **Función:** Verifica si el token JWT proporcionado sigue siendo válido. Útil para validar tokens antes de realizar operaciones críticas o verificar la sesión del usuario.
+        
+        **Solicitud HTTP:**
+        - Método: GET
+        - Headers: Authorization: Bearer {token}
+        
+        **Ejemplo de solicitud:**
+        ```
+        GET /v1/users/verify-token
+        Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        ```
+        
+        **Respuesta:**
+        - Código 200: Token válido
+        ```json
+        {
+          "data": {
+            "valid": true,
+            "message": "Token is valid",
+            "user": {
+              "id": 1,
+              "email": "usuario@agrogestion.com",
+              "globalRole": "SUPERADMIN"
+            }
+          },
+          "receivedAt": "2025-01-03T10:00:00.000Z",
+          "respondedAt": "2025-01-03T10:00:00.123Z"
+        }
+        ```
+        - Código 401: Token inválido o expirado
+        ```json
+        {
+          "error": "Unauthorized",
+          "message": "Invalid or expired token",
+          "details": []
+        }
+        ```
+        - Código 500: Error interno del servidor
+        ```json
+        {
+          "error": "Internal Server Error",
+          "message": "An error occurred while verifying token",
+          "details": []
+        }
+        ```
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Token is valid
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          valid:
+                            type: boolean
+                            example: true
+                          message:
+                            type: string
+                            example: "Token is valid"
+                          user:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              email:
+                                type: string
+                              globalRole:
+                                type: string
+                                nullable: true
+        '401':
+          description: Unauthorized - Invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /statistics/farm/{farmId}/inventory:
     get:
       tags:
@@ -3948,19 +4157,20 @@ paths:
         ```
         
         **Respuesta:**
-        - Código 200: Array de objetos TotalAnimalsData
+        - Código 200: Array de objetos con value genérico
         ```json
         {
           "data": [
             {
               "date": "2025-01-01",
-              "totalAnimals": 150
+              "value": 150
             },
             {
               "date": "2025-01-02",
-              "totalAnimals": 152
+              "value": 152
             }
           ],
+          "requestedMetric": "totalAnimals",
           "receivedAt": "2025-01-15T10:00:00.000Z",
           "respondedAt": "2025-01-15T10:00:00.123Z"
         }
@@ -4054,19 +4264,20 @@ paths:
         ```
         
         **Respuesta:**
-        - Código 200: Array de objetos BirthsData
+        - Código 200: Array de objetos con value genérico
         ```json
         {
           "data": [
             {
               "date": "2025-01-01",
-              "births": 2
+              "value": 2
             },
             {
               "date": "2025-01-02",
-              "births": 3
+              "value": 3
             }
           ],
+          "requestedMetric": "births",
           "receivedAt": "2025-01-15T10:00:00.000Z",
           "respondedAt": "2025-01-15T10:00:00.123Z"
         }
@@ -4160,19 +4371,20 @@ paths:
         ```
         
         **Respuesta:**
-        - Código 200: Array de objetos DeathsData
+        - Código 200: Array de objetos con value genérico
         ```json
         {
           "data": [
             {
               "date": "2025-01-01",
-              "deaths": 1
+              "value": 1
             },
             {
               "date": "2025-01-03",
-              "deaths": 2
+              "value": 2
             }
           ],
+          "requestedMetric": "deaths",
           "receivedAt": "2025-01-15T10:00:00.000Z",
           "respondedAt": "2025-01-15T10:00:00.123Z"
         }
@@ -4266,19 +4478,20 @@ paths:
         ```
         
         **Respuesta:**
-        - Código 200: Array de objetos SalesData
+        - Código 200: Array de objetos con value genérico
         ```json
         {
           "data": [
             {
               "date": "2025-01-05",
-              "sales": 3
+              "value": 3
             },
             {
               "date": "2025-01-10",
-              "sales": 2
+              "value": 2
             }
           ],
+          "requestedMetric": "sales",
           "receivedAt": "2025-01-15T10:00:00.000Z",
           "respondedAt": "2025-01-15T10:00:00.123Z"
         }
@@ -4349,50 +4562,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-# ============================================
-# Documentación de la estructura de respuesta para el endpoint /v2/statistics/farm/{farmId}/production/milkLiters
-# ============================================
-#
-# Este endpoint devuelve estadísticas de producción de leche para una granja específica.
-#
-# Estructura de respuesta general:
-# - data: Array de objetos MilkProductionData (cada uno representa producción diaria)
-# - receivedAt: Timestamp ISO8601 UTC cuando se recibió la solicitud
-# - respondedAt: Timestamp ISO8601 UTC cuando se envió la respuesta
-#
-# Estructura detallada del array 'data':
-# Cada elemento del array es un objeto con las siguientes propiedades:
-# - date: Fecha en formato YYYY-MM-DD (tipo: string, formato: date)
-#   Ejemplo: "2025-01-15"
-# - milkLiters: Litros de leche producidos en esa fecha (tipo: number, formato: float)
-#   Ejemplo: 145.75
-#
-# Ejemplo completo de estructura de datos de respuesta:
-# {
-#   "data": [
-#     {
-#       "date": "2025-01-01",
-#       "milkLiters": 450.5
-#     },
-#     {
-#       "date": "2025-01-02",
-#       "milkLiters": 475.2
-#     },
-#     {
-#       "date": "2025-01-03",
-#       "milkLiters": 460.8
-#     }
-#   ],
-#   "receivedAt": "2025-01-15T10:00:00.000Z",
-#   "respondedAt": "2025-01-15T10:00:00.123Z"
-# }
-#
-# Notas para futuras referencias:
-# - El array 'data' puede estar vacío si no hay datos para el rango de fechas solicitado.
-# - Las fechas están en orden cronológico ascendente.
-# - Los valores de milkLiters son números decimales que representan litros.
-# - Este endpoint es parte de la versión V2 de estadísticas, optimizada para consultas granulares.
-
   /v2/statistics/farm/{farmId}/production/milkLiters:
     get:
       tags:
@@ -4415,19 +4584,20 @@ paths:
         ```
         
         **Respuesta:**
-        - Código 200: Array de objetos MilkProductionData
+        - Código 200: Array de objetos con value genérico
         ```json
         {
           "data": [
             {
               "date": "2025-01-01",
-              "milkLiters": 450.5
+              "value": 450.5
             },
             {
               "date": "2025-01-02",
-              "milkLiters": 475.2
+              "value": 475.2
             }
           ],
+          "requestedMetric": "milkLiters",
           "receivedAt": "2025-01-15T10:00:00.000Z",
           "respondedAt": "2025-01-15T10:00:00.123Z"
         }
@@ -4520,19 +4690,20 @@ paths:
         ```
         
         **Respuesta:**
-        - Código 200: Array de objetos TotalAnimalsData
+        - Código 200: Array de objetos con value genérico
         ```json
         {
           "data": [
             {
               "date": "2025-01-01",
-              "totalAnimals": 85
+              "value": 85
             },
             {
               "date": "2025-01-02",
-              "totalAnimals": 86
+              "value": 86
             }
           ],
+          "requestedMetric": "totalAnimals",
           "receivedAt": "2025-01-15T10:00:00.000Z",
           "respondedAt": "2025-01-15T10:00:00.123Z"
         }
@@ -4624,19 +4795,20 @@ paths:
         GET /v2/statistics/group/123/inventory/births?from=2025-01-01&to=2025-01-31
         ```
         
-        **Respuesta:**
-        - Código 200: Array de objetos BirthsData
+        **Respuesta:**con value genérico
         ```json
         {
           "data": [
             {
               "date": "2025-01-01",
-              "births": 2
+              "value": 2
             },
             {
               "date": "2025-01-02",
-              "births": 1
+              "value": 1
             }
+          ],
+          "requestedMetric": "births" }
           ],
           "receivedAt": "2025-01-15T10:00:00.000Z",
           "respondedAt": "2025-01-15T10:00:00.123Z"
@@ -4730,19 +4902,20 @@ paths:
         ```
         
         **Respuesta:**
-        - Código 200: Array de objetos DeathsData
+        - Código 200: Array de objetos con value genérico
         ```json
         {
           "data": [
             {
               "date": "2025-01-01",
-              "deaths": 1
+              "value": 1
             },
             {
               "date": "2025-01-03",
-              "deaths": 2
+              "value": 2
             }
           ],
+          "requestedMetric": "deaths",
           "receivedAt": "2025-01-15T10:00:00.000Z",
           "respondedAt": "2025-01-15T10:00:00.123Z"
         }
@@ -4835,19 +5008,20 @@ paths:
         ```
         
         **Respuesta:**
-        - Código 200: Array de objetos SalesData
+        - Código 200: Array de objetos con value genérico
         ```json
         {
           "data": [
             {
               "date": "2025-01-05",
-              "sales": 1
+              "value": 1
             },
             {
               "date": "2025-01-10",
-              "sales": 2
+              "value": 2
             }
           ],
+          "requestedMetric": "sales",
           "receivedAt": "2025-01-15T10:00:00.000Z",
           "respondedAt": "2025-01-15T10:00:00.123Z"
         }

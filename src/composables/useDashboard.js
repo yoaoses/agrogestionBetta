@@ -1,19 +1,19 @@
 import { ref, computed } from 'vue'
 import { useAuthStore } from '../stores/auth.js'
-import { useFarmStore } from '../stores/farm.js'
+import { useNavigationStore } from '../stores/navigation.js'
 
 export function useDashboard() {
   const authStore = useAuthStore()
-  const farmStore = useFarmStore()
+  const navigationStore = useNavigationStore()
   const currentSection = ref('company')
 
-  const selectedCompanyId = computed(() => farmStore.selectedCompanyId)
-  const selectedFarmId = computed(() => farmStore.selectedFarmId)
+  const selectedCompanyId = computed(() => navigationStore.selectedCompanyId)
+  const selectedFarmId = computed(() => navigationStore.selectedFarmId)
 
-  const companies = computed(() => farmStore.getUnifiedCompanies)
+  const companies = computed(() => navigationStore.getUnifiedCompanies)
   const farms = computed(() => {
     if (selectedCompanyId.value) {
-      return farmStore.getUnifiedFarmsByCompany(selectedCompanyId.value)
+      return navigationStore.getUnifiedFarmsByCompany(selectedCompanyId.value)
     }
     return []
   })
@@ -23,18 +23,18 @@ export function useDashboard() {
       console.warn('Usuario no autenticado, no se pueden cargar datos')
       return
     }
-    await farmStore.fetchCompanies()
+    await navigationStore.fetchCompanies()
     if (companies.value.length > 0) {
       let companyIdToSelect = companies.value[0].id
-      if (farmStore.selectedCompanyId && companies.value.find(c => c.id === farmStore.selectedCompanyId)) {
-        companyIdToSelect = farmStore.selectedCompanyId
+      if (navigationStore.selectedCompanyId && companies.value.find(c => c.id === navigationStore.selectedCompanyId)) {
+        companyIdToSelect = navigationStore.selectedCompanyId
       } else {
-        farmStore.setSelectedCompany(companyIdToSelect)
+        navigationStore.setSelectedCompany(companyIdToSelect)
       }
-      await farmStore.fetchFarms(companyIdToSelect)
+      await navigationStore.fetchFarms(companyIdToSelect)
       localStorage.setItem('agrogestion_farms', JSON.stringify(farms.value))
-      if (farms.value.length > 0 && !farmStore.selectedFarmId) {
-        farmStore.setSelectedFarmId(farms.value[0].id)
+      if (farms.value.length > 0 && !navigationStore.selectedFarmId) {
+        navigationStore.setSelectedFarmId(farms.value[0].id)
       }
     }
   }
@@ -54,8 +54,8 @@ export function useDashboard() {
   const getFarmData = () => {
     const farmsByCompany = {}
     // Get all farms from store
-    Object.keys(farmStore.farms).forEach(companyId => {
-      farmsByCompany[companyId] = farmStore.getUnifiedFarmsByCompany(companyId)
+    Object.keys(navigationStore.farms).forEach(companyId => {
+      farmsByCompany[companyId] = navigationStore.getUnifiedFarmsByCompany(companyId)
     })
     return Object.keys(farmsByCompany).map(companyId => {
       const company = companies.value.find(c => c.id == companyId)
@@ -77,15 +77,15 @@ export function useDashboard() {
         console.warn('Usuario no autenticado, no se pueden cargar farms')
         return
       }
-      farmStore.setSelectedCompanyId(companyId)
-      await farmStore.fetchFarms(companyId)
+      navigationStore.setSelectedCompanyId(companyId)
+      await navigationStore.fetchFarms(companyId)
       localStorage.setItem('agrogestion_farms', JSON.stringify(farms.value))
-      farmStore.setSelectedFarmId(farms.value.length > 0 ? farms.value[0].id : null)
+      navigationStore.setSelectedFarmId(farms.value.length > 0 ? farms.value[0].id : null)
     }
   }
 
   const selectFarm = (farmId) => {
-    farmStore.setSelectedFarmId(farmId)
+    navigationStore.setSelectedFarmId(farmId)
   }
 
   return {

@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router'
 import { onMounted, watch, ref, nextTick } from 'vue'
 import { useThemeStore } from './stores/theme'
 import { useAuthStore } from './stores/auth'
+import { useAppLifecycle } from './composables/useAppLifecycle'
 
 const route = useRoute()
 const themeStore = useThemeStore()
@@ -15,6 +16,9 @@ const appLayoutRef = ref(null)
 const contentAreaRef = ref(null)
 const headerRef = ref(null)
 const footerRef = ref(null)
+
+// Initialize app lifecycle handling
+useAppLifecycle()
 
 onMounted(async () => {
    const appEl = document.getElementById('app')
@@ -76,7 +80,7 @@ function updatePadding(appEl) {
 }
 
 .main-content.with-sidebar {
-  margin-left: 250px; /* Ancho del sidebar */
+  margin-left: var(--sidebar-width); /* Ancho del sidebar */
 }
 
 .campo-content-area {

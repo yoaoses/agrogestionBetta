@@ -1,21 +1,24 @@
-import { useFarmStore } from '../stores/farm.js'
+import { useNavigationStore } from '../stores/navigation.js'
 
 export function useFarmData() {
-  const store = useFarmStore()
+  const store = useNavigationStore()
 
   const getCompanies = async () => {
     await store.fetchCompanies()
-    return store.getUnifiedCompanies
+    const result = store.getUnifiedCompanies()
+    return result
   }
 
   const getFarms = async (companyId) => {
     await store.fetchFarms(companyId)
-    return store.getUnifiedFarmsByCompany(companyId)
+    const result = store.getUnifiedFarmsByCompany(companyId)
+    return result
   }
 
   const getGroups = async (farmId) => {
     await store.fetchGroups(farmId)
-    return store.getGroupsByFarm(farmId)
+    const result = store.getGroupsByFarm(farmId)
+    return result
   }
 
   return {

@@ -22,18 +22,54 @@ const setAuthToken = (token) => {
   apiClient.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : undefined;
 };
 
-// Interceptor de respuesta para manejar 401
+// Request interceptor for debug logs
+apiClient.interceptors.request.use(
+  (config) => {
+    return config;
+  },
+  (error) => {
+    console.error('API Request Error:', error);
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor for debug logs and error handling with retries
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return response;
+  },
   async (error) => {
-    if (authStoreInstance && error.response?.status === 401 && !authStoreInstance.isRenewingToken) {
-      // Evitar loops: marcar que estamos intentando renovar
-      authStoreInstance.isRenewingToken = true;
-      // Mostrar modal de renovación
-      authStoreInstance.showTokenRenewalModal = true;
-      // Rechazar la promesa original para que el componente sepa que falló
-      return Promise.reject(error);
+    console.error(`API Error: ${error.response?.status || 'Network'} ${error.config?.method?.toUpperCase()} ${error.config?.url} - ${error.message}`);
+
+    const config = error.config;
+    if (!config) return Promise.reject(error);
+
+    config._retry = config._retry || 0;
+
+    // Retry on network errors (timeout, connection issues)
+    if ((error.code === 'ECONNABORTED' || error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED' || !error.response) && config._retry < 3) {
+      config._retry++;
+      await new Promise(resolve => setTimeout(resolve, 1000 * config._retry)); // progressive delay
+      return apiClient(config);
     }
+
+    // Handle 401 with retry after potential renewal
+    if (error.response?.status === 401 && authStoreInstance && !authStoreInstance.isRenewingToken) {
+      authStoreInstance.isRenewingToken = true;
+      authStoreInstance.showTokenRenewalModal = true;
+
+      // Wait for potential token renewal
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      if (authStoreInstance.token && !authStoreInstance.isRenewingToken) {
+        config.headers.Authorization = `Bearer ${authStoreInstance.token}`;
+        config._retry++;
+        if (config._retry < 3) {
+          return apiClient(config);
+        }
+      }
+    }
+
     return Promise.reject(error);
   }
 );

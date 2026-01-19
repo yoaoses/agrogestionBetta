@@ -2,18 +2,26 @@ import { defineStore } from 'pinia'
 import { login, setAuthToken } from '../api/api.js'
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    token: localStorage.getItem('token') || null,
-    user: JSON.parse(localStorage.getItem('user')) || null,
-    userEmail: localStorage.getItem('userEmail') || null,
-    userName: localStorage.getItem('userName') || null,
-    isAuthenticated: false,
-    isLoading: false,
-    showLoginModal: false,
-    intendedRoute: null,
-    isRenewingToken: false,
-    showTokenRenewalModal: false
-  }),
+  state: () => {
+    let user = null
+    try {
+      user = JSON.parse(localStorage.getItem('user')) || null
+    } catch (error) {
+      console.error('Error parsing user from localStorage:', error)
+    }
+    return {
+      token: localStorage.getItem('token') || null,
+      user,
+      userEmail: localStorage.getItem('userEmail') || null,
+      userName: localStorage.getItem('userName') || null,
+      isAuthenticated: false,
+      isLoading: false,
+      showLoginModal: false,
+      intendedRoute: null,
+      isRenewingToken: false,
+      showTokenRenewalModal: false
+    }
+  },
   getters: {
     isAuth: (state) => !!state.token && state.isAuthenticated
   },
@@ -30,10 +38,14 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = true
         this.isRenewingToken = false // Resetear flag de renovación
         this.showTokenRenewalModal = false // Cerrar modal
-        localStorage.setItem('token', token)
-        localStorage.setItem('user', JSON.stringify(user))
-        localStorage.setItem('userEmail', this.userEmail)
-        localStorage.setItem('userName', this.userName)
+        try {
+          localStorage.setItem('token', token)
+          localStorage.setItem('user', JSON.stringify(user))
+          localStorage.setItem('userEmail', this.userEmail)
+          localStorage.setItem('userName', this.userName)
+        } catch (error) {
+          console.error('Error saving to localStorage in login:', error)
+        }
         setAuthToken(token)
         return { success: true }
       } catch (error) {
@@ -50,10 +62,14 @@ export const useAuthStore = defineStore('auth', {
       this.userEmail = null
       this.userName = null
       this.isAuthenticated = false
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      localStorage.removeItem('userEmail')
-      localStorage.removeItem('userName')
+      try {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        localStorage.removeItem('userEmail')
+        localStorage.removeItem('userName')
+      } catch (error) {
+        console.error('Error removing from localStorage in logout:', error)
+      }
       setAuthToken(null)
     },
     async verifyToken() {
@@ -62,7 +78,12 @@ export const useAuthStore = defineStore('auth', {
         return false
       }
       setAuthToken(this.token)
-      this.user = JSON.parse(localStorage.getItem('user')) || null
+      try {
+        this.user = JSON.parse(localStorage.getItem('user')) || null
+      } catch (error) {
+        console.error('Error parsing user from localStorage in verifyToken:', error)
+        this.user = null
+      }
       this.userEmail = localStorage.getItem('userEmail') || null
       this.userName = localStorage.getItem('userName') || null
       this.isAuthenticated = true
