@@ -122,3 +122,5 @@ export function useFullscreen(targetSelector = '.dashboard-container') {
     handleTransition
   }
 }
+
+// Preparado para pruebas elementales: Verificar que toggleFullScreen alterna entre 'normal' y 'fullscreen', y que handleTransition dispara eventos correctamente.

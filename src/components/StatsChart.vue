@@ -17,16 +17,6 @@ const props = defineProps({
 const chartRef = ref(null)
 const chartInstance = ref(null)
 
-const formatDate = (dateStr) => {
-  const date = new Date(dateStr)
-  if (isNaN(date)) return dateStr
-  const day = date.getDate().toString().padStart(2, '0')
-  const monthNames = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
-  const month = monthNames[date.getMonth()]
-  const year = date.getFullYear().toString().slice(-2)
-  return `${day}/${month}/${year}`
-}
-
 const parseSpanishDate = (dateStr) => {
   // Map Spanish months to English
   const spanishToEnglish = {
@@ -67,7 +57,8 @@ const calculateMaxValue = (datasets) => {
 // Convertir datos para series de tiempo
 const convertToTimeSeriesData = (dataset) => {
   if (!dataset || !dataset.labels || !dataset.values || dataset.labels.length === 0 || dataset.values.length === 0) {
-    // Crear datos de prueba para series de tiempo (2 años diarios)
+    // Crear datos de prueba para series de tiempo (2 años diarios) - Comentado para producción
+    /*
     const now = new Date()
     const twoYearsAgo = new Date(now.getFullYear() - 2, now.getMonth(), now.getDate())
     const dataPoints = []
@@ -76,6 +67,8 @@ const convertToTimeSeriesData = (dataset) => {
       dataPoints.push([d.getTime(), value])
     }
     return dataPoints
+    */
+    return [] // Retornar array vacío si no hay datos
   }
   const minLength = Math.min(dataset.labels.length, dataset.values.length)
   const timeSeries = []
@@ -214,7 +207,7 @@ onMounted(() => {
      createChart()
    })
    const resizeHandler = () => {
-     console.log('Window resize event fired, chartInstance exists:', !!chartInstance.value)
+     // console.log('Window resize event fired, chartInstance exists:', !!chartInstance.value)
      if (chartInstance.value) {
        try {
          chartInstance.value.reflow()
@@ -227,9 +220,9 @@ onMounted(() => {
 
    // ResizeObserver for container size changes
    const resizeObserver = new ResizeObserver(() => {
-     console.log('StatsChart - ResizeObserver fired, chartInstance exists:', !!chartInstance.value)
+     // console.log('StatsChart - ResizeObserver fired, chartInstance exists:', !!chartInstance.value)
      if (chartRef.value) {
-       console.log('StatsChart - ResizeObserver - Chart container - offsetHeight:', chartRef.value.offsetHeight, 'clientHeight:', chartRef.value.clientHeight, 'scrollHeight:', chartRef.value.scrollHeight)
+       // console.log('StatsChart - ResizeObserver - Chart container - offsetHeight:', chartRef.value.offsetHeight, 'clientHeight:', chartRef.value.clientHeight, 'scrollHeight:', chartRef.value.scrollHeight)
      }
      if (chartInstance.value) {
        try {
@@ -259,20 +252,20 @@ watch([() => props.data, () => props.title, () => props.yTitle], () => {
  }, { deep: true })
 
 watch(() => props.mode, (newMode) => {
-   console.log('StatsChart - Watcher mode - Cambio a:', newMode, 'height:', props.height);
-   if (chartRef.value) {
-     console.log('StatsChart - Chart container - offsetHeight:', chartRef.value.offsetHeight, 'clientHeight:', chartRef.value.clientHeight, 'scrollHeight:', chartRef.value.scrollHeight);
-   }
-   nextTick(() => {
-     if (chartInstance.value) {
-       chartInstance.value.setSize(null, parseInt(props.height))
-       if (newMode === 'normal') {
-         chartInstance.value.zoomOut()
-         chartInstance.value.redraw()
-       }
-     }
-   })
- })
+    // console.log('StatsChart - Watcher mode - Cambio a:', newMode, 'height:', props.height);
+    if (chartRef.value) {
+      // console.log('StatsChart - Chart container - offsetHeight:', chartRef.value.offsetHeight, 'clientHeight:', chartRef.value.clientHeight, 'scrollHeight:', chartRef.value.scrollHeight);
+    }
+    nextTick(() => {
+      if (chartInstance.value) {
+        chartInstance.value.setSize(null, parseInt(props.height))
+        if (newMode === 'normal') {
+          chartInstance.value.zoomOut()
+          chartInstance.value.redraw()
+        }
+      }
+    })
+  })
 
 </script>
 

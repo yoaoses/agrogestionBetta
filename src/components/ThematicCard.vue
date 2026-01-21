@@ -142,17 +142,17 @@ const componentError = ref(null)
 const { contentHeight, fullscreenHeight } = useDynamicHeights()
 
 watch(() => props.mode, (newVal) => {
-  console.log('ThematicCard - Watcher mode - Cambio a:', newVal);
+  // console.log('ThematicCard - Watcher mode - Cambio a:', newVal);
   if (cardRef.value) {
-    console.log('ThematicCard - Card - offsetHeight:', cardRef.value.offsetHeight, 'clientHeight:', cardRef.value.clientHeight, 'scrollHeight:', cardRef.value.scrollHeight);
+    // console.log('ThematicCard - Card - offsetHeight:', cardRef.value.offsetHeight, 'clientHeight:', cardRef.value.clientHeight, 'scrollHeight:', cardRef.value.scrollHeight);
   }
   const chartsSection = cardRef.value?.querySelector('.charts-section');
   if (chartsSection) {
-    console.log('ThematicCard - Charts section - offsetHeight:', chartsSection.offsetHeight, 'clientHeight:', chartsSection.clientHeight);
+    // console.log('ThematicCard - Charts section - offsetHeight:', chartsSection.offsetHeight, 'clientHeight:', chartsSection.clientHeight);
   }
   const kpisColumn = cardRef.value?.querySelector('.kpis-column');
   if (kpisColumn) {
-    console.log('ThematicCard - KPIs column - offsetHeight:', kpisColumn.offsetHeight, 'clientHeight:', kpisColumn.clientHeight);
+    // console.log('ThematicCard - KPIs column - offsetHeight:', kpisColumn.offsetHeight, 'clientHeight:', kpisColumn.clientHeight);
   }
   nextTick(() => {
     window.dispatchEvent(new Event('resize'))

@@ -64,6 +64,8 @@
               :activeTab="activeTab"
               :themesData="themesData"
               :currentThemeIndex="currentThemeIndex"
+              :dynamicTitle="dynamicTitle"
+              :cardLoadingStates="cardLoadingStates"
               @update:activeTab="activeTab = $event"
               @update:currentThemeIndex="currentThemeIndex = $event"
               @exitFullscreen="toggleFullScreen"
@@ -85,16 +87,14 @@ import { useDynamicHeights } from '../composables/useDynamicHeights.js'
 import { useDateRangeStore } from '../stores/dateRange.js'
 import { useNavigationStore } from '../stores/navigation.js'
 import ThematicCard from '../components/ThematicCard.vue'
-import StatsChart from '../components/StatsChart.vue'
 import FullscreenCard from '../components/FullscreenCard.vue'
 import Loader from '../components/Loader.vue'
 
 const route = useRoute()
-const { companies, farms, loadInitialData, selectCompany, selectFarm } = useDashboard()
+const { farms, loadInitialData, selectCompany, selectFarm } = useDashboard()
 const { loading, error, themesData, getThemesData } = useDashboardService()
 const { getGroups } = useFarmData()
-const { mode, isFullScreen, toggleFullScreen } = useFullscreen()
-const { fullscreenHeight } = useDynamicHeights()
+const { mode, toggleFullScreen } = useFullscreen()
 const dateRangeStore = useDateRangeStore()
 const navigationStore = useNavigationStore()
 

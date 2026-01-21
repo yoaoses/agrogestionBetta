@@ -1,27 +1,30 @@
 <template>
   <div class="fullscreen-card">
     <!-- Nav interno -->
-    <nav class="fullscreen-nav">
-      <div class="nav-content">
-        <div class="nav-left">
-          <span class="nav-title">{{ themeData.theme }}</span>
-        </div>
-        <div class="nav-center">
-          <div class="theme-tabs">
-            <button
-              v-for="(theme, index) in themesData"
-              :key="index"
-              @click="setCurrentTheme(index)"
-              :class="{ 'theme-tab-btn': true, 'active': currentThemeIndex === index }"
-            >
-              {{ theme.theme }}
-            </button>
-          </div>
-        </div>
-        <div class="nav-right">
-          <button @click="$emit('exitFullscreen')" class="btn btn-outline-light btn-sm exit-btn" title="Salir de pantalla completa">
-            <i class="bi bi-fullscreen-exit"></i> Salir
-          </button>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+      <div class="container-fluid">
+        <span class="navbar-brand fw-bold text-success">{{ dynamicTitle }}</span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item" v-for="(theme, index) in themesData" :key="index">
+              <a class="nav-link" :class="{ active: currentThemeIndex === index }" @click.prevent="setCurrentTheme(index)">
+                <span v-if="cardLoadingStates.get(index)" class="nav-spinner">
+                  <div class="spinner-border spinner-border-sm text-light" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                  </div>
+                </span>
+                {{ theme.theme }}
+              </a>
+            </li>
+            <li class="nav-item">
+              <button @click="$emit('exitFullscreen')" class="btn btn-link nav-link d-flex justify-content-center align-items-center" title="Salir de pantalla completa">
+                <i class="bi bi-fullscreen-exit"></i>
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
     </nav>
@@ -169,6 +172,14 @@ const props = defineProps({
   currentThemeIndex: {
     type: Number,
     required: true
+  },
+  dynamicTitle: {
+    type: String,
+    required: true
+  },
+  cardLoadingStates: {
+    type: Map,
+    default: () => new Map()
   }
 })
 
@@ -555,6 +566,37 @@ onMounted(() => {
   background: var(--agrotech-blue-light);
   color: white;
   border-color: var(--agrotech-blue-light);
+}
+
+.navbar {
+  background-color: var(--agrotech-blue-dark) !important;
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
+
+.navbar-brand {
+  color: #fff !important;
+}
+
+.nav-link {
+  color: #fff !important;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  color: var(--agrotech-blue-light) !important;
+}
+
+.navbar .nav-link.active {
+  color: var(--agrotech-blue-light) !important;
+  font-weight: bold;
+  border-bottom: 2px solid var(--agrotech-blue-light);
+}
+
+.nav-spinner {
+  display: inline-block;
+  margin-right: 5px;
 }
 
 /* Responsive */
