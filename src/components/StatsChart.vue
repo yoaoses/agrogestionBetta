@@ -9,7 +9,9 @@ import Highcharts from 'highcharts/highstock'
 const props = defineProps({
   data: [Object, Array],
   title: String,
-  yTitle: String
+  yTitle: String,
+  mode: String,
+  height: Number
 })
 
 const chartRef = ref(null)
@@ -47,6 +49,19 @@ const parseSpanishDate = (dateStr) => {
     englishStr = englishStr.replace(new RegExp(spa, 'i'), eng)
   }
   return new Date(englishStr)
+}
+
+const calculateMaxValue = (datasets) => {
+  let max = 0;
+  datasets.forEach(dataset => {
+    if (dataset.values) {
+      dataset.values.forEach(val => {
+        const num = parseFloat(val);
+        if (!isNaN(num) && num > max) max = num;
+      });
+    }
+  });
+  return max;
 }
 
 // Convertir datos para series de tiempo
@@ -89,11 +104,17 @@ const convertToTimeSeriesData = (dataset) => {
 const chartOptions = computed(() => {
     const datasets = Array.isArray(props.data) ? props.data : [props.data]
 
+    const maxValue = calculateMaxValue(datasets);
+    let tickInterval;
+    if (maxValue > 100000) tickInterval = 25000;
+    else if (maxValue > 10000) tickInterval = 5000;
+    else if (maxValue > 1000) tickInterval = 1000;
+    else tickInterval = undefined;
+
     const options = {
       chart: {
         type: 'column',
-        zoomType: 'x',
-        height: 350
+        zoomType: 'x'
       },
       accessibility: {
         enabled: false
@@ -155,6 +176,7 @@ const chartOptions = computed(() => {
       },
       yAxis: {
         title: { text: props.yTitle },
+        min: 0,
         maxPadding: 0.1,
         opposite: false,
         tickAmount: 4
@@ -192,14 +214,38 @@ onMounted(() => {
      createChart()
    })
    const resizeHandler = () => {
+     console.log('Window resize event fired, chartInstance exists:', !!chartInstance.value)
      if (chartInstance.value) {
-       chartInstance.value.reflow()
+       try {
+         chartInstance.value.reflow()
+       } catch (error) {
+         console.error('Error in window resize reflow:', error)
+       }
      }
    }
    window.addEventListener('resize', resizeHandler)
 
+   // ResizeObserver for container size changes
+   const resizeObserver = new ResizeObserver(() => {
+     console.log('StatsChart - ResizeObserver fired, chartInstance exists:', !!chartInstance.value)
+     if (chartRef.value) {
+       console.log('StatsChart - ResizeObserver - Chart container - offsetHeight:', chartRef.value.offsetHeight, 'clientHeight:', chartRef.value.clientHeight, 'scrollHeight:', chartRef.value.scrollHeight)
+     }
+     if (chartInstance.value) {
+       try {
+         chartInstance.value.reflow()
+       } catch (error) {
+         console.error('Error in ResizeObserver reflow:', error)
+       }
+     }
+   })
+   if (chartRef.value) {
+     resizeObserver.observe(chartRef.value)
+   }
+
    onUnmounted(() => {
      window.removeEventListener('resize', resizeHandler)
+     resizeObserver.disconnect()
      if (chartInstance.value) {
        chartInstance.value.destroy()
      }
@@ -207,10 +253,26 @@ onMounted(() => {
 })
 
 watch([() => props.data, () => props.title, () => props.yTitle], () => {
-  nextTick(() => {
-    createChart()
-  })
-}, { deep: true })
+   nextTick(() => {
+     createChart()
+   })
+ }, { deep: true })
+
+watch(() => props.mode, (newMode) => {
+   console.log('StatsChart - Watcher mode - Cambio a:', newMode, 'height:', props.height);
+   if (chartRef.value) {
+     console.log('StatsChart - Chart container - offsetHeight:', chartRef.value.offsetHeight, 'clientHeight:', chartRef.value.clientHeight, 'scrollHeight:', chartRef.value.scrollHeight);
+   }
+   nextTick(() => {
+     if (chartInstance.value) {
+       chartInstance.value.setSize(null, parseInt(props.height))
+       if (newMode === 'normal') {
+         chartInstance.value.zoomOut()
+         chartInstance.value.redraw()
+       }
+     }
+   })
+ })
 
 </script>
 

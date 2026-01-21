@@ -24,18 +24,8 @@
       </nav>
 
 
-      <!-- Theme Switch and User Dropdown -->
+      <!-- User Dropdown -->
       <div class="d-flex align-items-center gap-2 flex-shrink-0">
-        <div class="btn-group" role="group" aria-label="Theme selector">
-          <input type="radio" class="btn-check" name="theme" id="light-theme" autocomplete="off" :checked="!isDark" @change="themeStore.setTheme('light', true)">
-          <label class="btn btn-outline w-50" for="light-theme">
-            <i class="bi bi-brightness-high-fill"></i>
-          </label>
-          <input type="radio" class="btn-check" name="theme" id="dark-theme" autocomplete="off" :checked="isDark" @change="themeStore.setTheme('dark', true)">
-          <label class="btn btn-outline w-50" for="dark-theme">
-            <i class="bi bi-moon-stars-fill"></i>
-          </label>
-        </div>
         <div ref="dropdownContainerRef" class="dropdown">
            <button ref="dropdownButtonRef" type="button" class="btn btn-outline-primary dropdown-toggle" aria-expanded="false" @click="handleDropdownClick">
              <i class="bi bi-person-circle me-1"></i>{{ userName }}
@@ -57,7 +47,6 @@ import { computed, ref, onMounted, nextTick, watch, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useNavigationStore } from '../stores/navigation.js'
 import { useAuthStore } from '../stores/auth.js'
-import { useThemeStore } from '../stores/theme.js'
 import { storeToRefs } from 'pinia'
 import * as bootstrap from 'bootstrap'
 
@@ -65,8 +54,6 @@ const route = useRoute()
 const router = useRouter()
 const navigationStore = useNavigationStore()
 const authStore = useAuthStore()
-const themeStore = useThemeStore()
-const { isDark } = storeToRefs(themeStore)
 
 const { userName: storedUserName } = storeToRefs(authStore)
 

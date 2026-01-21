@@ -1,54 +1,1689 @@
-client:733 [vite] connecting...
-client:827 [vite] connected.
-api.js:3 API module loading...
-api.js:500 API module loaded successfully
-main.js:1 Starting main.js
-main.js:3 Imported Vue
-main.js:5 Imported Bootstrap CSS
-main.js:7 Imported Bootstrap JS
-main.js:9 Imported Popper.js
-main.js:11 Imported Bootstrap Icons CSS
-main.js:13 Imported style.css
-main.js:15 Pinia imported
-main.js:17 App imported
-main.js:19 Attempting to import router
-main.js:21 Router imported successfully
-main.js:23 Creating app
-main.js:25 App created
-theme.js:27 Setting theme to: light
-theme.js:44 data-bs-theme set to: light
-theme.js:45 html classList: 
-theme.js:27 Setting theme to: light
-theme.js:44 data-bs-theme set to: light
-theme.js:45 html classList: 
-NavBar.vue:124 NavBar mounted, window width: 1361
-NavBar.vue:125 Theme: light
-theme.js:27 Setting theme to: light
-theme.js:44 data-bs-theme set to: light
-theme.js:45 html classList: 
-main.js:33 App mounted
-useFarmData.js:28 Error fetching companies: RangeError: Maximum call stack size exceeded
-    at Reflect.get (<anonymous>)
-    at MutableReactiveHandler.get (chunk-2MKFL3BX.js?v=b002fc07:1230:25)
-    at getCached (useFarmData.js:7:35)
-    at getCompanies (useFarmData.js:12:20)
-    (repetición de llamadas: getCompanies llama a getCompanies infinitamente en línea 16)
-    (stack repetido ~miles de veces, causando overflow)
-NavBar.vue:133 Error fetching data: RangeError: Maximum call stack size exceeded
-    at Reflect.get (<anonymous>)
-    at MutableReactiveHandler.get (chunk-2MKFL3BX.js?v=b002fc07:1230:25)
-    at getCached (useFarmData.js:7:35)
-    at getCompanies (useFarmData.js:12:20)
-    (mismo loop infinito)
-(anonymous) @ NavBar.vue:133
-await in (anonymous)
-(anonymous) @ chunk-2MKFL3BX.js?v=b002fc07:5221
-callWithErrorHandling @ chunk-2MKFL3BX.js?v=b002fc07:2342
-callWithAsyncErrorHandling @ chunk-2MKFL3BX.js?v=b002fc07:2349
-hook.__weh.hook.__weh @ chunk-2MKFL3BX.js?v=b002fc07:5201
-flushPostFlushCbs @ chunk-2MKFL3BX.js?v=b002fc07:2527
-render2 @ chunk-2MKFL3BX.js?v=b002fc07:8893
-mount @ chunk-2MKFL3BX.js?v=b002fc07:6335
-app.mount @ chunk-2MKFL3BX.js?v=b002fc07:12504
-(anonymous) @ main.js:32
-login:1 [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) <input type="password" required class="form-control form-control-lg rounded-pill mx-auto" placeholder="••••••••" style="width: 90%;" data-np-autofill-field-type="password" data-np-uid="eda623e3-ce62-4c91-a048-c83a3b9af26d">
+prepare.js:1 🍍 "navigation" store installed 🆕
+prepare.js:1 🍍 "dateRange" store installed 🆕
+DashboardView.vue:233 1) Altura del viewport inicial: 655
+DashboardView.vue:234 2) Altura del dashboard (viewport - nav header): 595
+DashboardView.vue:235 3) Altura del contenido (viewport - header - inner nav): 537
+DashboardView.vue:233 1) Altura del viewport inicial: 655
+DashboardView.vue:234 2) Altura del dashboard (viewport - nav header): 595
+DashboardView.vue:235 3) Altura del contenido (viewport - header - inner nav): 537
+DashboardView.vue:233 1) Altura del viewport inicial: 768
+DashboardView.vue:234 2) Altura del dashboard (viewport - nav header): 708
+DashboardView.vue:235 3) Altura del contenido (viewport - header - inner nav): 650
+DashboardView.vue:233 1) Altura del viewport inicial: 655
+DashboardView.vue:234 2) Altura del dashboard (viewport - nav header): 595
+DashboardView.vue:235 3) Altura del contenido (viewport - header - inner nav): 537
+DashboardView.vue:233 1) Altura del viewport inicial: 655
+DashboardView.vue:234 2) Altura del dashboard (viewport - nav header): 595
+DashboardView.vue:235 3) Altura del contenido (viewport - header - inner nav): 537
+highcharts_highstock.js?v=b1981bf9:2830 Uncaught TypeError: Cannot read properties of undefined (reading 'isCartesian')
+    at highcharts_highstock.js?v=b1981bf9:2830:24
+    at Array.forEach (<anonymous>)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2829:33)
+    at pA.redraw (highcharts_highstock.js?v=b1981bf9:3792:26)
+    at pA.transform (highcharts_highstock.js?v=b1981bf9:4127:172)
+    at gg (highcharts_highstock.js?v=b1981bf9:6814:23)
+    at HTMLDivElement.<anonymous> (highcharts_highstock.js?v=b1981bf9:6827:13)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2830
+reset @ highcharts_highstock.js?v=b1981bf9:2829
+redraw @ highcharts_highstock.js?v=b1981bf9:3792
+transform @ highcharts_highstock.js?v=b1981bf9:4127
+gg @ highcharts_highstock.js?v=b1981bf9:6814
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:6827
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:4109:50
+    at Array.forEach (<anonymous>)
+    at pA.transform (highcharts_highstock.js?v=b1981bf9:4109:29)
+    at gg (highcharts_highstock.js?v=b1981bf9:6814:23)
+    at HTMLDivElement.<anonymous> (highcharts_highstock.js?v=b1981bf9:6827:13)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:4109
+transform @ highcharts_highstock.js?v=b1981bf9:4109
+gg @ highcharts_highstock.js?v=b1981bf9:6814
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:6827
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:4109:50
+    at Array.forEach (<anonymous>)
+    at pA.transform (highcharts_highstock.js?v=b1981bf9:4109:29)
+    at gg (highcharts_highstock.js?v=b1981bf9:6814:23)
+    at HTMLDivElement.<anonymous> (highcharts_highstock.js?v=b1981bf9:6827:13)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:4109
+transform @ highcharts_highstock.js?v=b1981bf9:4109
+gg @ highcharts_highstock.js?v=b1981bf9:6814
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:6827
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:4109:50
+    at Array.forEach (<anonymous>)
+    at pA.transform (highcharts_highstock.js?v=b1981bf9:4109:29)
+    at gg (highcharts_highstock.js?v=b1981bf9:6814:23)
+    at HTMLDivElement.<anonymous> (highcharts_highstock.js?v=b1981bf9:6827:13)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:4109
+transform @ highcharts_highstock.js?v=b1981bf9:4109
+gg @ highcharts_highstock.js?v=b1981bf9:6814
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:6827
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:4109:50
+    at Array.forEach (<anonymous>)
+    at pA.transform (highcharts_highstock.js?v=b1981bf9:4109:29)
+    at gg (highcharts_highstock.js?v=b1981bf9:6814:23)
+    at HTMLDivElement.<anonymous> (highcharts_highstock.js?v=b1981bf9:6827:13)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:4109
+transform @ highcharts_highstock.js?v=b1981bf9:4109
+gg @ highcharts_highstock.js?v=b1981bf9:6814
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:6827
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:4109:50
+    at Array.forEach (<anonymous>)
+    at pA.transform (highcharts_highstock.js?v=b1981bf9:4109:29)
+    at gg (highcharts_highstock.js?v=b1981bf9:6814:23)
+    at HTMLDivElement.<anonymous> (highcharts_highstock.js?v=b1981bf9:6827:13)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:4109
+transform @ highcharts_highstock.js?v=b1981bf9:4109
+gg @ highcharts_highstock.js?v=b1981bf9:6814
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:6827
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:4109:50
+    at Array.forEach (<anonymous>)
+    at pA.transform (highcharts_highstock.js?v=b1981bf9:4109:29)
+    at gg (highcharts_highstock.js?v=b1981bf9:6814:23)
+    at HTMLDivElement.<anonymous> (highcharts_highstock.js?v=b1981bf9:6827:13)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:4109
+transform @ highcharts_highstock.js?v=b1981bf9:4109
+gg @ highcharts_highstock.js?v=b1981bf9:6814
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:6827
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:4109:50
+    at Array.forEach (<anonymous>)
+    at pA.transform (highcharts_highstock.js?v=b1981bf9:4109:29)
+    at gg (highcharts_highstock.js?v=b1981bf9:6814:23)
+    at HTMLDivElement.<anonymous> (highcharts_highstock.js?v=b1981bf9:6827:13)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:4109
+transform @ highcharts_highstock.js?v=b1981bf9:4109
+gg @ highcharts_highstock.js?v=b1981bf9:6814
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:6827
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2745 Uncaught TypeError: Cannot read properties of undefined (reading 'noSharedTooltip')
+    at rP.getHoverData (highcharts_highstock.js?v=b1981bf9:2745:57)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2842:310)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+getHoverData @ highcharts_highstock.js?v=b1981bf9:2745
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2842
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2745 Uncaught TypeError: Cannot read properties of undefined (reading 'noSharedTooltip')
+    at rP.getHoverData (highcharts_highstock.js?v=b1981bf9:2745:57)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2842:310)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+getHoverData @ highcharts_highstock.js?v=b1981bf9:2745
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2842
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2745 Uncaught TypeError: Cannot read properties of undefined (reading 'noSharedTooltip')
+    at rP.getHoverData (highcharts_highstock.js?v=b1981bf9:2745:57)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2842:310)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+getHoverData @ highcharts_highstock.js?v=b1981bf9:2745
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2842
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2745 Uncaught TypeError: Cannot read properties of undefined (reading 'noSharedTooltip')
+    at rP.getHoverData (highcharts_highstock.js?v=b1981bf9:2745:57)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2842:310)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+getHoverData @ highcharts_highstock.js?v=b1981bf9:2745
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2842
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2745 Uncaught TypeError: Cannot read properties of undefined (reading 'noSharedTooltip')
+    at rP.getHoverData (highcharts_highstock.js?v=b1981bf9:2745:57)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2842:310)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+getHoverData @ highcharts_highstock.js?v=b1981bf9:2745
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2842
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2745 Uncaught TypeError: Cannot read properties of undefined (reading 'noSharedTooltip')
+    at rP.getHoverData (highcharts_highstock.js?v=b1981bf9:2745:57)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2842:310)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+getHoverData @ highcharts_highstock.js?v=b1981bf9:2745
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2842
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2745 Uncaught TypeError: Cannot read properties of undefined (reading 'noSharedTooltip')
+    at rP.getHoverData (highcharts_highstock.js?v=b1981bf9:2745:57)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2842:310)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+getHoverData @ highcharts_highstock.js?v=b1981bf9:2745
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2842
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2745 Uncaught TypeError: Cannot read properties of undefined (reading 'noSharedTooltip')
+    at rP.getHoverData (highcharts_highstock.js?v=b1981bf9:2745:57)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2842:310)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+getHoverData @ highcharts_highstock.js?v=b1981bf9:2745
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2842
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2745 Uncaught TypeError: Cannot read properties of undefined (reading 'noSharedTooltip')
+    at rP.getHoverData (highcharts_highstock.js?v=b1981bf9:2745:57)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2842:310)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+getHoverData @ highcharts_highstock.js?v=b1981bf9:2745
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2842
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2745 Uncaught TypeError: Cannot read properties of undefined (reading 'noSharedTooltip')
+    at rP.getHoverData (highcharts_highstock.js?v=b1981bf9:2745:57)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2842:310)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+getHoverData @ highcharts_highstock.js?v=b1981bf9:2745
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2842
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at hP.onMouseOut (highcharts_highstock.js?v=b1981bf9:3491:46)
+    at rP.onTrackerMouseOut (highcharts_highstock.js?v=b1981bf9:2761:222)
+    at SVGGElement.<anonymous> (highcharts_highstock.js?v=b1981bf9:4490:20)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:3491
+onTrackerMouseOut @ highcharts_highstock.js?v=b1981bf9:2761
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:4490
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2638 Uncaught TypeError: Cannot read properties of undefined (reading 'options')
+    at rl.setState (highcharts_highstock.js?v=b1981bf9:2638:62)
+    at highcharts_highstock.js?v=b1981bf9:2847:46
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2846:41)
+    at rl.onMouseOver (highcharts_highstock.js?v=b1981bf9:2625:101)
+    at SVGGElement.r10 (highcharts_highstock.js?v=b1981bf9:4482:248)
+setState @ highcharts_highstock.js?v=b1981bf9:2638
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2847
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2846
+onMouseOver @ highcharts_highstock.js?v=b1981bf9:2625
+r10 @ highcharts_highstock.js?v=b1981bf9:4482
+highcharts_highstock.js?v=b1981bf9:2860 Uncaught TypeError: Cannot read properties of undefined (reading 'xAxis')
+    at highcharts_highstock.js?v=b1981bf9:2860:57
+    at Array.forEach (<anonymous>)
+    at rP.runPointActions (highcharts_highstock.js?v=b1981bf9:2858:234)
+    at rP.onContainerMouseMove (highcharts_highstock.js?v=b1981bf9:2799:415)
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2860
+runPointActions @ highcharts_highstock.js?v=b1981bf9:2858
+onContainerMouseMove @ highcharts_highstock.js?v=b1981bf9:2799
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onDocumentMouseMove (highcharts_highstock.js?v=b1981bf9:2812:254)
+    at HTMLDocument.<anonymous> (highcharts_highstock.js?v=b1981bf9:2858:150)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onDocumentMouseMove @ highcharts_highstock.js?v=b1981bf9:2812
+(anonymous) @ highcharts_highstock.js?v=b1981bf9:2858
+highcharts_highstock.js?v=b1981bf9:2628 Uncaught TypeError: Cannot read properties of undefined (reading 'chart')
+    at Proxy.onMouseOut (highcharts_highstock.js?v=b1981bf9:2628:33)
+    at rP.reset (highcharts_highstock.js?v=b1981bf9:2835:30)
+    at rP.onContainerMouseLeave (highcharts_highstock.js?v=b1981bf9:2792:140)
+onMouseOut @ highcharts_highstock.js?v=b1981bf9:2628
+reset @ highcharts_highstock.js?v=b1981bf9:2835
+onContainerMouseLeave @ highcharts_highstock.js?v=b1981bf9:2792

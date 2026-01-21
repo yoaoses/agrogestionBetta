@@ -1,15 +1,7 @@
 <template>
-  <div ref="dashboardContainerRef" class="dashboard-container">
-    <!-- Full dashboard cover/loader overlay -->
-    <div v-if="loading" class="full-loading-overlay d-flex align-items-center justify-content-center">
-      <div class="text-center">
-        <Loader />
-        <p class="mt-3 text-muted">Cargando datos del dashboard...</p>
-      </div>
-    </div>
-
+  <div ref="dashboardContainerRef" class="dashboard-container" :class="{ 'fullscreen-active': mode === 'fullscreen' }">
     <!-- Contenido scrollable -->
-    <div v-else ref="scrollableContentRef" class="scrollable-content" tabindex="0">
+    <div ref="scrollableContentRef" class="scrollable-content" tabindex="0">
       <!-- Navegación interna sticky -->
       <nav ref="navbarRef" class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container-fluid">
@@ -29,11 +21,23 @@
                   {{ theme.theme }}
                 </a>
               </li>
+              <li class="nav-item">
+                <button @click="toggleFullScreen" class="btn btn-link nav-link d-flex justify-content-center align-items-center" :title="mode === 'fullscreen' ? 'Salir de pantalla completa' : 'Pantalla completa'">
+                  <i :class="mode === 'fullscreen' ? 'bi bi-fullscreen-exit' : 'bi bi-fullscreen'"></i>
+                </button>
+              </li>
             </ul>
           </div>
         </div>
       </nav>
-      <div class="themes-container">
+      <div class="themes-container" :style="{ height: contentHeightManual + 'px' }">
+        <div v-if="loading" class="loading-overlay d-flex align-items-center justify-content-center">
+          <div class="text-center">
+            <Loader />
+            <p class="mt-3 text-muted">Cargando datos del dashboard...</p>
+          </div>
+        </div>
+
         <div v-if="error" class="error-section text-center py-5">
           <div class="alert alert-danger" role="alert">
             <h4 class="alert-heading">Error al cargar datos</h4>
@@ -42,14 +46,29 @@
         </div>
 
         <div v-else>
-           <ThematicCard
-             v-if="themesData.length > 0"
-             :themeData="themesData[currentThemeIndex]"
-             :index="currentThemeIndex + 1"
-             :loading="cardLoadingStates.get(currentThemeIndex)"
-             :progress="cardProgressStates.get(currentThemeIndex) || 0"
-           />
-         </div>
+            <ThematicCard
+              v-if="themesData.length > 0 && mode !== 'fullscreen'"
+              :themeData="themesData[currentThemeIndex]"
+              :index="currentThemeIndex + 1"
+              :loading="cardLoadingStates.get(currentThemeIndex)"
+              :progress="cardProgressStates.get(currentThemeIndex) || 0"
+              :mode="mode"
+              v-model:activeTab="activeTab"
+            />
+            <FullscreenCard
+              v-else-if="mode === 'fullscreen' && themesData.length > 0"
+              :themeData="themesData[currentThemeIndex]"
+              :index="currentThemeIndex + 1"
+              :loading="cardLoadingStates.get(currentThemeIndex)"
+              :progress="cardProgressStates.get(currentThemeIndex) || 0"
+              :activeTab="activeTab"
+              :themesData="themesData"
+              :currentThemeIndex="currentThemeIndex"
+              @update:activeTab="activeTab = $event"
+              @update:currentThemeIndex="currentThemeIndex = $event"
+              @exitFullscreen="toggleFullScreen"
+            />
+          </div>
       </div>
     </div>
   </div>
@@ -61,25 +80,39 @@ import { useRoute } from 'vue-router'
 import { useDashboard } from '../composables/useDashboard.js'
 import { useDashboardService } from '../composables/useDashboardService.js'
 import { useFarmData } from '../composables/useFarmData.js'
+import { useFullscreen } from '../composables/useFullscreen.js'
+import { useDynamicHeights } from '../composables/useDynamicHeights.js'
 import { useDateRangeStore } from '../stores/dateRange.js'
 import { useNavigationStore } from '../stores/navigation.js'
 import ThematicCard from '../components/ThematicCard.vue'
+import StatsChart from '../components/StatsChart.vue'
+import FullscreenCard from '../components/FullscreenCard.vue'
 import Loader from '../components/Loader.vue'
 
 const route = useRoute()
 const { companies, farms, loadInitialData, selectCompany, selectFarm } = useDashboard()
 const { loading, error, themesData, getThemesData } = useDashboardService()
 const { getGroups } = useFarmData()
+const { mode, isFullScreen, toggleFullScreen } = useFullscreen()
+const { fullscreenHeight } = useDynamicHeights()
 const dateRangeStore = useDateRangeStore()
 const navigationStore = useNavigationStore()
+
+// Alturas calculadas manualmente
+const innerNavHeight = ref(0)
+const windowHeight = ref(window.innerHeight)
+const headerHeight = 60 // Altura fija del navbar principal (Header.vue)
+const contentHeightManual = computed(() => windowHeight.value - headerHeight - innerNavHeight.value)
 
 // Estado para carga por card
 const cardLoadingStates = ref(new Map())
 const cardProgressStates = ref(new Map())
 const dashboardContainerRef = ref(null)
 const navbarRef = ref(null)
+const scrollableContentRef = ref(null)
 const activeLinkIndex = ref(0)
 const currentThemeIndex = ref(0)
+const activeTab = ref(0)
 
 const handleDateRangeExecute = async (event) => {
   const dateRange = event.detail
@@ -133,17 +166,18 @@ onMounted(async () => {
        }
      }, 200 + Math.random() * 300)
    }
-   // Calcular altura del navbar interno y setear variable CSS
-   if (navbarRef.value) {
-     const navbarHeight = navbarRef.value.offsetHeight
-     document.documentElement.style.setProperty('--inner-nav-height', `${navbarHeight}px`)
-   }
+   // Actualizar alturas manualmente
+   updateHeights()
+
+   // Agregar listener para resize
+   window.addEventListener('resize', updateHeights)
 
    // Agregar listener para date range execute
    window.addEventListener('dateRangeExecute', handleDateRangeExecute)
  })
 
 onUnmounted(() => {
+  window.removeEventListener('resize', updateHeights)
   window.removeEventListener('dateRangeExecute', handleDateRangeExecute)
 })
 
@@ -208,11 +242,36 @@ const dynamicTitle = computed(() => {
     return 'Dashboard Temático'
   }
 })
+
+// Función para actualizar alturas
+const updateHeights = () => {
+  windowHeight.value = window.innerHeight
+  if (navbarRef.value) {
+    innerNavHeight.value = navbarRef.value.offsetHeight
+  }
+  console.log('DashboardView - updateHeights - Estado:', mode.value);
+  console.log('1) Altura del viewport inicial:', windowHeight.value);
+  console.log('2) Altura del dashboard (viewport - nav header):', windowHeight.value - headerHeight);
+  console.log('3) Altura del contenido (viewport - header - inner nav):', contentHeightManual.value);
+  if (dashboardContainerRef.value) {
+    console.log('4) Dashboard container - offsetHeight:', dashboardContainerRef.value.offsetHeight, 'clientHeight:', dashboardContainerRef.value.clientHeight);
+  }
+  if (scrollableContentRef.value) {
+    console.log('5) Scrollable content - offsetHeight:', scrollableContentRef.value.offsetHeight, 'clientHeight:', scrollableContentRef.value.clientHeight);
+  }
+  if (navbarRef.value) {
+    console.log('6) Navbar - offsetHeight:', navbarRef.value.offsetHeight, 'clientHeight:', navbarRef.value.clientHeight);
+  }
+  const themesContainer = document.querySelector('.themes-container');
+  if (themesContainer) {
+    console.log('7) Themes container - offsetHeight:', themesContainer.offsetHeight, 'clientHeight:', themesContainer.clientHeight);
+  }
+}
+
 </script>
 
 <style scoped>
 .dashboard-container {
-   height: 100vh;
    position: relative;
 }
 
@@ -237,17 +296,19 @@ const dynamicTitle = computed(() => {
 }
 
 .themes-container {
-    height: calc(100vh - var(--inner-nav-height, 60px));
-}
+      display: flex;
+      flex-direction: column;
+      position: relative;
+   }
 
-.full-loading-overlay {
+.loading-overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: rgba(255, 255, 255, 0.95);
-  z-index: 1050;
+  z-index: 10;
 }
 
 /* Responsive */

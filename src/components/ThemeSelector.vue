@@ -1,15 +1,16 @@
 <template>
-  <button
-    @click="toggleTheme"
-    class="btn btn-outline d-flex justify-content-center align-items-center"
-    style="width: 32px; height: 32px;"
-    :aria-label="isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
-  >
-    <!-- Icono de luna para tema claro -->
-    <i v-if="!isDark" class="bi bi-moon-stars-fill"></i>
-    <!-- Icono de sol para tema oscuro -->
-    <i v-else class="bi bi-brightness-high-fill"></i>
-  </button>
+  <div class="d-flex align-items-center gap-2">
+    <div class="btn-group" role="group" aria-label="Theme selector">
+      <input type="radio" class="btn-check" name="theme" id="light-theme" autocomplete="off" :checked="!isDark" @change="themeStore.setTheme('light', true)">
+      <label class="btn btn-outline w-50" for="light-theme">
+        <i class="bi bi-brightness-high-fill"></i>
+      </label>
+      <input type="radio" class="btn-check" name="theme" id="dark-theme" autocomplete="off" :checked="isDark" @change="themeStore.setTheme('dark', true)">
+      <label class="btn btn-outline w-50" for="dark-theme">
+        <i class="bi bi-moon-stars-fill"></i>
+      </label>
+    </div>
+  </div>
 </template>
 
 <script setup>
