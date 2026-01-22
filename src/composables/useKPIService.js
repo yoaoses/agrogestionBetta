@@ -31,7 +31,8 @@ function calculateMilkKPIs(milkData, birthsData) {
       expected: TARGETS.totalMilk,
       unit: 'L',
       desc: 'Suma total de leche producida en el período seleccionado.',
-      icon: 'fa-tint'
+      icon: 'fa-tint',
+      type: 'efficiency'
     },
     {
       name: 'Promedio Diario',
@@ -39,7 +40,8 @@ function calculateMilkKPIs(milkData, birthsData) {
       expected: TARGETS.avgMilk,
       unit: 'L/día',
       desc: 'Producción promedio de leche por día.',
-      icon: 'fa-calendar-day'
+      icon: 'fa-calendar-day',
+      type: 'efficiency'
     },
     {
       name: 'Total Nacimientos',
@@ -47,7 +49,8 @@ function calculateMilkKPIs(milkData, birthsData) {
       expected: TARGETS.totalBirths,
       unit: '',
       desc: 'Número total de nacimientos en el período.',
-      icon: 'fa-baby'
+      icon: 'fa-baby',
+      type: 'efficiency'
     },
     {
       name: 'Tasa Natalidad',
@@ -55,7 +58,8 @@ function calculateMilkKPIs(milkData, birthsData) {
       expected: TARGETS.birthRate,
       unit: '/mes',
       desc: 'Tasa de nacimientos mensual.',
-      icon: 'fa-chart-line'
+      icon: 'fa-chart-line',
+      type: 'efficiency'
     },
     {
       name: 'Leche por Nacimiento',
@@ -63,7 +67,8 @@ function calculateMilkKPIs(milkData, birthsData) {
       expected: TARGETS.milkPerBirth,
       unit: 'L',
       desc: 'Litros de leche producidos por nacimiento (menor es mejor eficiencia).',
-      icon: 'fa-balance-scale'
+      icon: 'fa-balance-scale',
+      type: 'efficiency'
     }
   ]
 }

@@ -44,7 +44,7 @@ export function useDashboardService() {
 
       const themes = type === 'company'
         ? ['corporate_finances', 'farm_management', 'market_analysis']
-        : ['milk_production' /*, 'group_production'*/]
+        : ['milk_production', 'group_production']
       const data = []
       for (const apiFunctionName of themes) {
         try {

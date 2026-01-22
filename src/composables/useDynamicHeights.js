@@ -19,7 +19,12 @@
  *
  * const { dashboardHeight, contentHeight, fullscreenHeight } = useDynamicHeights()
  */
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+
+// Constantes base en vh
+const BASE_HEADER_PADDING_VH = 2
+const BASE_BODY_PADDING_VH = 1
+const BASE_KPI_MIN_HEIGHT_VH = 10
 
 export function useDynamicHeights(offsets = { nav: 60, innerNav: 56 }) {
   const windowHeight = ref(window.innerHeight)
@@ -28,13 +33,21 @@ export function useDynamicHeights(offsets = { nav: 60, innerNav: 56 }) {
   const sidebarHeight = ref(0)
   const fullscreenHeight = ref(0)
 
+  const vhValue = (vh) => (vh / 100) * windowHeight.value
+
+  const headerPadding = computed(() => vhValue(BASE_HEADER_PADDING_VH))
+
+  const bodyPadding = computed(() => vhValue(BASE_BODY_PADDING_VH))
+
+  const kpiMinHeight = computed(() => vhValue(BASE_KPI_MIN_HEIGHT_VH))
+
   const updateHeights = () => {
-    const height = window.innerHeight
-    windowHeight.value = height
-    dashboardHeight.value = height - offsets.nav
-    contentHeight.value = height - offsets.nav - offsets.innerNav
-    sidebarHeight.value = dashboardHeight.value
-    fullscreenHeight.value = height
+      const height = window.innerHeight
+      windowHeight.value = height
+      dashboardHeight.value = height - offsets.nav
+      contentHeight.value = height - offsets.nav - offsets.innerNav -145
+      sidebarHeight.value = dashboardHeight.value
+      fullscreenHeight.value = height
 
     // Set CSS vars reactivas
     document.documentElement.style.setProperty('--dynamic-dashboard-height', `${dashboardHeight.value}px`)
@@ -44,6 +57,9 @@ export function useDynamicHeights(offsets = { nav: 60, innerNav: 56 }) {
   }
 
   const throttledUpdate = throttle(updateHeights, 100)
+
+  // Inicializar alturas inmediatamente
+  updateHeights()
 
   onMounted(() => {
     updateHeights()
@@ -60,7 +76,11 @@ export function useDynamicHeights(offsets = { nav: 60, innerNav: 56 }) {
     contentHeight,
     sidebarHeight,
     fullscreenHeight,
-    updateHeights
+    updateHeights,
+    vhValue,
+    headerPadding,
+    bodyPadding,
+    kpiMinHeight
   }
 }
 

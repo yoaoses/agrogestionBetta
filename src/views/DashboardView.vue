@@ -45,10 +45,19 @@
           </div>
         </div>
 
-        <div v-else>
+        <div v-else style="height: 100%;">
             <ThematicCard
-              v-if="themesData.length > 0 && mode !== 'fullscreen'"
+              v-if="themesData.length > 0 && mode !== 'fullscreen' && currentThemeIndex === 0"
               :themeData="themesData[currentThemeIndex]"
+              :index="currentThemeIndex + 1"
+              :loading="cardLoadingStates.get(currentThemeIndex)"
+              :progress="cardProgressStates.get(currentThemeIndex) || 0"
+              :mode="mode"
+              v-model:activeTab="activeTab"
+            />
+            <ThematicCard
+              v-else-if="themesData.length > 0 && mode !== 'fullscreen' && currentThemeIndex === 1"
+              :themeData="groupThemeData"
               :index="currentThemeIndex + 1"
               :loading="cardLoadingStates.get(currentThemeIndex)"
               :progress="cardProgressStates.get(currentThemeIndex) || 0"
@@ -81,11 +90,11 @@ import { computed, onMounted, ref, reactive, nextTick, watch, onUnmounted } from
 import { useRoute } from 'vue-router'
 import { useDashboard } from '../composables/useDashboard.js'
 import { useDashboardService } from '../composables/useDashboardService.js'
-import { useFarmData } from '../composables/useFarmData.js'
 import { useFullscreen } from '../composables/useFullscreen.js'
 import { useDynamicHeights } from '../composables/useDynamicHeights.js'
 import { useDateRangeStore } from '../stores/dateRange.js'
 import { useNavigationStore } from '../stores/navigation.js'
+import themeOrchestrator from '../utils/themeOrchestrator.js'
 import ThematicCard from '../components/ThematicCard.vue'
 import FullscreenCard from '../components/FullscreenCard.vue'
 import Loader from '../components/Loader.vue'
@@ -93,7 +102,6 @@ import Loader from '../components/Loader.vue'
 const route = useRoute()
 const { farms, loadInitialData, selectCompany, selectFarm } = useDashboard()
 const { loading, error, themesData, getThemesData } = useDashboardService()
-const { getGroups } = useFarmData()
 const { mode, toggleFullScreen } = useFullscreen()
 const dateRangeStore = useDateRangeStore()
 const navigationStore = useNavigationStore()
@@ -113,6 +121,7 @@ const scrollableContentRef = ref(null)
 const activeLinkIndex = ref(0)
 const currentThemeIndex = ref(0)
 const activeTab = ref(0)
+const groupThemeData = ref(null)
 
 const handleDateRangeExecute = async (event) => {
   const dateRange = event.detail
@@ -142,12 +151,14 @@ onMounted(async () => {
     if (entityId) {
       await getThemesData(entityId, type)
     }
-    // Llamar al endpoint de grupos si hay farmId
+    // Generar themeData para ThematicGroupCard si hay farmId
     if (route.params.farmId) {
       try {
-        const groups = await getGroups(route.params.farmId)
+        console.log('Antes de llamar a themeOrchestrator.generateThemeData para group_production')
+        groupThemeData.value = await themeOrchestrator.generateThemeData('group_production', route.params.farmId, 'farm')
+        console.log('Después de llamar a themeOrchestrator.generateThemeData:', groupThemeData.value)
       } catch (error) {
-        console.error('Error al obtener grupos:', error)
+        console.error('Error al obtener datos de producción por grupos:', error)
       }
     }
    await nextTick()
@@ -206,12 +217,14 @@ watch(() => route.params, async (newParams, oldParams) => {
     currentThemeIndex.value = 0
     activeLinkIndex.value = 0
   }
-  // Llamar al endpoint de grupos si hay farmId
+  // Generar themeData para ThematicGroupCard si hay farmId
   if (newParams.farmId) {
     try {
-      const groups = await getGroups(newParams.farmId)
+      console.log('Antes de llamar a themeOrchestrator.generateThemeData para group_production')
+      groupThemeData.value = await themeOrchestrator.generateThemeData('group_production', newParams.farmId, 'farm')
+      console.log('Después de llamar a themeOrchestrator.generateThemeData:', groupThemeData.value)
     } catch (error) {
-      console.error('Error al obtener grupos:', error)
+      console.error('Error al obtener datos de producción por grupos:', error)
     }
   }
 }, { immediate: false })
@@ -233,6 +246,8 @@ const companyFarms = computed(() => {
   return farms.value.filter(f => f.companyId == route.params.companyId)
 })
 
+const entityId = computed(() => route.params.farmId || route.params.companyId)
+
 const dynamicTitle = computed(() => {
   if (route.params.farmId && selectedFarm.value) {
     return selectedFarm.value.name
@@ -249,22 +264,22 @@ const updateHeights = () => {
   if (navbarRef.value) {
     innerNavHeight.value = navbarRef.value.offsetHeight
   }
-  console.log('DashboardView - updateHeights - Estado:', mode.value);
-  console.log('1) Altura del viewport inicial:', windowHeight.value);
-  console.log('2) Altura del dashboard (viewport - nav header):', windowHeight.value - headerHeight);
-  console.log('3) Altura del contenido (viewport - header - inner nav):', contentHeightManual.value);
+  // console.log('DashboardView - updateHeights - Estado:', mode.value);
+  // console.log('1) Altura del viewport inicial:', windowHeight.value);
+  // console.log('2) Altura del dashboard (viewport - nav header):', windowHeight.value - headerHeight);
+  // console.log('3) Altura del contenido (viewport - header - inner nav):', contentHeightManual.value);
   if (dashboardContainerRef.value) {
-    console.log('4) Dashboard container - offsetHeight:', dashboardContainerRef.value.offsetHeight, 'clientHeight:', dashboardContainerRef.value.clientHeight);
+    // console.log('4) Dashboard container - offsetHeight:', dashboardContainerRef.value.offsetHeight, 'clientHeight:', dashboardContainerRef.value.clientHeight);
   }
   if (scrollableContentRef.value) {
-    console.log('5) Scrollable content - offsetHeight:', scrollableContentRef.value.offsetHeight, 'clientHeight:', scrollableContentRef.value.clientHeight);
+    // console.log('5) Scrollable content - offsetHeight:', scrollableContentRef.value.offsetHeight, 'clientHeight:', scrollableContentRef.value.clientHeight);
   }
   if (navbarRef.value) {
-    console.log('6) Navbar - offsetHeight:', navbarRef.value.offsetHeight, 'clientHeight:', navbarRef.value.clientHeight);
+    // console.log('6) Navbar - offsetHeight:', navbarRef.value.offsetHeight, 'clientHeight:', navbarRef.value.clientHeight);
   }
   const themesContainer = document.querySelector('.themes-container');
   if (themesContainer) {
-    console.log('7) Themes container - offsetHeight:', themesContainer.offsetHeight, 'clientHeight:', themesContainer.clientHeight);
+    // console.log('7) Themes container - offsetHeight:', themesContainer.offsetHeight, 'clientHeight:', themesContainer.clientHeight);
   }
 }
 

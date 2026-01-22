@@ -141,6 +141,30 @@
 3. Mantener consistencia visual
 4. Documentar nuevo patrón
 
+## Patrón de Cards Temáticas
+
+### Rol del ThemeOrchestrator
+El `ThemeOrchestrator` actúa como el responsable central para coordinar y entregar el contenido completo de las secciones de cada card temática. Este módulo centraliza la lógica de obtención de datos, procesamiento y distribución de información a los componentes de cards, asegurando consistencia y evitando duplicaciones. Todas las cards temáticas deben depender exclusivamente del `ThemeOrchestrator` para su contenido, sin implementar servicios ad-hoc o llamadas directas a API.
+
+### Proceso para Crear Nuevas Cards Temáticas
+Para crear nuevas cards temáticas, se debe replicar exactamente el patrón establecido por la primera card ("Prod. Lechera") sin modificarlo. Este proceso incluye:
+
+1. Definir la nueva card en el `ThemeOrchestrator`, siguiendo la estructura de secciones y métodos existentes.
+2. Utilizar los mismos composables y servicios subyacentes, adaptando únicamente los parámetros específicos de la nueva temática.
+3. Mantener la interfaz de datos estandarizada y el flujo de renderizado idéntico al de "Prod. Lechera".
+4. No alterar el código base de otras cards o el `ThemeOrchestrator` más allá de agregar la nueva entrada.
+
+### Advertencias para Evitar Errores Comunes
+- **Evitar servicios ad-hoc**: No crear nuevos servicios o composables específicos para cada card; reutilizar siempre los existentes a través del `ThemeOrchestrator`.
+- **Prevenir duplicación de código**: No copiar lógica de procesamiento o renderizado; mantener un patrón único replicable.
+- **No modificar el flujo existente**: Cualquier cambio al patrón debe ser coordinado con el arquitecto, evitando alteraciones que afecten otras cards.
+
+### Estructura de KPIs en Cards Temáticas
+
+- KPIs pueden ser globales (para todas las tabs) o específicos por tab.
+- Validación: Si kpisData global tiene elementos, mostrar en todas las tabs; si vacío, mostrar kpisData de la tab activa.
+- Mantener formato consistente: array de objetos con name, value, expected, unit, icon, desc.
+
 ## Verificación Final
 Antes de implementar cualquier cambio:
 - ¿Estoy modificando el composable correcto?

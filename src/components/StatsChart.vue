@@ -5,6 +5,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import Highcharts from 'highcharts/highstock'
+import { useChartZoomStore } from '../stores/chartZoom.js'
 
 const props = defineProps({
   data: [Object, Array],
@@ -13,6 +14,8 @@ const props = defineProps({
   mode: String,
   height: Number
 })
+
+const chartZoomStore = useChartZoomStore()
 
 const chartRef = ref(null)
 const chartInstance = ref(null)
@@ -114,7 +117,7 @@ const chartOptions = computed(() => {
       },
       title: { text: null },
       rangeSelector: {
-        selected: 1,
+        selected: chartZoomStore.currentZoomIndex,
         inputEnabled: false,
         buttonTheme: {
           fill: '#f2f2f2',
@@ -197,6 +200,12 @@ const createChart = () => {
   }
   try {
     chartInstance.value = Highcharts.stockChart(chartRef.value, chartOptions.value)
+    // Add event listeners to rangeSelector buttons to update store on user clicks
+    if (chartInstance.value.rangeSelector && chartInstance.value.rangeSelector.buttons) {
+      chartInstance.value.rangeSelector.buttons.forEach((btn, idx) => {
+        btn.element.addEventListener('click', () => chartZoomStore.setZoom(idx))
+      })
+    }
   } catch (error) {
     console.error('Error creating chart:', error)
   }
@@ -252,20 +261,26 @@ watch([() => props.data, () => props.title, () => props.yTitle], () => {
  }, { deep: true })
 
 watch(() => props.mode, (newMode) => {
-    // console.log('StatsChart - Watcher mode - Cambio a:', newMode, 'height:', props.height);
-    if (chartRef.value) {
-      // console.log('StatsChart - Chart container - offsetHeight:', chartRef.value.offsetHeight, 'clientHeight:', chartRef.value.clientHeight, 'scrollHeight:', chartRef.value.scrollHeight);
-    }
-    nextTick(() => {
-      if (chartInstance.value) {
-        chartInstance.value.setSize(null, parseInt(props.height))
-        if (newMode === 'normal') {
-          chartInstance.value.zoomOut()
-          chartInstance.value.redraw()
-        }
-      }
-    })
-  })
+     // console.log('StatsChart - Watcher mode - Cambio a:', newMode, 'height:', props.height);
+     if (chartRef.value) {
+       // console.log('StatsChart - Chart container - offsetHeight:', chartRef.value.offsetHeight, 'clientHeight:', chartRef.value.clientHeight, 'scrollHeight:', chartRef.value.scrollHeight);
+     }
+     nextTick(() => {
+       if (chartInstance.value) {
+         chartInstance.value.setSize(null, parseInt(props.height))
+         if (newMode === 'normal') {
+           chartInstance.value.zoomOut()
+           chartInstance.value.redraw()
+         }
+       }
+     })
+   })
+
+watch(() => chartZoomStore.currentZoomIndex, (newIndex) => {
+  if (chartInstance.value) {
+    chartInstance.value.rangeSelector.clickButton(newIndex)
+  }
+})
 
 </script>
 

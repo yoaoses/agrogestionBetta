@@ -99,8 +99,8 @@
         <!-- KPIs abajo -->
         <div class="kpis-section">
           <div class="kpis-grid">
-            <div v-if="themeData.kpisData && themeData.kpisData.length > 0" class="kpis-container">
-              <div v-for="kpi in themeData.kpisData" :key="kpi.name" class="kpi-card">
+            <div v-if="themeData.tabs[activeTab]?.kpisData && themeData.tabs[activeTab].kpisData.length > 0" class="kpis-container">
+              <div v-for="kpi in themeData.tabs[activeTab].kpisData" :key="kpi.name" class="kpi-card">
                 <div class="kpi-content">
                   <div class="kpi-header">
                     <i :class="`fas ${kpi.icon}`" class="kpi-icon"></i>
@@ -111,13 +111,19 @@
                     {{ kpi.value }} {{ kpi.unit }}
                   </div>
                 </div>
-                <div class="kpi-efficiency">
-                  <div class="efficiency-circle">
+                <div class="kpi-visualization">
+                  <div v-if="kpi.type === 'efficiency'" class="efficiency-circle">
                     <svg width="40" height="40">
                       <circle cx="20" cy="20" r="16" stroke="#e9ecef" stroke-width="3" fill="none" />
                       <circle cx="20" cy="20" r="16" stroke="#00C853" stroke-width="3" fill="none" stroke-dasharray="100.5" :stroke-dashoffset="100.5 - (100.5 * Math.min(100, (kpi.value / kpi.expected) * 100) / 100)" transform="rotate(-90 20 20)" />
                     </svg>
                     <div class="efficiency-text">{{ Math.round(Math.min(100, (kpi.value / kpi.expected) * 100)) }}%</div>
+                  </div>
+                  <div v-else-if="kpi.type === 'participation'" class="participation-bar">
+                    <div class="bar-container">
+                      <div class="bar-fill" :style="{ width: Math.min(100, kpi.value) + '%' }"></div>
+                    </div>
+                    <div class="participation-text">{{ Math.round(kpi.value) }}%</div>
                   </div>
                 </div>
               </div>
@@ -498,10 +504,11 @@ onMounted(() => {
   padding-left: 44px; /* align with name */
 }
 
-.kpi-efficiency {
+.kpi-visualization {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
 
 .efficiency-circle {
@@ -521,6 +528,37 @@ onMounted(() => {
   font-size: 0.7em;
   font-weight: bold;
   color: #333;
+}
+
+.participation-bar {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.bar-container {
+  width: 100%;
+  height: 16px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.bar-fill {
+  height: 100%;
+  background: #00C853;
+  transition: width 0.3s ease;
+}
+
+.participation-text {
+  font-size: 0.7em;
+  font-weight: bold;
+  color: #00C853;
 }
 
 .fullscreen-footer {

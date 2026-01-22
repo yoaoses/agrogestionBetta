@@ -48,7 +48,7 @@
       </div>
     </div>
     <div v-if="!loading && !componentError && !themeData.error" class="card-body">
-      <div class="card-body-content" :class="{ 'fullscreen': mode === 'fullscreen' }">
+      <div class="card-body-content" :class="{ 'fullscreen': mode === 'fullscreen' }" :style="{ height: (mode === 'fullscreen' ? fullscreenHeight : contentHeight) + 'px' }">
         <div class="charts-column">
           <div class="charts-section">
             <StatsChart
@@ -63,8 +63,8 @@
         <div class="kpis-column">
           <div class="data-placeholder">
             <div class="dynamic-content">
-              <div v-if="themeData.kpisData && themeData.kpisData.length > 0" class="kpis-section">
-                <div v-for="kpi in themeData.kpisData" :key="kpi.name" class="kpi-card">
+              <div v-if="currentKpisData.length > 0" class="kpis-section">
+                <div v-for="kpi in currentKpisData" :key="kpi.name" class="kpi-card">
                   <div class="kpi-content">
                     <div class="kpi-header">
                       <i :class="`fas ${kpi.icon}`" class="kpi-icon"></i>
@@ -72,16 +72,22 @@
                       <span class="kpi-name">{{ kpi.name }}</span>
                     </div>
                     <div class="kpi-value">
-                      {{ kpi.value }} {{ kpi.unit }}
+                      {{ kpi.value.toFixed(1) }} {{ kpi.unit }}
                     </div>
                   </div>
-                  <div class="kpi-efficiency">
-                    <div class="efficiency-circle">
-                      <svg width="40" height="40">
-                        <circle cx="20" cy="20" r="16" stroke="#e9ecef" stroke-width="3" fill="none" />
-                        <circle cx="20" cy="20" r="16" stroke="#00C853" stroke-width="3" fill="none" stroke-dasharray="100.5" :stroke-dashoffset="100.5 - (100.5 * Math.min(100, (kpi.value / kpi.expected) * 100) / 100)" transform="rotate(-90 20 20)" />
+                  <div class="kpi-visualization">
+                    <div v-if="kpi.type === 'efficiency'" class="efficiency-circle">
+                      <svg width="50" height="50">
+                        <circle cx="25" cy="25" r="20" stroke="#e9ecef" stroke-width="3" fill="none" />
+                        <circle cx="25" cy="25" r="20" stroke="#00C853" stroke-width="3" fill="none" stroke-dasharray="125.7" :stroke-dashoffset="125.7 - (125.7 * Math.min(100, (kpi.value / kpi.expected) * 100) / 100)" transform="rotate(-90 25 25)" />
                       </svg>
                       <div class="efficiency-text">{{ Math.round(Math.min(100, (kpi.value / kpi.expected) * 100)) }}%</div>
+                    </div>
+                    <div v-else-if="kpi.type === 'participation'" class="participation-bar">
+                      <div class="bar-container">
+                        <div class="bar-fill" :style="{ width: Math.min(100, kpi.value) + '%' }"></div>
+                      </div>
+                      <div class="participation-text">{{ Math.round(kpi.value) }}%</div>
                     </div>
                   </div>
                 </div>
@@ -138,6 +144,14 @@ const props = defineProps({
 
 const cardRef = ref(null)
 const componentError = ref(null)
+
+const currentKpisData = computed(() => {
+  if (props.themeData.kpisData && props.themeData.kpisData.length > 0) {
+    return props.themeData.kpisData
+  } else {
+    return props.themeData.tabs[props.activeTab]?.kpisData || []
+  }
+})
 
 const { contentHeight, fullscreenHeight } = useDynamicHeights()
 
@@ -216,7 +230,6 @@ const getLastRecord = () => {
 
 <style scoped>
 .thematic-card {
-  height: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -290,18 +303,22 @@ const getLastRecord = () => {
 
 .card-header {
   flex-shrink: 0;
+  padding-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
 }
 
 .card-body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  padding: 0.5rem 1rem;
 }
 
 .card-body-content {
-  flex: 1;
+  height: 100%;
   display: grid;
-  grid-template-columns: 3fr 1fr;
+  grid-template-columns: 3fr minmax(200px, 1fr);
   gap: 1rem;
 }
 
@@ -322,6 +339,8 @@ const getLastRecord = () => {
 .kpis-column {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .data-placeholder {
@@ -342,5 +361,36 @@ const getLastRecord = () => {
   height: 100vh !important;
   z-index: 9999 !important;
   background: var(--bs-body-bg) !important;
+}
+
+.participation-bar {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.bar-container {
+  width: 40px;
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.bar-fill {
+  height: 100%;
+  background: #00C853;
+  transition: width 0.3s ease;
+}
+
+.participation-text {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #00C853;
 }
 </style>

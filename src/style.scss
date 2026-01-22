@@ -327,6 +327,7 @@ body {
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
+  width: 100%;
 }
 
 .thematic-card .kpi-content {
@@ -361,10 +362,9 @@ body {
 }
 
 .thematic-card .kpi-value {
-  font-size: 1.1em;
+  font-size: clamp(0.9em, 1.5vw, 1.2em);
   font-weight: bold;
   color: #00C853;
-  padding-left: 44px; /* align with name */
 }
 
 .thematic-card .kpi-efficiency {
@@ -387,7 +387,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 0.7em;
+  font-size: clamp(0.6em, 1vw, 0.8em);
   font-weight: bold;
   color: #333;
 }
