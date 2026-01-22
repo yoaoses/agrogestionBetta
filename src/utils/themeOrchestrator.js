@@ -46,7 +46,7 @@ const transformDataToChartFormat = (data, valueKey = 'value') => {
 
 const themeDisplayNames = {
   'milk_production': 'Prod. Lechera',
-  'group_production': 'Prod. por grupos',
+  'group_production': 'Prod. por Grupos',
   'financial_analysis': 'Análisis Financiero',
   'corporate_finances': 'Finanzas Corporativas',
   'farm_management': 'Gestión de Granjas',
@@ -124,12 +124,14 @@ const themeDefinitions = {
         {
           title: 'Producción',
           chartData,
-          lastRecord
+          lastRecord,
+          yTitle: 'Litros'
         },
         {
           title: 'Nacimientos',
           chartData: weeklyChartData,
-          lastRecord: weeklyLastRecord
+          lastRecord: weeklyLastRecord,
+          yTitle: 'Nacimientos'
         }
       ]
 
@@ -147,13 +149,7 @@ const themeDefinitions = {
       try {
         const groups = data
         const filteredGroups = groups.filter(g => ['estanque', 'descarte'].includes(g.productionType))
-        console.log('Grupos filtrados:', filteredGroups.map(g => ({ id: g.id, name: g.name })))
-        console.log('IDs enviados a getGroupMilkProduction:', filteredGroups.map(g => g.id))
-        console.log('Confirmación: Usando g.id, no g.farmId')
         const productions = await Promise.all(filteredGroups.map(g => getGroupMilkProduction(g.id, dateRangeStore.startDate, dateRangeStore.endDate)))
-        console.log('Respuestas crudas de getGroupMilkProduction:', productions)
-
-        console.log('Antes de procesar respuestas:', productions)
 
         // Procesar respuestas: distinguir grupos con y sin información
         const processedProductions = productions.map((prod, index) => {
@@ -215,43 +211,57 @@ const themeDefinitions = {
             title,
             chartData,
             lastRecord,
-            kpis: [] // Placeholder, will be assigned later
+            kpis: [],
+            yTitle: 'Litros',
+            xTitle: 'Produccion Lechera'
           }
         })
-        // Combined
-        const combined = {}
-        Object.keys(aggregatedByType.estanque).forEach(date => {
-          combined[date] = (aggregatedByType.estanque[date] || 0) + (aggregatedByType.descarte[date] || 0)
+        // Combined - Stacked Column Chart
+        const allDates = new Set()
+        processedProductions.forEach(p => p.data.forEach(d => allDates.add(d.date)))
+        const sortedDates = Array.from(allDates).sort((a, b) => new Date(a) - new Date(b))
+
+        const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF', '#4BC0C0', '#FF9F40']
+
+        let combinedSeries = processedProductions.map((p, index) => {
+          const groupName = p.group.name
+          const color = colors[index % colors.length]
+          const data = sortedDates.map(date => {
+            const entry = p.data.find(d => d.date === date)
+            return [new Date(date).getTime(), entry ? entry.milkLiters || 0 : 0]
+          })
+          return { name: groupName, color, data }
         })
-        Object.keys(aggregatedByType.descarte).forEach(date => {
-          if (!combined[date]) combined[date] = aggregatedByType.descarte[date]
-        })
-        let combinedDataArray = Object.keys(combined).map(date => ({ date, milkLiters: combined[date] })).sort((a, b) => new Date(a.date) - new Date(b.date))
+
         let isCombinedMock = false
-        if (combinedDataArray.length === 0) {
-          combinedDataArray = generateMockGroupData(model, [100, 300])
+        if (combinedSeries.length === 0 || combinedSeries.every(s => s.data.every(([_, v]) => v === 0))) {
+          // Generate mock series
+          combinedSeries = [
+            { name: 'Grupo 1', color: colors[0], data: generateMockGroupData(model, [50, 150]).map(d => [new Date(d.date).getTime(), d.milkLiters]) },
+            { name: 'Grupo 2', color: colors[1], data: generateMockGroupData(model, [30, 100]).map(d => [new Date(d.date).getTime(), d.milkLiters]) }
+          ]
           isCombinedMock = true
         }
-        const combinedChartData = transformDataToChartFormat(combinedDataArray, 'milkLiters')
+
         let combinedTitle = 'Combinado'
         if (isCombinedMock) {
           combinedTitle += ' (Mock)'
-          combinedChartData.name = combinedTitle
         }
+
+        const latestDate = sortedDates.length > 0 ? new Date(sortedDates[sortedDates.length - 1]) : new Date()
         const combinedTab = {
           title: combinedTitle,
-          chartData: combinedChartData,
+          chartData: combinedSeries,
           lastRecord: {
-            date: combinedChartData.lastRecordDate ? combinedChartData.lastRecordDate.toISOString() : new Date().toISOString(),
-            value: combinedChartData.values[combinedChartData.values.length - 1] || 0,
+            date: latestDate.toISOString(),
+            value: combinedSeries.reduce((sum, s) => sum + (s.data[s.data.length - 1]?.[1] || 0), 0),
             description: 'Último registro'
           },
-          kpis: [] // Placeholder, will be assigned later
+          kpis: [],
+          yTitle: 'Litros'
         }
         tabs.push(combinedTab)
-
-        console.log('Después de calcular tabs:', tabs)
-
+ 
         // Calcular sumas por grupo
         const groupSums = {}
         processedProductions.forEach(p => {
@@ -264,7 +274,7 @@ const themeDefinitions = {
         const estanqueGroups = Object.values(groupSums).filter(g => g.type === 'estanque')
         const totalEstanque = estanqueGroups.reduce((acc, g) => acc + g.sum, 0)
         const estanqueKpis = estanqueGroups.map(g => ({
-          name: `<i class="bi bi-cow"></i> ${g.name}`,
+          name: `${g.name}`,
           value: totalEstanque > 0 ? (g.sum / totalEstanque) * 100 : 0,
           expected: 100,
           unit: '%',
@@ -276,7 +286,7 @@ const themeDefinitions = {
         const descarteGroups = Object.values(groupSums).filter(g => g.type === 'descarte')
         const totalDescarte = descarteGroups.reduce((acc, g) => acc + g.sum, 0)
         const descarteKpis = descarteGroups.map(g => ({
-          name: `<i class="bi bi-cow"></i> ${g.name}`,
+          name: `${g.name}`,
           value: totalDescarte > 0 ? (g.sum / totalDescarte) * 100 : 0,
           expected: 100,
           unit: '%',
@@ -288,7 +298,7 @@ const themeDefinitions = {
         const allGroups = Object.values(groupSums)
         const totalCombined = allGroups.reduce((acc, g) => acc + g.sum, 0)
         const combinedKpis = allGroups.map(g => ({
-          name: `<i class="bi bi-cow"></i> ${g.name}`,
+          name: `${g.name}`,
           value: totalCombined > 0 ? (g.sum / totalCombined) * 100 : 0,
           expected: 100,
           unit: '%',
@@ -304,18 +314,7 @@ const themeDefinitions = {
 
         kpisData = []
 
-        console.log('Grupos filtrados:', filteredGroups.map(g => ({ id: g.id, name: g.name, productionType: g.productionType })))
-        console.log('Tabs generados:', tabs.map(tab => ({
-          title: tab.title,
-          chartData: {
-            labelsCount: tab.chartData.labels.length,
-            valuesCount: tab.chartData.values.length,
-            lastRecordDate: tab.chartData.lastRecordDate
-          },
-          lastRecord: tab.lastRecord
-        })))
       } catch (err) {
-        console.error('Error in group_production:', err)
         tabs = []
       }
       return { tabs, kpisData }
@@ -337,9 +336,8 @@ class ThemeOrchestrator {
     }
 
     if (themeName === 'group_production') {
-      console.log('Inicio de generateThemeData para group_production')
     }
-
+ 
     const theme = themeDisplayNames[themeName] || themeName
     const dateRangeStore = useDateRangeStore()
 
@@ -383,11 +381,9 @@ class ThemeOrchestrator {
 
     // Process data
     if (themeName === 'group_production') {
-      console.log('Antes de llamar a process')
     }
     const { tabs, kpisData } = await config.process(data, additionalData, entityId, signal, groupId)
     if (themeName === 'group_production') {
-      console.log('Después de llamar a process:', { tabs, kpisData })
     }
 
     // Ensure kpisData is an array of KPI objects

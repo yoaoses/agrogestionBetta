@@ -99,8 +99,8 @@
         <!-- KPIs abajo -->
         <div class="kpis-section">
           <div class="kpis-grid">
-            <div v-if="themeData.tabs[activeTab]?.kpisData && themeData.tabs[activeTab].kpisData.length > 0" class="kpis-container">
-              <div v-for="kpi in themeData.tabs[activeTab].kpisData" :key="kpi.name" class="kpi-card">
+            <div v-if="currentKpisData && currentKpisData.length > 0" class="kpis-container">
+              <div v-for="kpi in currentKpisData" :key="kpi.name" class="kpi-card">
                 <div class="kpi-content">
                   <div class="kpi-header">
                     <i :class="`fas ${kpi.icon}`" class="kpi-icon"></i>
@@ -193,6 +193,10 @@ const componentError = ref(null)
 
 const chartHeight = ref(400) // Altura fija para el chart en fullscreen
 
+const currentKpisData = computed(() => {
+  return props.themeData.tabs[props.activeTab]?.kpisData || props.themeData.kpisData || []
+})
+
 const setActiveTab = (index) => {
   emit('update:activeTab', index)
 }
@@ -250,6 +254,9 @@ onMounted(() => {
   }
   updateChartHeight()
   window.addEventListener('resize', updateChartHeight)
+
+  // Debug logs for KPIs
+  console.log('FullscreenCard - currentKpisData:', currentKpisData.value)
 })
 </script>
 
@@ -444,8 +451,6 @@ onMounted(() => {
 }
 
 .kpis-grid {
-  max-height: 150px;
-  overflow-y: auto;
 }
 
 .kpis-container {

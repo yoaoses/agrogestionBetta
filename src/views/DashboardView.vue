@@ -12,7 +12,7 @@
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
               <li class="nav-item" v-for="(theme, index) in themesData" :key="index">
-                <a class="nav-link" :class="{ active: activeLinkIndex === index }" @click.prevent="switchTheme(index)">
+                <a class="nav-link" :class="{ active: activeLinkIndex === index, disabled: loading }" @click.prevent="switchTheme(index)">
                   <span v-if="cardLoadingStates.get(index)" class="nav-spinner">
                     <div class="spinner-border spinner-border-sm text-light" role="status">
                       <span class="visually-hidden">Cargando...</span>
@@ -22,7 +22,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <button @click="toggleFullScreen" class="btn btn-link nav-link d-flex justify-content-center align-items-center" :title="mode === 'fullscreen' ? 'Salir de pantalla completa' : 'Pantalla completa'">
+                <button @click="toggleFullScreen" class="btn btn-link nav-link d-flex justify-content-center align-items-center" :disabled="loading" :class="{ disabled: loading }" :title="mode === 'fullscreen' ? 'Salir de pantalla completa' : 'Pantalla completa'">
                   <i :class="mode === 'fullscreen' ? 'bi bi-fullscreen-exit' : 'bi bi-fullscreen'"></i>
                 </button>
               </li>
@@ -154,9 +154,7 @@ onMounted(async () => {
     // Generar themeData para ThematicGroupCard si hay farmId
     if (route.params.farmId) {
       try {
-        console.log('Antes de llamar a themeOrchestrator.generateThemeData para group_production')
         groupThemeData.value = await themeOrchestrator.generateThemeData('group_production', route.params.farmId, 'farm')
-        console.log('Después de llamar a themeOrchestrator.generateThemeData:', groupThemeData.value)
       } catch (error) {
         console.error('Error al obtener datos de producción por grupos:', error)
       }
@@ -164,15 +162,22 @@ onMounted(async () => {
    await nextTick()
    // Inicializar estados de carga para el tema actual
    if (themesData.value && themesData.value.length > 0) {
+     console.log('onMounted - Initializing loading states for theme index:', currentThemeIndex.value)
      cardLoadingStates.value.set(currentThemeIndex.value, true)
      cardProgressStates.value.set(currentThemeIndex.value, 0)
+     console.log('onMounted - cardLoadingStates after init:', Array.from(cardLoadingStates.value.entries()))
+     console.log('onMounted - cardProgressStates after init:', Array.from(cardProgressStates.value.entries()))
      // Simular carga
      const loadInterval = setInterval(() => {
        const current = cardProgressStates.value.get(currentThemeIndex.value) || 0
+       console.log('onMounted - Load interval for index', currentThemeIndex.value, '- current progress:', current)
        if (current < 100) {
-         cardProgressStates.value.set(currentThemeIndex.value, Math.min(100, current + Math.random() * 20))
+         const newProgress = Math.min(100, current + Math.random() * 20)
+         cardProgressStates.value.set(currentThemeIndex.value, newProgress)
+         console.log('onMounted - Updated progress to:', newProgress)
        } else {
          cardLoadingStates.value.set(currentThemeIndex.value, false)
+         console.log('onMounted - Loading completed for index', currentThemeIndex.value)
          clearInterval(loadInterval)
        }
      }, 200 + Math.random() * 300)
@@ -190,6 +195,35 @@ onMounted(async () => {
 onUnmounted(() => {
   window.removeEventListener('resize', updateHeights)
   window.removeEventListener('dateRangeExecute', handleDateRangeExecute)
+})
+
+// Watcher para cambios en currentThemeIndex
+watch(() => currentThemeIndex.value, (newIndex, oldIndex) => {
+  console.log('Watcher currentThemeIndex - changed from', oldIndex, 'to', newIndex)
+  console.log('cardLoadingStates before watcher:', Array.from(cardLoadingStates.value.entries()))
+  console.log('cardProgressStates before watcher:', Array.from(cardProgressStates.value.entries()))
+  // Inicializar loading para el nuevo tema si no existe
+  if (!cardLoadingStates.value.has(newIndex)) {
+    console.log('Initializing loading for new theme index:', newIndex)
+    cardLoadingStates.value.set(newIndex, true)
+    cardProgressStates.value.set(newIndex, 0)
+    // Simular carga rápida para temas ya cargados
+    const loadInterval = setInterval(() => {
+      const current = cardProgressStates.value.get(newIndex) || 0
+      console.log('Watcher - Load interval for index', newIndex, '- current progress:', current)
+      if (current < 100) {
+        const newProgress = Math.min(100, current + Math.random() * 30)
+        cardProgressStates.value.set(newIndex, newProgress)
+        console.log('Watcher - Updated progress to:', newProgress)
+      } else {
+        cardLoadingStates.value.set(newIndex, false)
+        console.log('Watcher - Loading completed for index', newIndex)
+        clearInterval(loadInterval)
+      }
+    }, 100 + Math.random() * 200)
+  }
+  console.log('cardLoadingStates after watcher:', Array.from(cardLoadingStates.value.entries()))
+  console.log('cardProgressStates after watcher:', Array.from(cardProgressStates.value.entries()))
 })
 
 // Watcher para cambios en route
@@ -220,9 +254,7 @@ watch(() => route.params, async (newParams, oldParams) => {
   // Generar themeData para ThematicGroupCard si hay farmId
   if (newParams.farmId) {
     try {
-      console.log('Antes de llamar a themeOrchestrator.generateThemeData para group_production')
       groupThemeData.value = await themeOrchestrator.generateThemeData('group_production', newParams.farmId, 'farm')
-      console.log('Después de llamar a themeOrchestrator.generateThemeData:', groupThemeData.value)
     } catch (error) {
       console.error('Error al obtener datos de producción por grupos:', error)
     }
@@ -230,8 +262,14 @@ watch(() => route.params, async (newParams, oldParams) => {
 }, { immediate: false })
 
 const switchTheme = (index) => {
+    console.log('switchTheme called with index:', index)
+    console.log('Before switch - currentThemeIndex:', currentThemeIndex.value, 'activeLinkIndex:', activeLinkIndex.value)
+    console.log('cardLoadingStates:', Array.from(cardLoadingStates.value.entries()))
+    console.log('cardProgressStates:', Array.from(cardProgressStates.value.entries()))
     currentThemeIndex.value = index
     activeLinkIndex.value = index
+    activeTab.value = 0
+    console.log('After switch - currentThemeIndex:', currentThemeIndex.value, 'activeLinkIndex:', activeLinkIndex.value)
 }
 
 const selectedCompany = computed(() => {
@@ -264,22 +302,14 @@ const updateHeights = () => {
   if (navbarRef.value) {
     innerNavHeight.value = navbarRef.value.offsetHeight
   }
-  // console.log('DashboardView - updateHeights - Estado:', mode.value);
-  // console.log('1) Altura del viewport inicial:', windowHeight.value);
-  // console.log('2) Altura del dashboard (viewport - nav header):', windowHeight.value - headerHeight);
-  // console.log('3) Altura del contenido (viewport - header - inner nav):', contentHeightManual.value);
   if (dashboardContainerRef.value) {
-    // console.log('4) Dashboard container - offsetHeight:', dashboardContainerRef.value.offsetHeight, 'clientHeight:', dashboardContainerRef.value.clientHeight);
   }
   if (scrollableContentRef.value) {
-    // console.log('5) Scrollable content - offsetHeight:', scrollableContentRef.value.offsetHeight, 'clientHeight:', scrollableContentRef.value.clientHeight);
   }
   if (navbarRef.value) {
-    // console.log('6) Navbar - offsetHeight:', navbarRef.value.offsetHeight, 'clientHeight:', navbarRef.value.clientHeight);
   }
   const themesContainer = document.querySelector('.themes-container');
   if (themesContainer) {
-    // console.log('7) Themes container - offsetHeight:', themesContainer.offsetHeight, 'clientHeight:', themesContainer.clientHeight);
   }
 }
 
@@ -351,5 +381,16 @@ const updateHeights = () => {
 .nav-spinner {
   display: inline-block;
   margin-right: 5px;
+}
+
+.nav-link.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>

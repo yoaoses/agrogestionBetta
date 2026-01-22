@@ -72,7 +72,7 @@
                       <span class="kpi-name">{{ kpi.name }}</span>
                     </div>
                     <div class="kpi-value">
-                      {{ kpi.value.toFixed(1) }} {{ kpi.unit }}
+                      {{ (kpi.value % 1 === 0 ? kpi.value.toFixed(0) : kpi.value.toFixed(1)) }} {{ kpi.unit }}
                     </div>
                   </div>
                   <div class="kpi-visualization">
@@ -191,7 +191,7 @@ onMounted(() => {
 
 const getLastRecord = () => {
   if (props.themeData.tabs && props.themeData.tabs.length > 0) {
-    const lastTab = props.themeData.tabs[props.themeData.tabs.length - 1]
+    const lastTab = props.themeData.tabs[props.activeTab]
     if (!lastTab.lastRecord || !lastTab.lastRecord.date) return 'N/A'
     const dateStr = lastTab.lastRecord.date
     const date = new Date(dateStr)
@@ -392,5 +392,18 @@ const getLastRecord = () => {
   font-size: 0.75rem;
   font-weight: bold;
   color: #00C853;
+}
+
+.kpi-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi-content {
+  flex: 2;
+}
+
+.kpi-visualization {
+  flex: 1;
 }
 </style>

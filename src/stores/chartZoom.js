@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 export const useChartZoomStore = defineStore('chartZoom', {
   state: () => ({
-    currentZoomIndex: 1 // Default to "3m"
+    currentZoomIndex: 5 // Default to "All"
   }),
   actions: {
     setZoom(index) {

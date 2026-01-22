@@ -45,15 +45,29 @@ const parseSpanishDate = (dateStr) => {
 }
 
 const calculateMaxValue = (datasets) => {
+  console.log('calculateMaxValue - datasets:', datasets);
   let max = 0;
-  datasets.forEach(dataset => {
-    if (dataset.values) {
+  datasets.forEach((dataset, index) => {
+    console.log(`calculateMaxValue - dataset ${index}:`, dataset);
+    if (dataset && dataset.data && Array.isArray(dataset.data)) {
+      // Nuevo formato: data es array de [timestamp, value]
+      dataset.data.forEach(point => {
+        if (Array.isArray(point) && point.length >= 2) {
+          const val = parseFloat(point[1]);
+          if (!isNaN(val) && val > max) max = val;
+        }
+      });
+    } else if (dataset && dataset.values) {
+      // Formato antiguo: values array
       dataset.values.forEach(val => {
         const num = parseFloat(val);
         if (!isNaN(num) && num > max) max = num;
       });
+    } else {
+      console.warn('calculateMaxValue - dataset no tiene data ni values:', dataset);
     }
   });
+  console.log('calculateMaxValue - max calculado:', max);
   return max;
 }
 
@@ -163,8 +177,7 @@ const chartOptions = computed(() => {
       },
       legend: { enabled: true },
       plotOptions: {
-        column: {
-        }
+        column: datasets.length > 1 ? { stacking: 'normal' } : {}
       },
       xAxis: {
         type: 'datetime',
@@ -177,14 +190,24 @@ const chartOptions = computed(() => {
         opposite: false,
         tickAmount: 4
       },
-      series: datasets.map(dataset => ({
-        name: dataset.name || props.yTitle,
-        data: convertToTimeSeriesData(dataset),
-        dataGrouping: {
-          enabled: true,
-          units: [['day', [1]], ['week', [1]], ['month', [1, 3, 6]]]
+      series: datasets.map(dataset => {
+        let data
+        if (Array.isArray(dataset.data) && dataset.data.length > 0 && Array.isArray(dataset.data[0])) {
+          // Already time series data
+          data = dataset.data
+        } else {
+          data = convertToTimeSeriesData(dataset)
         }
-      })),
+        return {
+          name: dataset.name || props.yTitle,
+          color: dataset.color,
+          data,
+          dataGrouping: {
+            enabled: true,
+            units: [['day', [1]], ['week', [1]], ['month', [1, 3, 6]]]
+          }
+        }
+      }),
       tooltip: {
         xDateFormat: '%d/%m/%Y'
       }
@@ -194,20 +217,28 @@ const chartOptions = computed(() => {
 })
 
 const createChart = () => {
+  console.log('createChart - chartRef exists:', !!chartRef.value)
   if (!chartRef.value) return
   if (chartInstance.value) {
-    chartInstance.value.destroy()
+    try {
+      chartInstance.value.destroy()
+      console.log('createChart - old chart destroyed')
+    } catch (error) {
+      console.error('createChart - Error destroying old chart:', error)
+    }
   }
   try {
     chartInstance.value = Highcharts.stockChart(chartRef.value, chartOptions.value)
+    console.log('createChart - new chart created, chartInstance exists:', !!chartInstance.value)
     // Add event listeners to rangeSelector buttons to update store on user clicks
-    if (chartInstance.value.rangeSelector && chartInstance.value.rangeSelector.buttons) {
+    if (chartInstance.value && chartInstance.value.rangeSelector && chartInstance.value.rangeSelector.buttons) {
       chartInstance.value.rangeSelector.buttons.forEach((btn, idx) => {
         btn.element.addEventListener('click', () => chartZoomStore.setZoom(idx))
       })
     }
   } catch (error) {
     console.error('Error creating chart:', error)
+    chartInstance.value = null // Reset on error
   }
 }
 
@@ -246,10 +277,18 @@ onMounted(() => {
    }
 
    onUnmounted(() => {
+     console.log('StatsChart - onUnmounted - chartInstance exists:', !!chartInstance.value)
      window.removeEventListener('resize', resizeHandler)
      resizeObserver.disconnect()
      if (chartInstance.value) {
-       chartInstance.value.destroy()
+       try {
+         chartInstance.value.destroy()
+         console.log('StatsChart - chart destroyed successfully')
+       } catch (error) {
+         console.error('StatsChart - Error destroying chart:', error)
+       }
+     } else {
+       console.warn('StatsChart - chartInstance is undefined during unmount')
      }
    })
 })
