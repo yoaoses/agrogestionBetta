@@ -64,6 +64,15 @@
               :mode="mode"
               v-model:activeTab="activeTab"
             />
+            <ThematicCard
+              v-else-if="themesData.length > 0 && mode !== 'fullscreen' && currentThemeIndex === 2"
+              :themeData="themesData[currentThemeIndex]"
+              :index="currentThemeIndex + 1"
+              :loading="cardLoadingStates.get(currentThemeIndex)"
+              :progress="cardProgressStates.get(currentThemeIndex) || 0"
+              :mode="mode"
+              v-model:activeTab="activeTab"
+            />
             <FullscreenCard
               v-else-if="mode === 'fullscreen' && themesData.length > 0"
               :themeData="themesData[currentThemeIndex]"
@@ -160,28 +169,22 @@ onMounted(async () => {
       }
     }
    await nextTick()
-   // Inicializar estados de carga para el tema actual
-   if (themesData.value && themesData.value.length > 0) {
-     console.log('onMounted - Initializing loading states for theme index:', currentThemeIndex.value)
-     cardLoadingStates.value.set(currentThemeIndex.value, true)
-     cardProgressStates.value.set(currentThemeIndex.value, 0)
-     console.log('onMounted - cardLoadingStates after init:', Array.from(cardLoadingStates.value.entries()))
-     console.log('onMounted - cardProgressStates after init:', Array.from(cardProgressStates.value.entries()))
-     // Simular carga
-     const loadInterval = setInterval(() => {
-       const current = cardProgressStates.value.get(currentThemeIndex.value) || 0
-       console.log('onMounted - Load interval for index', currentThemeIndex.value, '- current progress:', current)
-       if (current < 100) {
-         const newProgress = Math.min(100, current + Math.random() * 20)
-         cardProgressStates.value.set(currentThemeIndex.value, newProgress)
-         console.log('onMounted - Updated progress to:', newProgress)
-       } else {
-         cardLoadingStates.value.set(currentThemeIndex.value, false)
-         console.log('onMounted - Loading completed for index', currentThemeIndex.value)
-         clearInterval(loadInterval)
-       }
-     }, 200 + Math.random() * 300)
-   }
+    // Inicializar estados de carga para el tema actual
+    if (themesData.value && themesData.value.length > 0) {
+      cardLoadingStates.value.set(currentThemeIndex.value, true)
+      cardProgressStates.value.set(currentThemeIndex.value, 0)
+      // Simular carga
+      const loadInterval = setInterval(() => {
+        const current = cardProgressStates.value.get(currentThemeIndex.value) || 0
+        if (current < 100) {
+          const newProgress = Math.min(100, current + Math.random() * 20)
+          cardProgressStates.value.set(currentThemeIndex.value, newProgress)
+        } else {
+          cardLoadingStates.value.set(currentThemeIndex.value, false)
+          clearInterval(loadInterval)
+        }
+      }, 200 + Math.random() * 300)
+    }
    // Actualizar alturas manualmente
    updateHeights()
 
@@ -199,31 +202,22 @@ onUnmounted(() => {
 
 // Watcher para cambios en currentThemeIndex
 watch(() => currentThemeIndex.value, (newIndex, oldIndex) => {
-  console.log('Watcher currentThemeIndex - changed from', oldIndex, 'to', newIndex)
-  console.log('cardLoadingStates before watcher:', Array.from(cardLoadingStates.value.entries()))
-  console.log('cardProgressStates before watcher:', Array.from(cardProgressStates.value.entries()))
   // Inicializar loading para el nuevo tema si no existe
   if (!cardLoadingStates.value.has(newIndex)) {
-    console.log('Initializing loading for new theme index:', newIndex)
     cardLoadingStates.value.set(newIndex, true)
     cardProgressStates.value.set(newIndex, 0)
     // Simular carga rápida para temas ya cargados
     const loadInterval = setInterval(() => {
       const current = cardProgressStates.value.get(newIndex) || 0
-      console.log('Watcher - Load interval for index', newIndex, '- current progress:', current)
       if (current < 100) {
         const newProgress = Math.min(100, current + Math.random() * 30)
         cardProgressStates.value.set(newIndex, newProgress)
-        console.log('Watcher - Updated progress to:', newProgress)
       } else {
         cardLoadingStates.value.set(newIndex, false)
-        console.log('Watcher - Loading completed for index', newIndex)
         clearInterval(loadInterval)
       }
     }, 100 + Math.random() * 200)
   }
-  console.log('cardLoadingStates after watcher:', Array.from(cardLoadingStates.value.entries()))
-  console.log('cardProgressStates after watcher:', Array.from(cardProgressStates.value.entries()))
 })
 
 // Watcher para cambios en route
@@ -262,14 +256,9 @@ watch(() => route.params, async (newParams, oldParams) => {
 }, { immediate: false })
 
 const switchTheme = (index) => {
-    console.log('switchTheme called with index:', index)
-    console.log('Before switch - currentThemeIndex:', currentThemeIndex.value, 'activeLinkIndex:', activeLinkIndex.value)
-    console.log('cardLoadingStates:', Array.from(cardLoadingStates.value.entries()))
-    console.log('cardProgressStates:', Array.from(cardProgressStates.value.entries()))
     currentThemeIndex.value = index
     activeLinkIndex.value = index
     activeTab.value = 0
-    console.log('After switch - currentThemeIndex:', currentThemeIndex.value, 'activeLinkIndex:', activeLinkIndex.value)
 }
 
 const selectedCompany = computed(() => {

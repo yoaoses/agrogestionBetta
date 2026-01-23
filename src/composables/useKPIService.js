@@ -73,6 +73,69 @@ function calculateMilkKPIs(milkData, birthsData) {
   ]
 }
 
+// Función para calcular KPIs de dinámicas poblacionales
+function calculatePopulationKPIs(populationData) {
+  if (!populationData || populationData.length === 0) return []
+
+  const totalBirths = populationData.reduce((sum, d) => sum + (d.births || 0), 0)
+  const totalDeaths = populationData.reduce((sum, d) => sum + (d.deaths || 0), 0)
+  const totalEntries = populationData.reduce((sum, d) => sum + (d.entries || 0), 0)
+  const totalExits = populationData.reduce((sum, d) => sum + (d.exits || 0), 0)
+  const avgPopulation = populationData.reduce((sum, d) => sum + (d.total_population || 0), 0) / populationData.length
+
+  // Tasa de Natalidad: (Nacimientos / Población Total) * 100
+  const birthRate = avgPopulation > 0 ? (totalBirths / avgPopulation) * 100 : 0
+
+  // Tasa de Mortalidad: (Muertes / Población Total) * 100
+  const deathRate = avgPopulation > 0 ? (totalDeaths / avgPopulation) * 100 : 0
+
+  // Crecimiento Diario: ((Nacimientos - Muertes + Entradas - Salidas) / Población Total) * 100
+  const netGrowth = totalBirths - totalDeaths + totalEntries - totalExits
+  const dailyGrowthRate = avgPopulation > 0 ? (netGrowth / avgPopulation) * 100 : 0
+
+  // Eficiencia Reproductiva: Nacimientos / Población (simplificada)
+  const reproductiveEfficiency = avgPopulation > 0 ? totalBirths / avgPopulation : 0
+
+  return [
+    {
+      name: 'Tasa de Natalidad',
+      value: Math.round(birthRate * 100) / 100,
+      expected: 5.0, // target aproximado
+      unit: '%',
+      desc: 'Porcentaje de nacimientos respecto a la población total.',
+      icon: 'fa-baby',
+      type: 'efficiency'
+    },
+    {
+      name: 'Tasa de Mortalidad',
+      value: Math.round(deathRate * 100) / 100,
+      expected: 2.0, // target aproximado
+      unit: '%',
+      desc: 'Porcentaje de muertes respecto a la población total.',
+      icon: 'fa-skull-crossbones',
+      type: 'efficiency'
+    },
+    {
+      name: 'Crecimiento Diario',
+      value: Math.round(dailyGrowthRate * 100) / 100,
+      expected: 0.5, // target aproximado
+      unit: '%',
+      desc: 'Cambio porcentual diario en la población.',
+      icon: 'fa-chart-line',
+      type: 'efficiency'
+    },
+    {
+      name: 'Eficiencia Reproductiva',
+      value: Math.round(reproductiveEfficiency * 100) / 100,
+      expected: 0.05, // target aproximado
+      unit: '',
+      desc: 'Nacimientos por animal (eficiencia reproductiva).',
+      icon: 'fa-seedling',
+      type: 'efficiency'
+    }
+  ]
+}
+
 // Función para calcular KPIs genéricos (para otros temas)
 function calculateGenericKPIs(data) {
   if (!data || data.length === 0) return []
@@ -103,6 +166,7 @@ function calculateGenericKPIs(data) {
 // Mapa de calculadores por tema
 const kpiCalculators = {
   'milk_production': calculateMilkKPIs,
+  'population_dynamics': calculatePopulationKPIs,
   // Agregar otros temas aquí
   'default': calculateGenericKPIs
 }
@@ -112,6 +176,8 @@ export function useKPIService() {
     const calculator = kpiCalculators[theme] || kpiCalculators.default
     if (theme === 'milk_production') {
       return calculator(milkData, birthsData)
+    } else if (theme === 'population_dynamics') {
+      return calculator(data)
     } else {
       return calculator(data)
     }

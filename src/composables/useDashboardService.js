@@ -2,7 +2,6 @@ import { ref, computed, readonly } from 'vue'
 import { useNavigationStore } from '../stores/navigation.js'
 import { useDateRangeStore } from '../stores/dateRange.js'
 import themeOrchestrator from '../utils/themeOrchestrator.js'
-import { generateGroupProductionTheme } from '../composables/useGroupProductionService.js'
 import { useSection2Service } from '../composables/useSection2Service.js'
 import { useKPIService } from '../composables/useKPIService.js'
 
@@ -44,7 +43,7 @@ export function useDashboardService() {
 
       const themes = type === 'company'
         ? ['corporate_finances', 'farm_management', 'market_analysis']
-        : ['milk_production', 'group_production']
+        : ['milk_production', 'group_production', 'population_dynamics']
       const data = []
       for (const apiFunctionName of themes) {
         try {

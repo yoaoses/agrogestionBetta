@@ -1,27 +1,14 @@
 import { useDateRangeStore } from '../stores/dateRange.js'
 import {
-  getFarmMilkProductionV2,
-  getFarmBirths,
-  getFarmGroups,
+  getMilkProductionForFarm,
+  getBirthsForFarm,
+  getFarmPopulationDynamics,
+  getGroups,
   getGroupMilkProduction
 } from '../api/api.js'
 import { useKPIService } from '../composables/useKPIService.js'
-import { generateMockGroupData } from './mockData.js'
+import { generateMockGroupData, generateMockPopulationData } from './mockData.js'
 
-// Dedicated mock data generator function
-const generateMockData = (count = 30, valueKey = 'milkLiters', valueRange = [0, 100]) => {
-  const now = new Date()
-  const data = []
-  for (let i = 0; i < count; i++) {
-    const randomDaysAgo = Math.floor(Math.random() * 30)
-    const date = new Date(now)
-    date.setDate(date.getDate() - randomDaysAgo)
-    const dateStr = date.toISOString().split('T')[0]
-    const value = Math.random() * (valueRange[1] - valueRange[0]) + valueRange[0]
-    data.push({ date: dateStr, [valueKey]: value })
-  }
-  return data
-}
 
 // Convertir datos de API a ChartData con propiedad configurable
 const transformDataToChartFormat = (data, valueKey = 'value') => {
@@ -47,6 +34,7 @@ const transformDataToChartFormat = (data, valueKey = 'value') => {
 const themeDisplayNames = {
   'milk_production': 'Prod. Lechera',
   'group_production': 'Prod. por Grupos',
+  'population_dynamics': 'Demografía',
   'financial_analysis': 'Análisis Financiero',
   'corporate_finances': 'Finanzas Corporativas',
   'farm_management': 'Gestión de Granjas',
@@ -56,10 +44,10 @@ const themeDisplayNames = {
 // Configurations for each theme
 const themeDefinitions = {
   milk_production: {
-    apiFunc: getFarmMilkProductionV2,
+    apiFunc: getMilkProductionForFarm,
     valueKey: 'value',
     additionalApis: {
-      births: getFarmBirths
+      births: getBirthsForFarm
     },
     process: async (data, additionalData, entityId, signal, groupId = null) => {
       const { calculateKPIsForTheme } = useKPIService()
@@ -74,7 +62,7 @@ const themeDefinitions = {
       // Generate mock data if no real data or all values are zero
       let isMockMilk = false
       if (!milkData || milkData.length === 0 || milkData.every(item => item.value === 0)) {
-        milkData = generateMockData(30, 'value')
+        milkData = generateMockGroupData({ date: '', value: 0 }, [0, 100])
         isMockMilk = true
       }
 
@@ -140,20 +128,20 @@ const themeDefinitions = {
     }
   },
   group_production: {
-    apiFunc: getFarmGroups,
+    apiFunc: getGroups,
     valueKey: 'milkLiters',
-    process: async (data, additionalData, entityId, signal, groupId = null) => {
+    process: async function(data, additionalData, entityId, signal, groupId = null) {
       const dateRangeStore = useDateRangeStore()
       let tabs = []
       let kpisData = []
       try {
         const groups = data
         const filteredGroups = groups.filter(g => ['estanque', 'descarte'].includes(g.productionType))
-        const productions = await Promise.all(filteredGroups.map(g => getGroupMilkProduction(g.id, dateRangeStore.startDate, dateRangeStore.endDate)))
+        const productions = await Promise.all(filteredGroups.map(g => this.cachedApiCall(getGroupMilkProduction, g.id, dateRangeStore.startDate, dateRangeStore.endDate)))
 
         // Procesar respuestas: distinguir grupos con y sin información
         const processedProductions = productions.map((prod, index) => {
-          const dailyStats = prod.data.data.dailyStatistics
+          const dailyStats = prod?.data?.data?.dailyStatistics || []
           return {
             group: filteredGroups[index],
             hasData: dailyStats.length > 0,
@@ -319,6 +307,103 @@ const themeDefinitions = {
       }
       return { tabs, kpisData }
     }
+  },
+  population_dynamics: {
+    apiFunc: getFarmPopulationDynamics,
+    valueKey: 'total_population',
+    process: async (data, additionalData, entityId, signal) => {
+      const { calculateKPIsForTheme } = useKPIService()
+      let populationData = data
+
+      // Generate mock data if no real data
+      if (!populationData || populationData.length === 0) {
+        populationData = generateMockPopulationData()
+      }
+
+      // Create tabs for different metrics
+      const tabs = []
+
+      // Población Total tab
+      const totalPopulationChartData = transformDataToChartFormat(populationData, 'total_population')
+      totalPopulationChartData.name = 'Población Total'
+      const lastTotalRecord = {
+        date: totalPopulationChartData.lastRecordDate ? totalPopulationChartData.lastRecordDate.toISOString() : new Date().toISOString(),
+        value: totalPopulationChartData.values[totalPopulationChartData.values.length - 1] || 0,
+        description: 'Población actual'
+      }
+      tabs.push({
+        title: 'Población Total',
+        chartData: totalPopulationChartData,
+        lastRecord: lastTotalRecord,
+        yTitle: 'Número de Animales'
+      })
+
+      // Nacimientos tab
+      const birthsChartData = transformDataToChartFormat(populationData, 'births')
+      birthsChartData.name = 'Nacimientos'
+      const lastBirthsRecord = {
+        date: birthsChartData.lastRecordDate ? birthsChartData.lastRecordDate.toISOString() : new Date().toISOString(),
+        value: birthsChartData.values[birthsChartData.values.length - 1] || 0,
+        description: 'Últimos nacimientos'
+      }
+      tabs.push({
+        title: 'Nacimientos',
+        chartData: birthsChartData,
+        lastRecord: lastBirthsRecord,
+        yTitle: 'Nacimientos'
+      })
+
+      // Muertes tab
+      const deathsChartData = transformDataToChartFormat(populationData, 'deaths')
+      deathsChartData.name = 'Muertes'
+      const lastDeathsRecord = {
+        date: deathsChartData.lastRecordDate ? deathsChartData.lastRecordDate.toISOString() : new Date().toISOString(),
+        value: deathsChartData.values[deathsChartData.values.length - 1] || 0,
+        description: 'Últimas muertes'
+      }
+      tabs.push({
+        title: 'Muertes',
+        chartData: deathsChartData,
+        lastRecord: lastDeathsRecord,
+        yTitle: 'Muertes'
+      })
+
+      // Entradas/Salidas tab (stacked chart with entries and exits)
+      const sortedPopulationData = populationData.sort((a, b) => new Date(a.date) - new Date(b.date))
+      const colors = ['#36A2EB', '#FF6384'] // Blue for entries, red for exits
+
+      const entriesSeries = {
+        name: 'Entradas',
+        color: colors[0],
+        data: sortedPopulationData.map(d => [new Date(d.date).getTime(), d.entries || 0])
+      }
+      const exitsSeries = {
+        name: 'Salidas',
+        color: colors[1],
+        data: sortedPopulationData.map(d => [new Date(d.date).getTime(), d.exits || 0])
+      }
+      const combinedSeries = [entriesSeries, exitsSeries]
+
+      const latestDate = sortedPopulationData.length > 0 ? new Date(sortedPopulationData[sortedPopulationData.length - 1].date) : new Date()
+      const lastEntries = sortedPopulationData.length > 0 ? sortedPopulationData[sortedPopulationData.length - 1].entries || 0 : 0
+      const lastExits = sortedPopulationData.length > 0 ? sortedPopulationData[sortedPopulationData.length - 1].exits || 0 : 0
+
+      tabs.push({
+        title: 'Entradas/Salidas',
+        chartData: combinedSeries,
+        lastRecord: {
+          date: latestDate.toISOString(),
+          value: lastEntries - lastExits,
+          description: `Entradas: ${lastEntries}, Salidas: ${lastExits}`
+        },
+        yTitle: 'Cantidad'
+      })
+
+      // Calculate KPIs
+      const kpisData = calculateKPIsForTheme('population_dynamics', null, null, populationData)
+
+      return { tabs, kpisData }
+    }
   }
   // Add other themes as needed
 }
@@ -326,6 +411,35 @@ const themeDefinitions = {
 class ThemeOrchestrator {
   constructor() {
     this.configs = themeDefinitions
+    this.cache = new Map()
+    this.cacheTTL = 5 * 60 * 1000 // 5 minutes
+  }
+
+  async cachedApiCall(apiFunc, ...args) {
+    const isSignal = args.length > 0 && args[args.length - 1] instanceof AbortSignal
+    const keyArgs = isSignal ? args.slice(0, -1) : args
+    const key = apiFunc.name + '_' + keyArgs.map(arg => String(arg)).join('_')
+
+    if (this.cache.has(key)) {
+      const cached = this.cache.get(key)
+      if (cached.expires > Date.now()) {
+        return cached.data
+      } else {
+        this.cache.delete(key)
+      }
+    }
+
+    const promise = apiFunc(...args)
+    this.cache.set(key, { data: promise, expires: Date.now() + this.cacheTTL })
+
+    try {
+      const result = await promise
+      this.cache.set(key, { data: result, expires: Date.now() + this.cacheTTL })
+      return result
+    } catch (e) {
+      this.cache.delete(key)
+      throw e
+    }
   }
 
   async generateThemeData(themeName, entityId, type, signal, groupId = null) {
@@ -335,19 +449,14 @@ class ThemeOrchestrator {
       return this.createMockThemeData(themeName)
     }
 
-    if (themeName === 'group_production') {
-    }
- 
     const theme = themeDisplayNames[themeName] || themeName
     const dateRangeStore = useDateRangeStore()
-
-    // Removed special handling for group_production, now uses standard process
 
     // Fetch main data
     let data = null
     if (config.apiFunc && type === 'farm') {
       if (themeName === 'group_production') {
-        const response = await config.apiFunc(entityId)
+        const response = await this.cachedApiCall(config.apiFunc, entityId)
         data = response.data.data
       } else {
         const params = {
@@ -357,7 +466,7 @@ class ThemeOrchestrator {
             to: dateRangeStore.endDate
           }
         }
-        const response = await config.apiFunc(params.entityId, params.dateRange.from, params.dateRange.to, signal)
+        const response = await this.cachedApiCall(config.apiFunc, params.entityId, params.dateRange.from, params.dateRange.to, signal)
         data = response.data.data
         // Handle API response structure: if data has dailyStatistics, use it
         if (data && typeof data === 'object' && data.dailyStatistics) {
@@ -371,7 +480,7 @@ class ThemeOrchestrator {
     if (config.additionalApis) {
       for (const [key, apiFunc] of Object.entries(config.additionalApis)) {
         try {
-          const response = await apiFunc(entityId, dateRangeStore.startDate, dateRangeStore.endDate, signal)
+          const response = await this.cachedApiCall(apiFunc, entityId, dateRangeStore.startDate, dateRangeStore.endDate, signal)
           additionalData[key] = response.data.data
         } catch (err) {
           additionalData[key] = null
@@ -380,11 +489,7 @@ class ThemeOrchestrator {
     }
 
     // Process data
-    if (themeName === 'group_production') {
-    }
-    const { tabs, kpisData } = await config.process(data, additionalData, entityId, signal, groupId)
-    if (themeName === 'group_production') {
-    }
+    const { tabs, kpisData } = await config.process.call(this, data, additionalData, entityId, signal, groupId)
 
     // Ensure kpisData is an array of KPI objects
     let formattedKpisData = kpisData
@@ -408,14 +513,11 @@ class ThemeOrchestrator {
 
   createMockThemeData(themeName) {
     const theme = themeDisplayNames[themeName] || themeName
-    const chartData = {
-      labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May'],
-      values: Array.from({ length: 5 }, () => Math.floor(Math.random() * 100)),
-      lastRecordDate: new Date()
-    }
+    const mockData = generateMockGroupData({ date: '', value: 0 }, [0, 100])
+    const chartData = transformDataToChartFormat(mockData, 'value')
     const lastRecord = {
-      date: new Date().toISOString(),
-      value: chartData.values[chartData.values.length - 1],
+      date: chartData.lastRecordDate ? chartData.lastRecordDate.toISOString() : new Date().toISOString(),
+      value: chartData.values[chartData.values.length - 1] || 0,
       description: 'Último registro válido'
     }
     const tabs = [
@@ -438,7 +540,7 @@ class ThemeOrchestrator {
       }
     ]
     const { calculateKPIsForTheme } = useKPIService()
-    let kpisData = calculateKPIsForTheme(themeName, null, null, [{ value: chartData.values[0] }, { value: chartData.values[1] }])
+    let kpisData = calculateKPIsForTheme(themeName, null, null, mockData)
 
     // Ensure kpisData is an array of KPI objects
     if (!Array.isArray(kpisData)) {
